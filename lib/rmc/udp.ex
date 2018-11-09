@@ -1,5 +1,7 @@
 defmodule Rmc.Udp do
-  @moduledoc false
+  @moduledoc """
+  Gets packets from gen_udp, writes them to a file and sends them to the parser
+"""
   use GenServer
   require Logger
 
