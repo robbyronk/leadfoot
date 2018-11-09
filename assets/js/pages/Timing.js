@@ -1,36 +1,43 @@
 import React, {Component} from 'react';
 import {Socket} from "phoenix"
 import map from 'lodash/map'
-import get from 'lodash/get'
-import sortBy from 'lodash/sortBy'
+import faker from 'faker'
 
+const fake = () => ({
+    name: faker.name.findName(),
+    number: faker.random.number(),
+})
+
+const Row = (row) => (
+    <tr>
+        <td>{row.position}</td>
+        <td>{row.number}</td>
+        <td>{row.name}</td>
+        <td>{row.gap}</td>
+        <td>{row.interval}</td>
+        <td>{row.lastLap}</td>
+        <td>{row.sector1}</td>
+        <td>{row.sector2}</td>
+        <td>{row.sector3}</td>
+        <td>{row.best}</td>
+        <td>{row.tyre}</td>
+    </tr>
+);
 
 
 class Timing extends Component {
     constructor(props) {
         super(props)
-        this.state = {}
+        this.state = {
+            timing: [
+                fake(),
+                fake(),
+                fake(),
+                fake(),
+                fake(),
+            ]
+        }
     }
-
-    componentDidMount() {
-        let socket = new Socket("/socket", {params: {token: window.userToken}})
-        socket.connect()
-
-        let channel = socket.channel("telemetry:timing", {})
-        channel.on("data_point", payload => {
-            console.log(payload)
-            this.setState({data: payload})
-        })
-
-        channel.join()
-            .receive("ok", resp => {
-                console.log("Joined successfully", resp)
-            })
-            .receive("error", resp => {
-                console.log("Unable to join", resp)
-            })
-    }
-
 
     render() {
         return (
@@ -50,6 +57,9 @@ class Timing extends Component {
                     <td>TYRE</td>
                 </tr>
                 </thead>
+                <tbody>
+                {map(this.state.timing, row => <Row key={row.name} {...row} />)}
+                </tbody>
             </table>
         );
     }

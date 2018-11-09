@@ -1,10 +1,5 @@
 import React, {Component} from 'react';
 import {Socket} from "phoenix"
-import map from 'lodash/map'
-import get from 'lodash/get'
-import sortBy from 'lodash/sortBy'
-
-
 
 class Session extends Component {
     constructor(props) {
@@ -35,7 +30,14 @@ class Session extends Component {
     render() {
         return (
             <div>
-
+                Australia
+                <ul>
+                    <li>Session Type: Race</li>
+                    <li>Laps: 65</li>
+                    <li>Weather: Clear</li>
+                    <li>Track Temperature: 33c</li>
+                    <li>Ambient Temperature: 25c</li>
+                </ul>
             </div>
         );
     }
