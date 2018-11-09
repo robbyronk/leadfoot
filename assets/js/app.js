@@ -1,24 +1,23 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Rmc from './Rmc'
+import {BrowserRouter as Router} from "react-router-dom";
+import {ThemeProvider} from 'styled-components'
+import "phoenix_html"
 
 // We need to import the CSS so that webpack will load it.
 // The MiniCssExtractPlugin is used to separate it out into
 // its own CSS file.
 import css from "../css/app.css"
 
-// webpack automatically bundles all modules in your
-// entry points. Those entry points can be configured
-// in "webpack.config.js".
-//
-// Import dependencies
-//
-import "phoenix_html"
+import theme from "./theme";
 
-// Import local files
-//
-// Local files can be imported directly using relative paths, for example:
-// import socket from "./socket"
+const App = () => (
+    <Router>
+        <ThemeProvider theme={theme}>
+            <Rmc/>
+        </ThemeProvider>
+    </Router>
+);
 
-
-ReactDOM.render(<Rmc/>, document.getElementById('main'));
+ReactDOM.render(<App/>, document.getElementById('main'));
