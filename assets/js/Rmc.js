@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {Panel, PanelBody, PanelHeader, Tab, Tabs} from "./components";
 import Routes from "./Routes";
+import Nav from "./components/Nav";
 
 class Rmc extends Component {
     render() {
@@ -11,23 +12,7 @@ class Rmc extends Component {
                         |>RACE CONTROL
                     </h2>
                 </PanelHeader>
-                <Tabs>
-                    <Tab active>
-                        Session
-                    </Tab>
-                    <Tab>
-                        Timing
-                    </Tab>
-                    <Tab>
-                        Map
-                    </Tab>
-                    <Tab>
-                        Vehicle
-                    </Tab>
-                    <Tab>
-                        Laps
-                    </Tab>
-                </Tabs>
+                <Nav/>
                 <PanelBody>
                     <Routes/>
                 </PanelBody>
