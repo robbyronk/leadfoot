@@ -13,6 +13,12 @@ defmodule RmcWeb.Router do
     plug :accepts, ["json"]
   end
 
+  scope "/api", RmcWeb do
+    pipe_through :api
+
+    get "/session", SessionController, :index
+  end
+
   scope "/", RmcWeb do
     pipe_through :browser
 

@@ -1,5 +1,7 @@
 defmodule Rmc.File do
-  @moduledoc false
+  @moduledoc """
+  Reads packets from a file and sends them in real time
+"""
   use GenServer
   require Logger
 
@@ -12,15 +14,16 @@ defmodule Rmc.File do
 
   def init(filename) do
     Logger.info("Started File")
+    {:ok, dispatcher} = Rmc.ScreenDispatcher.start_link()
     packets = File.read!(filename)
-    {:ok, %{packets: packets, last_time: :nil}}
+    {:ok, %{packets: packets, last_time: :nil, dispatcher: dispatcher}}
   end
 
-  def handle_info(:next, %{packets: packets, last_time: last_time}) do
+  def handle_info(:next, %{packets: packets, last_time: last_time, dispatcher: dispatcher}) do
     {parsed, packets} = read_packet(packets)
-    send(parsed)
+    Rmc.ScreenDispatcher.dispatch(dispatcher, parsed)
     %{packet_header: %{session_time: session_time}} = parsed
-    IO.inspect({session_time, last_time})
+#    IO.inspect({session_time, last_time})
 
     cond do
       last_time == :nil -> send(self(), :next)
@@ -28,7 +31,7 @@ defmodule Rmc.File do
       true -> Process.send_after(self(), :next, round(abs(session_time - last_time) * 1000))
     end
 
-    {:noreply, %{packets: packets, last_time: session_time}}
+    {:noreply, %{packets: packets, last_time: session_time, dispatcher: dispatcher}}
   end
 
   def read_packet(<<>>), do: {}
@@ -39,32 +42,6 @@ defmodule Rmc.File do
           packets :: binary
         >>
       ) do
-    {parse_packet(packet), packets}
+    {Rmc.ParsePacket.parse_packet(packet), packets}
   end
-
-  def send(parsed), do: RmcWeb.Endpoint.broadcast!("telemetry:f1", "data_point", parsed)
-
-  def parse_packet(data) do
-    <<
-      2018 :: unsigned - little - size(16),
-      1 :: unsigned - size(8),
-      packet_id :: unsigned - size(8),
-      _rest :: binary
-    >> = data
-
-    case packet_id do
-      0 -> Rmc.FOne2018.Motion.parse_packet(data)
-      1 -> Rmc.FOne2018.Session.parse_packet(data)
-      2 -> Rmc.FOne2018.Laps.parse_packet(data)
-      3 -> Rmc.FOne2018.Event.parse_packet(data)
-      4 -> Rmc.FOne2018.Participants.parse_packet(data)
-      5 -> Rmc.FOne2018.CarSetups.parse_packet(data)
-      6 -> Rmc.FOne2018.Telemetries.parse_packet(data)
-      7 -> Rmc.FOne2018.CarStatuses.parse_packet(data)
-      _ -> :nil
-    end
-  end
-
-
-
 end

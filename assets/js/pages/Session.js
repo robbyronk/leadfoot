@@ -12,8 +12,7 @@ class Session extends Component {
         socket.connect()
 
         let channel = socket.channel("telemetry:session", {})
-        channel.on("data_point", payload => {
-            console.log(payload)
+        channel.on("update", payload => {
             this.setState({data: payload})
         })
 
@@ -24,19 +23,29 @@ class Session extends Component {
             .receive("error", resp => {
                 console.log("Unable to join", resp)
             })
+
+        fetch('/api/session').then(response => {
+            response.json().then(({session}) => {
+                this.setState({data: session})
+            })
+        })
     }
 
 
     render() {
+        if (!this.state.data) {
+            return null;
+        }
+        const {total_laps, track_temperature, air_temperature} = this.state.data;
         return (
             <div>
                 Australia
                 <ul>
                     <li>Session Type: Race</li>
-                    <li>Laps: 65</li>
+                    <li>Laps: {total_laps}</li>
                     <li>Weather: Clear</li>
-                    <li>Track Temperature: 33c</li>
-                    <li>Ambient Temperature: 25c</li>
+                    <li>Track Temperature: {track_temperature}°</li>
+                    <li>Air Temperature: {air_temperature}°</li>
                 </ul>
             </div>
         );
