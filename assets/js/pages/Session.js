@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {Socket} from "phoenix"
 import Weather from "../components/Weather";
+import SessionType from "../components/SessionType";
 
 class Session extends Component {
     constructor(props) {
@@ -37,12 +38,12 @@ class Session extends Component {
         if (!this.state.data) {
             return null;
         }
-        const {total_laps, track_temperature, air_temperature, weather} = this.state.data;
+        const {total_laps, track_temperature, air_temperature, weather, session_type} = this.state.data;
         return (
             <div>
                 Australia
                 <ul>
-                    <li>Session Type: Race</li>
+                    <li>Session Type: <SessionType id={session_type}/></li>
                     <li>Laps: {total_laps}</li>
                     <li>Weather: <Weather id={weather}/></li>
                     <li>Track Temperature: {track_temperature}°</li>
