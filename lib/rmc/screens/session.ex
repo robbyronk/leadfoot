@@ -29,7 +29,10 @@ defmodule Rmc.Screens.Session do
   Puts the `value` for the given `key` in the `bucket`.
   """
   def put(%Rmc.FOne2018.Session{} = session) do
-    for_screen = Map.take(session, [:total_laps, :track_temperature, :air_temperature, :weather, :session_type])
+    for_screen = Map.take(
+      session,
+      [:total_laps, :track_temperature, :air_temperature, :weather, :session_type, :track_id]
+    )
     Agent.update(
       :session_screen,
       fn state ->
