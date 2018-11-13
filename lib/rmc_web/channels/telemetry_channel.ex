@@ -2,7 +2,7 @@ defmodule RmcWeb.TelemetryChannel do
   @moduledoc false
   use Phoenix.Channel
 
-  def join("telemetry:session", _message, socket) do
+  def join("telemetry:" <> _, _message, socket) do
     {:ok, socket}
   end
 

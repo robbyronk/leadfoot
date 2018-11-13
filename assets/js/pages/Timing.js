@@ -11,7 +11,7 @@ const fake = () => ({
 const Row = (row) => (
     <tr>
         <td>{row.position}</td>
-        <td>{row.number}</td>
+        <td>{row.race_number}</td>
         <td>{row.name}</td>
         <td>{row.gap}</td>
         <td>{row.interval}</td>
@@ -28,15 +28,31 @@ const Row = (row) => (
 class Timing extends Component {
     constructor(props) {
         super(props)
-        this.state = {
-            timing: [
-                fake(),
-                fake(),
-                fake(),
-                fake(),
-                fake(),
-            ]
-        }
+        this.state = {}
+    }
+
+    componentDidMount() {
+        let socket = new Socket("/socket", {params: {token: window.userToken}})
+        socket.connect()
+
+        let channel = socket.channel("telemetry:timing", {})
+        channel.on("update", ({timing}) => {
+            this.setState({timing})
+        })
+
+        channel.join()
+            .receive("ok", resp => {
+                console.log("Joined successfully", resp)
+            })
+            .receive("error", resp => {
+                console.log("Unable to join", resp)
+            })
+
+        // fetch('/api/timing').then(response => {
+        //     response.json().then(({session}) => {
+        //         this.setState({data: session})
+        //     })
+        // })
     }
 
     render() {
