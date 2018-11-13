@@ -19,7 +19,10 @@ defmodule Rmc.ScreenDispatcher do
 
   def handle_cast({:dispatch, %Rmc.FOne2018.Session{} = parsed}, state) do
     IO.inspect(parsed)
-    Rmc.Screens.Session.put(parsed)
+    {should_broadcast, new_state} = Rmc.Screens.Session.put(parsed)
+    if should_broadcast do
+      RmcWeb.Endpoint.broadcast!("telemetry:session", "update", new_state)
+    end
     {:noreply, state}
   end
   def handle_cast(_, state), do: {:noreply, state}
