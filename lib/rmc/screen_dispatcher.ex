@@ -14,10 +14,15 @@ defmodule Rmc.ScreenDispatcher do
     Logger.info("Started ScreenDispatcher")
     {:ok, _session_pid} = Rmc.Screens.Session.start_link()
     {:ok, _} = Rmc.Screens.Timing.start_link()
+    {:ok, _} = Rmc.Serial.start_link()
 
     {:ok, :nil}
   end
 
+  def handle_cast({:dispatch, %Rmc.FOne2018.Telemetries{} = parsed}, state) do
+    GenServer.cast(:serial, {:put, parsed})
+    {:noreply, state}
+  end
   def handle_cast({:dispatch, %Rmc.FOne2018.Session{} = parsed}, state) do
     {should_broadcast, new_state} = Rmc.Screens.Session.put(parsed)
     if should_broadcast do
