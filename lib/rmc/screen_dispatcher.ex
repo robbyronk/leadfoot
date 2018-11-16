@@ -14,7 +14,6 @@ defmodule Rmc.ScreenDispatcher do
     Logger.info("Started ScreenDispatcher")
     {:ok, _session_pid} = Rmc.Screens.Session.start_link()
     {:ok, _} = Rmc.Screens.Timing.start_link()
-    {:ok, _} = Rmc.Serial.start_link()
 
     {:ok, :nil}
   end
