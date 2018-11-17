@@ -48,11 +48,11 @@ class Timing extends Component {
                 console.log("Unable to join", resp)
             })
 
-        // fetch('/api/timing').then(response => {
-        //     response.json().then(({session}) => {
-        //         this.setState({data: session})
-        //     })
-        // })
+        fetch('/api/timing').then(response => {
+            response.json().then(({data}) => {
+                this.setState(data)
+            })
+        })
     }
 
     render() {

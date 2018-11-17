@@ -28,8 +28,8 @@ class Session extends Component {
             })
 
         fetch('/api/session').then(response => {
-            response.json().then(({session}) => {
-                this.setState({data: session})
+            response.json().then(data => {
+                this.setState(data)
             })
         })
     }

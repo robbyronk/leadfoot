@@ -16,7 +16,8 @@ defmodule RmcWeb.Router do
   scope "/api", RmcWeb do
     pipe_through :api
 
-    get "/session", SessionController, :index
+    get "/session", ScreenController, :session
+    get "/timing", ScreenController, :timing
   end
 
   scope "/", RmcWeb do
