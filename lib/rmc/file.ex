@@ -4,34 +4,45 @@ defmodule Rmc.File do
 """
   use GenServer
   require Logger
+  alias Rmc.RaceState
 
   def start_link(filename \\ "858860707279373194.f1") do
     GenServer.start_link(__MODULE__, filename)
   end
 
   # {:ok, pid} = Rmc.File.start_link()
-  # send(pid, :next)
+  # send(pid, :start)
 
   def init(filename) do
     Logger.info("Started File")
-    {:ok, dispatcher} = Rmc.ScreenDispatcher.start_link()
     packets = File.read!(filename)
-    {:ok, %{packets: packets, last_time: :nil, dispatcher: dispatcher}}
+    {:ok, %{packets: packets, next_packet: :nil}}
   end
 
-  def handle_info(:next, %{packets: packets, last_time: last_time, dispatcher: dispatcher}) do
-    {parsed, packets} = read_packet(packets)
-    Rmc.ScreenDispatcher.dispatch(dispatcher, parsed)
-    %{packet_header: %{session_time: session_time}} = parsed
-#    IO.inspect({session_time, last_time})
+  def handle_info(:start, %{packets: packets}) do
+    {next_packet, packets} = read_packet(packets)
+    send(self(), :next)
+    {:noreply, %{packets: packets, next_packet: next_packet}}
+  end
 
-    cond do
-      last_time == :nil -> send(self(), :next)
-      session_time == last_time -> send(self(), :next)
-      true -> Process.send_after(self(), :next, round(abs(session_time - last_time) * 1000))
+  def handle_info(:next, %{packets: packets, next_packet: this_packet}) do
+    %{packet_header: %{session_time: this_time}} = this_packet
+    RaceState.put(this_packet)
+    {next_packet, packets} = read_packet(packets)
+    %{packet_header: %{session_time: next_time}} = next_packet
+    if next_time > this_time do
+      broadcast()
+      Process.send_after(self(), :next, round((next_time - this_time) * 1000))
+    else
+      send(self(), :next)
     end
+    {:noreply, %{packets: packets, next_packet: next_packet}}
+  end
 
-    {:noreply, %{packets: packets, last_time: session_time, dispatcher: dispatcher}}
+  # TODO move broadcasting and RaceState usages to a module to share between file and udp
+  def broadcast() do
+    RmcWeb.Endpoint.broadcast!("telemetry:session", "update", RaceState.get_session())
+    RmcWeb.Endpoint.broadcast!("telemetry:timing", "update", %{timing: RaceState.get_timing()})
   end
 
   def read_packet(<<>>), do: {}

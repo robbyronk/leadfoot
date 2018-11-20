@@ -3,24 +3,19 @@ import {Socket} from "phoenix"
 import map from 'lodash/map'
 import faker from 'faker'
 
-const fake = () => ({
-    name: faker.name.findName(),
-    number: faker.random.number(),
-})
-
 const Row = (row) => (
     <tr>
-        <td>{row.position}</td>
+        <td>{row.car_position}</td>
         <td>{row.race_number}</td>
         <td>{row.name}</td>
         <td>{row.gap}</td>
         <td>{row.interval}</td>
-        <td>{row.lastLap}</td>
-        <td>{row.sector1}</td>
-        <td>{row.sector2}</td>
-        <td>{row.sector3}</td>
-        <td>{row.best}</td>
-        <td>{row.tyre}</td>
+        <td>{row.last_lap_time}</td>
+        <td>{row.sector_one_time}</td>
+        <td>{row.sector_two_time}</td>
+        <td>{row.sector_three_time}</td>
+        <td>{row.best_lap_time}</td>
+        <td>{row.tyre_compound}</td>
     </tr>
 );
 
