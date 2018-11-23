@@ -2,19 +2,20 @@ import React, {Component} from 'react';
 import {Socket} from "phoenix"
 import map from 'lodash/map'
 import Tyre from "../components/Tyre";
+import Time from "../components/Time";
 
 const Row = (row) => (
     <tr>
         <td>{row.car_position}</td>
         <td>{row.race_number}</td>
         <td>{row.name}</td>
-        <td>{row.gap}</td>
-        <td>{row.interval}</td>
-        <td>{row.last_lap_time}</td>
-        <td>{row.sector_one_time}</td>
-        <td>{row.sector_two_time}</td>
-        <td>{row.sector_three_time}</td>
-        <td>{row.best_lap_time}</td>
+        <td><Time time={row.gap}/></td>
+        <td><Time time={row.interval}/></td>
+        <td><Time time={row.last_lap_time}/></td>
+        <td><Time time={row.sector_one_time}/></td>
+        <td><Time time={row.sector_two_time}/></td>
+        <td><Time time={row.sector_three_time}/></td>
+        <td><Time time={row.best_lap_time}/></td>
         <td><Tyre id={row.tyre_compound}/></td>
     </tr>
 );
