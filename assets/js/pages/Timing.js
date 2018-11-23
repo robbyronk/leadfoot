@@ -3,6 +3,8 @@ import {Socket} from "phoenix"
 import map from 'lodash/map'
 import Tyre from "../components/Tyre";
 import Time from "../components/Time";
+import sortBy from "lodash/sortBy";
+import get from "lodash/get";
 
 const Row = (row) => (
     <tr>
@@ -27,13 +29,21 @@ class Timing extends Component {
         this.state = {}
     }
 
+    updateState = (timing) => {
+        const u = sortBy(
+            map(timing, (p, i) => ({...p, index: i})),
+            ({index}) => get(timing, [index, 'car_position'])
+        );
+        this.setState({timing: u})
+    };
+
     componentDidMount() {
         let socket = new Socket("/socket", {params: {token: window.userToken}})
         socket.connect()
 
         let channel = socket.channel("telemetry:timing", {})
         channel.on("update", ({timing}) => {
-            this.setState({timing})
+            this.updateState(timing)
         })
 
         channel.join()
