@@ -29,12 +29,12 @@ class Timing extends Component {
         this.state = {}
     }
 
-    updateState = (timing) => {
-        const u = sortBy(
-            map(timing, (p, i) => ({...p, index: i})),
-            ({index}) => get(timing, [index, 'car_position'])
+    updateState = (unsorted) => {
+        const timing = sortBy(
+            map(unsorted, (p, i) => ({...p, index: i})),
+            ({index}) => get(unsorted, [index, 'car_position'])
         );
-        this.setState({timing: u})
+        this.setState({timing})
     };
 
     componentDidMount() {
@@ -56,7 +56,7 @@ class Timing extends Component {
 
         fetch('/api/timing').then(response => {
             response.json().then(({data}) => {
-                this.setState(data)
+                this.updateState(data)
             })
         })
     }
