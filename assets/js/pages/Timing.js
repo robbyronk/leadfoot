@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {Socket} from "phoenix"
 import map from 'lodash/map'
-import faker from 'faker'
+import Tyre from "../components/Tyre";
 
 const Row = (row) => (
     <tr>
@@ -15,7 +15,7 @@ const Row = (row) => (
         <td>{row.sector_two_time}</td>
         <td>{row.sector_three_time}</td>
         <td>{row.best_lap_time}</td>
-        <td>{row.tyre_compound}</td>
+        <td><Tyre id={row.tyre_compound}/></td>
     </tr>
 );
 
