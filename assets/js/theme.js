@@ -19,7 +19,7 @@ const theme = {
     '#fefefe',
   ],
   white: '#fefefe',
-  fontFamily: 'Fira Code, Sans-Serif;'
+  fontFamily: 'Fira Code, Sans-Serif;',
 };
 
 export default theme;

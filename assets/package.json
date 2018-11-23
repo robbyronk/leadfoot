@@ -3,8 +3,8 @@
   "license": "MIT",
   "scripts": {
     "deploy": "webpack --mode production",
-    "lint": "eslint js/**/*.js",
-    "lint-fix": "eslint js/**/*.js --fix",
+    "lint": "eslint js/**",
+    "lint-fix": "eslint js/** --fix",
     "watch": "webpack --mode development --watch"
   },
   "dependencies": {
