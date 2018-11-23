@@ -2,8 +2,8 @@ defmodule Rmc.FOne2018.Session do
   alias __MODULE__
   @moduledoc false
 
-  #struct PacketSessionData
-  #{
+  # struct PacketSessionData
+  # {
   #    PacketHeader    m_header;               	// Header
   #
   #    uint8           m_weather;              	// Weather - 0 = clear, 1 = light cloud, 2 = overcast
@@ -29,7 +29,7 @@ defmodule Rmc.FOne2018.Session do
   #    uint8           m_safetyCarStatus;          // 0 = no safety car, 1 = full safety car
   #                                                // 2 = virtual safety car
   #    uint8          m_networkGame;              // 0 = offline, 1 = online
-  #};
+  # };
 
   @derive Jason.Encoder
   defstruct [
@@ -50,46 +50,49 @@ defmodule Rmc.FOne2018.Session do
     :spectator_car_index,
     :marshal_zones,
     :safety_car_status,
-    :network_game,
+    :network_game
   ]
 
-  def parse_marshal_zones(
-        <<
-          start :: little - float - size(32),
-          flag :: signed - size(8),
-          rest :: binary,
-        >>
-      ) do
+  def parse_marshal_zones(<<
+        start::little-float-size(32),
+        flag::signed-size(8),
+        rest::binary
+      >>) do
     [%Rmc.FOne2018.MarshalZone{start: start, flag: flag} | parse_marshal_zones(rest)]
   end
+
   def parse_marshal_zones(_), do: []
 
   def parse_packet(packet) do
     {packet_header, session_data} = Rmc.FOne2018.PacketHeader.parse(packet)
+
     <<
-      weather :: size(8),
-      track_temperature :: signed - size(8),
-      air_temperature :: signed - size(8),
-      total_laps :: size(8),
-      track_length :: little - size(16),
-      session_type :: size(8),
-      track_id :: signed - size(8),
-      era :: size(8),
-      time_left :: little - size(16),
-      duration :: little - size(16),
-      pit_speed_limit :: size(8),
-      game_paused :: size(8),
-      is_spectating :: size(8),
-      spectator_car_index :: size(8),
-      _sli_pro :: size(8),
-      num_marshal_zones :: size(8),
-      rest :: binary,
+      weather::size(8),
+      track_temperature::signed-size(8),
+      air_temperature::signed-size(8),
+      total_laps::size(8),
+      track_length::little-size(16),
+      session_type::size(8),
+      track_id::signed-size(8),
+      era::size(8),
+      time_left::little-size(16),
+      duration::little-size(16),
+      pit_speed_limit::size(8),
+      game_paused::size(8),
+      is_spectating::size(8),
+      spectator_car_index::size(8),
+      _sli_pro::size(8),
+      num_marshal_zones::size(8),
+      rest::binary
     >> = session_data
+
     zones = parse_marshal_zones(binary_part(rest, 0, 5 * 21))
+
     <<
-      safety_car_status :: size(8),
-      network_game :: size(8),
+      safety_car_status::size(8),
+      network_game::size(8)
     >> = binary_part(rest, 5 * 21, 2)
+
     %Session{
       packet_header: packet_header,
       weather: weather,
@@ -108,7 +111,7 @@ defmodule Rmc.FOne2018.Session do
       spectator_car_index: spectator_car_index,
       marshal_zones: Enum.take(zones, num_marshal_zones),
       safety_car_status: safety_car_status,
-      network_game: network_game,
+      network_game: network_game
     }
   end
 end

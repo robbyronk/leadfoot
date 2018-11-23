@@ -2,8 +2,8 @@ defmodule Rmc.FOne2018.Lap do
   alias __MODULE__
   @moduledoc false
 
-  #struct LapData
-  #{
+  # struct LapData
+  # {
   #    float       m_lastLapTime;           // Last lap time in seconds
   #    float       m_currentLapTime;        // Current time around the lap in seconds
   #    float       m_bestLapTime;           // Best lap time of the session in seconds
@@ -26,7 +26,7 @@ defmodule Rmc.FOne2018.Lap do
   #    uint8       m_resultStatus;          // Result status - 0 = invalid, 1 = inactive, 2 = active
   #                                         // 3 = finished, 4 = disqualified, 5 = not classified
   #                                         // 6 = retired
-  #};
+  # };
 
   @derive Jason.Encoder
   defstruct [
@@ -46,31 +46,29 @@ defmodule Rmc.FOne2018.Lap do
     :penalties,
     :grid_position,
     :driver_status,
-    :result_status,
+    :result_status
   ]
 
-  def parse_laps(
-        <<
-          last_lap_time :: little - float - size(32),
-          current_lap_time :: little - float - size(32),
-          best_lap_time :: little - float - size(32),
-          sector_one_time :: little - float - size(32),
-          sector_two_time :: little - float - size(32),
-          lap_distance :: little - float - size(32),
-          total_distance :: little - float - size(32),
-          safety_car_delta :: little - float - size(32),
-          car_position :: size(8),
-          current_lap_num :: size(8),
-          pit_status :: size(8),
-          sector :: size(8),
-          current_lap_invalid :: size(8),
-          penalties :: size(8),
-          grid_position :: size(8),
-          driver_status :: size(8),
-          result_status :: size(8),
-          laps :: binary,
-        >>
-      ) do
+  def parse_laps(<<
+        last_lap_time::little-float-size(32),
+        current_lap_time::little-float-size(32),
+        best_lap_time::little-float-size(32),
+        sector_one_time::little-float-size(32),
+        sector_two_time::little-float-size(32),
+        lap_distance::little-float-size(32),
+        total_distance::little-float-size(32),
+        safety_car_delta::little-float-size(32),
+        car_position::size(8),
+        current_lap_num::size(8),
+        pit_status::size(8),
+        sector::size(8),
+        current_lap_invalid::size(8),
+        penalties::size(8),
+        grid_position::size(8),
+        driver_status::size(8),
+        result_status::size(8),
+        laps::binary
+      >>) do
     [
       %Lap{
         last_lap_time: last_lap_time,
@@ -89,9 +87,11 @@ defmodule Rmc.FOne2018.Lap do
         penalties: penalties,
         grid_position: grid_position,
         driver_status: driver_status,
-        result_status: result_status,
-      } | parse_laps(laps)
+        result_status: result_status
+      }
+      | parse_laps(laps)
     ]
   end
+
   def parse_laps(<<>>), do: []
 end

@@ -1,7 +1,7 @@
 defmodule Rmc.File do
   @moduledoc """
-  Reads packets from a file and sends them in real time
-"""
+    Reads packets from a file and sends them in real time
+  """
   use GenServer
   require Logger
   alias Rmc.RaceState
@@ -16,7 +16,7 @@ defmodule Rmc.File do
   def init(filename) do
     Logger.info("Started File")
     packets = File.read!(filename)
-    {:ok, %{packets: packets, next_packet: :nil}}
+    {:ok, %{packets: packets, next_packet: nil}}
   end
 
   def handle_info(:start, %{packets: packets}) do
@@ -30,12 +30,14 @@ defmodule Rmc.File do
     RaceState.put(this_packet)
     {next_packet, packets} = read_packet(packets)
     %{packet_header: %{session_time: next_time}} = next_packet
+
     if next_time > this_time do
       broadcast()
       Process.send_after(self(), :next, round((next_time - this_time) * 1000))
     else
       send(self(), :next)
     end
+
     {:noreply, %{packets: packets, next_packet: next_packet}}
   end
 
@@ -46,13 +48,12 @@ defmodule Rmc.File do
   end
 
   def read_packet(<<>>), do: {}
-  def read_packet(
-        <<
-          packet_size :: 16,
-          packet :: bytes - size(packet_size),
-          packets :: binary
-        >>
-      ) do
+
+  def read_packet(<<
+        packet_size::16,
+        packet::bytes-size(packet_size),
+        packets::binary
+      >>) do
     {Rmc.ParsePacket.parse_packet(packet), packets}
   end
 end

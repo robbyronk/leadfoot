@@ -2,8 +2,8 @@ defmodule Rmc.FOne2018.CarStatus do
   alias __MODULE__
   @moduledoc false
 
-  #struct CarStatusData
-  #{
+  # struct CarStatusData
+  # {
   #    uint8       m_tractionControl;          // 0 (off) - 2 (high)
   #    uint8       m_antiLockBrakes;           // 0 (off) - 1 (on)
   #    uint8       m_fuelMix;                  // Fuel mix - 0 = lean, 1 = standard, 2 = rich, 3 = max
@@ -35,7 +35,7 @@ defmodule Rmc.FOne2018.CarStatus do
   #    float       m_ersHarvestedThisLapMGUK;  // ERS energy harvested this lap by MGU-K
   #    float       m_ersHarvestedThisLapMGUH;  // ERS energy harvested this lap by MGU-H
   #    float       m_ersDeployedThisLap;       // ERS energy deployed this lap
-  #};
+  # };
 
   @derive Jason.Encoder
   defstruct [
@@ -64,46 +64,44 @@ defmodule Rmc.FOne2018.CarStatus do
     :ers_deploy_mode,
     :ers_harvested_mguk,
     :ers_harvested_mguh,
-    :ers_deployed,
+    :ers_deployed
   ]
 
-  def parse_statuses(
-        <<
-          traction_control :: size(8),
-          anti_lock_brakes :: size(8),
-          fuel_mix :: size(8),
-          front_brake_bias :: size(8),
-          pit_limiter_status :: size(8),
-          fuel_in_tank :: little - float - size(32),
-          fuel_capacity :: little - float - size(32),
-          max_rpm :: little - size(16),
-          idle_rpm :: little - size(16),
-          max_gears :: size(8),
-          drs_allowed :: size(8),
-          tyres_wear_rl :: size(8),
-          tyres_wear_rr :: size(8),
-          tyres_wear_fl :: size(8),
-          tyres_wear_fr :: size(8),
-          tyre_compound :: size(8),
-          tyre_damage_rl :: size(8),
-          tyre_damage_rr :: size(8),
-          tyre_damage_fl :: size(8),
-          tyre_damage_fr :: size(8),
-          front_left_wing_damage :: size(8),
-          front_right_wing_damage :: size(8),
-          rear_wing_damage :: size(8),
-          engine_damage :: size(8),
-          gear_box_damage :: size(8),
-          exhaust_damage :: size(8),
-          vehicle_flags :: signed - size(8),
-          ers_store_energy :: little - float - size(32),
-          ers_deploy_mode :: size(8),
-          ers_harvested_mguk :: little - float - size(32),
-          ers_harvested_mguh :: little - float - size(32),
-          ers_deployed :: little - float - size(32),
-          statuses :: binary
-        >>
-      ) do
+  def parse_statuses(<<
+        traction_control::size(8),
+        anti_lock_brakes::size(8),
+        fuel_mix::size(8),
+        front_brake_bias::size(8),
+        pit_limiter_status::size(8),
+        fuel_in_tank::little-float-size(32),
+        fuel_capacity::little-float-size(32),
+        max_rpm::little-size(16),
+        idle_rpm::little-size(16),
+        max_gears::size(8),
+        drs_allowed::size(8),
+        tyres_wear_rl::size(8),
+        tyres_wear_rr::size(8),
+        tyres_wear_fl::size(8),
+        tyres_wear_fr::size(8),
+        tyre_compound::size(8),
+        tyre_damage_rl::size(8),
+        tyre_damage_rr::size(8),
+        tyre_damage_fl::size(8),
+        tyre_damage_fr::size(8),
+        front_left_wing_damage::size(8),
+        front_right_wing_damage::size(8),
+        rear_wing_damage::size(8),
+        engine_damage::size(8),
+        gear_box_damage::size(8),
+        exhaust_damage::size(8),
+        vehicle_flags::signed-size(8),
+        ers_store_energy::little-float-size(32),
+        ers_deploy_mode::size(8),
+        ers_harvested_mguk::little-float-size(32),
+        ers_harvested_mguh::little-float-size(32),
+        ers_deployed::little-float-size(32),
+        statuses::binary
+      >>) do
     [
       %CarStatus{
         traction_control: traction_control,
@@ -118,11 +116,17 @@ defmodule Rmc.FOne2018.CarStatus do
         max_gears: max_gears,
         drs_allowed: drs_allowed,
         tyres_wear: [
-          tyres_wear_rl, tyres_wear_rr, tyres_wear_fl, tyres_wear_fr
+          tyres_wear_rl,
+          tyres_wear_rr,
+          tyres_wear_fl,
+          tyres_wear_fr
         ],
         tyre_compound: tyre_compound,
         tyre_damage: [
-          tyre_damage_rl, tyre_damage_rr, tyre_damage_fl, tyre_damage_fr
+          tyre_damage_rl,
+          tyre_damage_rr,
+          tyre_damage_fl,
+          tyre_damage_fr
         ],
         front_left_wing_damage: front_left_wing_damage,
         front_right_wing_damage: front_right_wing_damage,
@@ -135,11 +139,11 @@ defmodule Rmc.FOne2018.CarStatus do
         ers_deploy_mode: ers_deploy_mode,
         ers_harvested_mguk: ers_harvested_mguk,
         ers_harvested_mguh: ers_harvested_mguh,
-        ers_deployed: ers_deployed,
-      } | parse_statuses(statuses)
+        ers_deployed: ers_deployed
+      }
+      | parse_statuses(statuses)
     ]
   end
+
   def parse_statuses(<<>>), do: []
-
-
 end

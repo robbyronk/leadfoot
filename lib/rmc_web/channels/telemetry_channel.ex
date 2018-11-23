@@ -5,6 +5,4 @@ defmodule RmcWeb.TelemetryChannel do
   def join("telemetry:" <> _, _message, socket) do
     {:ok, socket}
   end
-
-
 end

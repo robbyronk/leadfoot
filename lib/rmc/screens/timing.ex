@@ -1,5 +1,6 @@
 defmodule Rmc.Screens.Timing do
   use Agent
+
   @moduledoc """
   The timing screen has the following information on it:
     - position (lap packet)

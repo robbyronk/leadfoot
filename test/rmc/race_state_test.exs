@@ -33,11 +33,18 @@ defmodule RaceStateTest do
   end
 
   test "merges two parsed packets" do
-    RaceState.put(__MODULE__, %FOne2018.Event{code: "SSTA", packet_header: %FOne2018.PacketHeader{session_uid: 4}})
+    RaceState.put(__MODULE__, %FOne2018.Event{
+      code: "SSTA",
+      packet_header: %FOne2018.PacketHeader{session_uid: 4}
+    })
+
     %{code: code} = RaceState.get(__MODULE__)
     assert code == "SSTA"
 
-    RaceState.put(__MODULE__, %FOne2018.Session{total_laps: 3, packet_header: %FOne2018.PacketHeader{session_uid: 4}})
+    RaceState.put(__MODULE__, %FOne2018.Session{
+      total_laps: 3,
+      packet_header: %FOne2018.PacketHeader{session_uid: 4}
+    })
 
     %{code: code, total_laps: total_laps} = RaceState.get(__MODULE__)
     assert code == "SSTA"
@@ -45,20 +52,28 @@ defmodule RaceStateTest do
   end
 
   test "get session data" do
-    RaceState.put(__MODULE__, %FOne2018.Event{code: "SSTA", packet_header: %FOne2018.PacketHeader{session_uid: 4}})
-    RaceState.put(__MODULE__, %FOne2018.Session{total_laps: 3, packet_header: %FOne2018.PacketHeader{session_uid: 4}})
+    RaceState.put(__MODULE__, %FOne2018.Event{
+      code: "SSTA",
+      packet_header: %FOne2018.PacketHeader{session_uid: 4}
+    })
+
+    RaceState.put(__MODULE__, %FOne2018.Session{
+      total_laps: 3,
+      packet_header: %FOne2018.PacketHeader{session_uid: 4}
+    })
 
     session = RaceState.get_session(__MODULE__)
     assert session[:total_laps] == 3
-    assert Map.get(session, :code) == :nil
+    assert Map.get(session, :code) == nil
   end
 
   test "get timing data" do
     RaceState.put(__MODULE__, %FOne2018.Laps{
-      laps: [%FOne2018.Lap{last_lap_time: 23.4},%FOne2018.Lap{last_lap_time: 98.8}]
+      laps: [%FOne2018.Lap{last_lap_time: 23.4}, %FOne2018.Lap{last_lap_time: 98.8}]
     })
+
     RaceState.put(__MODULE__, %FOne2018.Participants{
-      participants: [%FOne2018.Participant{race_number: 1},%FOne2018.Participant{race_number: 2}]
+      participants: [%FOne2018.Participant{race_number: 1}, %FOne2018.Participant{race_number: 2}]
     })
 
     [first, second] = RaceState.get_timing(__MODULE__)

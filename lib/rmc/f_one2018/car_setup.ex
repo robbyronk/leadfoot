@@ -2,8 +2,8 @@ defmodule Rmc.FOne2018.CarSetup do
   alias __MODULE__
   @moduledoc false
 
-  #struct CarSetupData
-  #{
+  # struct CarSetupData
+  # {
   #    uint8     m_frontWing;                // Front wing aero
   #    uint8     m_rearWing;                 // Rear wing aero
   #    uint8     m_onThrottle;               // Differential adjustment on throttle (percentage)
@@ -24,7 +24,7 @@ defmodule Rmc.FOne2018.CarSetup do
   #    float     m_rearTyrePressure;         // Rear tyre pressure (PSI)
   #    uint8     m_ballast;                  // Ballast
   #    float     m_fuelLoad;                 // Fuel load
-  #};
+  # };
 
   @derive Jason.Encoder
   defstruct [
@@ -47,34 +47,32 @@ defmodule Rmc.FOne2018.CarSetup do
     :front_tyre_pressure,
     :rear_tyre_pressure,
     :ballast,
-    :fuel_load,
+    :fuel_load
   ]
 
-  def parse_setups(
-        <<
-          front_wing :: size(8),
-          rear_wing :: size(8),
-          on_throttle :: size(8),
-          off_throttle :: size(8),
-          front_camber :: little - float - size(32),
-          rear_camber :: little - float - size(32),
-          front_toe :: little - float - size(32),
-          rear_toe :: little - float - size(32),
-          front_suspension :: size(8),
-          rear_suspension :: size(8),
-          front_anti_roll_bar :: size(8),
-          road_anti_roll_bar :: size(8),
-          front_suspension_height :: size(8),
-          rear_suspension_height :: size(8),
-          brake_pressure :: size(8),
-          brake_bias :: size(8),
-          front_tyre_pressure :: little - float - size(32),
-          rear_tyre_pressure :: little - float - size(32),
-          ballast :: size(8),
-          fuel_load :: little - float - size(32),
-          setups :: binary,
-        >>
-      ) do
+  def parse_setups(<<
+        front_wing::size(8),
+        rear_wing::size(8),
+        on_throttle::size(8),
+        off_throttle::size(8),
+        front_camber::little-float-size(32),
+        rear_camber::little-float-size(32),
+        front_toe::little-float-size(32),
+        rear_toe::little-float-size(32),
+        front_suspension::size(8),
+        rear_suspension::size(8),
+        front_anti_roll_bar::size(8),
+        road_anti_roll_bar::size(8),
+        front_suspension_height::size(8),
+        rear_suspension_height::size(8),
+        brake_pressure::size(8),
+        brake_bias::size(8),
+        front_tyre_pressure::little-float-size(32),
+        rear_tyre_pressure::little-float-size(32),
+        ballast::size(8),
+        fuel_load::little-float-size(32),
+        setups::binary
+      >>) do
     [
       %CarSetup{
         front_wing: front_wing,
@@ -96,10 +94,11 @@ defmodule Rmc.FOne2018.CarSetup do
         front_tyre_pressure: front_tyre_pressure,
         rear_tyre_pressure: rear_tyre_pressure,
         ballast: ballast,
-        fuel_load: fuel_load,
+        fuel_load: fuel_load
       }
       | parse_setups(setups)
     ]
   end
+
   def parse_setups(<<>>), do: []
 end
