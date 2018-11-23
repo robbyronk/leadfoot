@@ -5,6 +5,7 @@
     "deploy": "webpack --mode production",
     "lint": "eslint js/**",
     "lint-fix": "eslint js/** --fix",
+    "stylelint": "stylelint js/** css/**",
     "watch": "webpack --mode development --watch"
   },
   "dependencies": {
@@ -37,6 +38,11 @@
     "optimize-css-assets-webpack-plugin": "^4.0.0",
     "prettier": "^1.15.2",
     "prop-types": "^15.6.2",
+    "stylelint": "^9.8.0",
+    "stylelint-config-recommended": "^2.1.0",
+    "stylelint-config-standard": "^18.2.0",
+    "stylelint-config-styled-components": "^0.1.1",
+    "stylelint-processor-styled-components": "^1.5.1",
     "uglifyjs-webpack-plugin": "^1.2.4",
     "webpack": "4.4.0",
     "webpack-cli": "^2.0.10"

@@ -1,0 +1,10 @@
+{
+  "processors": ["stylelint-processor-styled-components"],
+  "rules": {
+    "block-no-empty": null,
+  },
+  "extends": [
+    "stylelint-config-standard",
+    "stylelint-config-styled-components"
+  ]
+}

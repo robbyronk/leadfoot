@@ -65,8 +65,9 @@ export const Tab = styled.div`
     props.active ? props.theme.darkBlue : 'transparent'};
   color: ${path('theme.white')};
   padding: 1em;
+  text-align: center;
+
   &:not(:last-child) {
     border-right: 5px solid ${path('theme.blue')};
   }
-  text-align: center;
 `;
