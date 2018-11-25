@@ -24,17 +24,41 @@ defmodule Rmc.RaceState do
     Agent.get(name, fn x -> x end)
   end
 
-  @doc """
-  This function merges lists of maps
-  """
-  def merge_fn(_key, old, now)
-      when is_list(old) and is_list(now) and length(old) == length(now) do
-    Enum.map(Enum.zip(old, now), fn {a, b} -> Map.merge(a, b) end)
+  def merge_racer(%{current_lap_num: old_lap} = old, %{current_lap_num: now_lap} = now)
+      when old_lap != now_lap do
+    sector_three_time =
+      Map.get(now, :last_lap_time, 0) -
+        (Map.get(old, :sector_one_time, 0) + Map.get(old, :sector_one_time, 0))
+
+    old
+    |> Map.merge(now)
+    |> Map.put(:sector_three_time, sector_three_time)
   end
 
-  def merge_fn(_key, _old, now), do: now
+  def merge_racer(old, now), do: Map.merge(old, now)
 
-  def put(u, name \\ @name), do: Agent.update(name, fn x -> Map.merge(x, u, &merge_fn/3) end)
+  def merge_racers([], now), do: now
+
+  def merge_racers([old | rest_old], [now | rest_now]),
+    do: [merge_racer(old, now) | merge_racers(rest_old, rest_now)]
+
+  def merge_state(old, %{} = now), do: merge_state(old, Map.to_list(now))
+  def merge_state(acc, []), do: acc
+
+  def merge_state(acc, [{key, value} | rest])
+      when key in [:laps, :participants, :motions, :car_setups, :statuses, :telemetries] do
+    acc
+    |> Map.put(:racers, merge_racers(Map.get(acc, :racers, []), value))
+    |> merge_state(rest)
+  end
+
+  def merge_state(acc, [{key, value} | rest]) do
+    acc
+    |> Map.put(key, value)
+    |> merge_state(rest)
+  end
+
+  def put(u, name \\ @name), do: Agent.update(name, &merge_state(&1, u))
 
   def get_session(name \\ @name) do
     fields = [
@@ -49,23 +73,23 @@ defmodule Rmc.RaceState do
     Agent.get(name, &Map.take(&1, fields))
   end
 
-  def transpose(rows) do
-    rows
-    |> List.zip()
-    |> Enum.map(&Tuple.to_list/1)
-  end
-
   def get_timing(name \\ @name) do
-    fields = [:participants, :laps, :statuses]
+    fields = [
+      :car_position,
+      :tyre_compound,
+      :best_lap_time,
+      :last_lap_time,
+      :sector_one_time,
+      :sector_two_time,
+      :sector_three_time,
+      :name,
+      :race_number
+    ]
 
-    name
-    |> Agent.get(fn state ->
+    Agent.get(name, fn state ->
       state
-      |> Map.take(fields)
-      |> Map.values()
-      |> transpose()
-      |> Enum.map(fn x -> Enum.reduce(x, &Map.merge/2) end)
+      |> Map.get(:racers, [])
+      |> Enum.map(&Map.take(&1, fields))
     end)
-    |> Enum.map(&Map.from_struct/1)
   end
 end
