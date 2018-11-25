@@ -1,6 +1,7 @@
 defmodule Rmc.FOne2018.Participants do
   alias __MODULE__
   @moduledoc false
+  alias Rmc.FOne2018
 
   # struct PacketParticipantsData
   # {
@@ -18,7 +19,7 @@ defmodule Rmc.FOne2018.Participants do
   ]
 
   def parse_packet(packet) do
-    {packet_header, participants_data} = Rmc.FOne2018.PacketHeader.parse(packet)
+    {packet_header, participants_data} = FOne2018.PacketHeader.parse(packet)
 
     <<
       num_cars::size(8),
@@ -28,7 +29,7 @@ defmodule Rmc.FOne2018.Participants do
     %Participants{
       packet_header: packet_header,
       num_cars: num_cars,
-      participants: Rmc.FOne2018.Participant.parse_participants(participants_data)
+      participants: FOne2018.Participant.parse_participants(participants_data)
     }
   end
 end

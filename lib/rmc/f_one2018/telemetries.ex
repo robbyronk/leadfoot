@@ -1,6 +1,7 @@
 defmodule Rmc.FOne2018.Telemetries do
   alias __MODULE__
   @moduledoc false
+  alias Rmc.FOne2018
 
   # struct PacketCarTelemetryData
   # {
@@ -20,12 +21,12 @@ defmodule Rmc.FOne2018.Telemetries do
   ]
 
   def parse_packet(packet) do
-    {packet_header, telemetry_data} = Rmc.FOne2018.PacketHeader.parse(packet)
+    {packet_header, telemetry_data} = FOne2018.PacketHeader.parse(packet)
 
     %Telemetries{
       packet_header: packet_header,
       telemetries:
-        Rmc.FOne2018.Telemetry.parse_telemetries(binary_part(telemetry_data, 0, 20 * 53))
+        FOne2018.Telemetry.parse_telemetries(binary_part(telemetry_data, 0, 20 * 53))
     }
   end
 end

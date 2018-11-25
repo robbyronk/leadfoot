@@ -1,6 +1,7 @@
 defmodule Rmc.FOne2018.Session do
   alias __MODULE__
   @moduledoc false
+  alias Rmc.FOne2018
 
   # struct PacketSessionData
   # {
@@ -58,13 +59,13 @@ defmodule Rmc.FOne2018.Session do
         flag::signed-size(8),
         rest::binary
       >>) do
-    [%Rmc.FOne2018.MarshalZone{start: start, flag: flag} | parse_marshal_zones(rest)]
+    [%FOne2018.MarshalZone{start: start, flag: flag} | parse_marshal_zones(rest)]
   end
 
   def parse_marshal_zones(_), do: []
 
   def parse_packet(packet) do
-    {packet_header, session_data} = Rmc.FOne2018.PacketHeader.parse(packet)
+    {packet_header, session_data} = FOne2018.PacketHeader.parse(packet)
 
     <<
       weather::size(8),

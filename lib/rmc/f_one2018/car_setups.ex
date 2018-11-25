@@ -1,6 +1,7 @@
 defmodule Rmc.FOne2018.CarSetups do
   alias __MODULE__
   @moduledoc false
+  alias Rmc.FOne2018
 
   # struct PacketCarSetupData
   # {
@@ -16,11 +17,11 @@ defmodule Rmc.FOne2018.CarSetups do
   ]
 
   def parse_packet(packet) do
-    {packet_header, setup_data} = Rmc.FOne2018.PacketHeader.parse(packet)
+    {packet_header, setup_data} = FOne2018.PacketHeader.parse(packet)
 
     %CarSetups{
       packet_header: packet_header,
-      car_setups: Rmc.FOne2018.CarSetup.parse_setups(setup_data)
+      car_setups: FOne2018.CarSetup.parse_setups(setup_data)
     }
   end
 end

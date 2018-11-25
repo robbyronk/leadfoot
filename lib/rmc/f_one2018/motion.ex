@@ -1,6 +1,7 @@
 defmodule Rmc.FOne2018.Motion do
   alias __MODULE__
   @moduledoc false
+  alias Rmc.FOne2018
 
   # struct PacketMotionData
   # {
@@ -35,12 +36,12 @@ defmodule Rmc.FOne2018.Motion do
 
   def parse_packet(packet) do
     {packet_header, <<motion_data::binary-size(1200), player_motion::binary>>} =
-      Rmc.FOne2018.PacketHeader.parse(packet)
+      FOne2018.PacketHeader.parse(packet)
 
     %Motion{
       packet_header: packet_header,
-      motions: Rmc.FOne2018.CarMotion.parse_motions(motion_data),
-      player_motion: Rmc.FOne2018.PlayerMotion.parse(player_motion)
+      motions: FOne2018.CarMotion.parse_motions(motion_data),
+      player_motion: FOne2018.PlayerMotion.parse(player_motion)
     }
   end
 end
