@@ -1,4 +1,17 @@
 defmodule Rmc.RaceState do
+  @moduledoc """
+  This agent holds state about the race.
+
+  The state is a map.
+
+  The :racers key holds all the data about racers: (TODO)
+  - motion
+  - setup
+  - status
+  - lap
+  - participant
+  - telemetry
+  """
   use Agent
   @name __MODULE__
 
@@ -11,8 +24,17 @@ defmodule Rmc.RaceState do
     Agent.get(name, fn x -> x end)
   end
 
-  def put(u), do: Agent.update(@name, &Map.merge(&1, u))
-  def put(name, u), do: Agent.update(name, &Map.merge(&1, u))
+  @doc """
+  This function merges lists of maps
+  """
+  def merge_fn(_key, old, now)
+      when is_list(old) and is_list(now) and length(old) == length(now) do
+    Enum.map(Enum.zip(old, now), fn {a, b} -> Map.merge(a, b) end)
+  end
+
+  def merge_fn(_key, _old, now), do: now
+
+  def put(u, name \\ @name), do: Agent.update(name, fn x -> Map.merge(x, u, &merge_fn/3) end)
 
   def get_session(name \\ @name) do
     fields = [
