@@ -27,7 +27,7 @@ export const Panel = styled.div`
   background-color: ${path('theme.grey[0]')};
   display: grid;
   border: 5px solid ${path('theme.blue')};
-  grid-template-rows: 5em 5em auto;
+  grid-template-rows: 3em 4em auto;
   font-family: ${path('theme.fontFamily')};
 `;
 

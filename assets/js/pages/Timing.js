@@ -5,6 +5,11 @@ import Tyre from '../components/Tyre';
 import Time from '../components/Time';
 import sortBy from 'lodash/sortBy';
 import get from 'lodash/get';
+import styled from 'styled-components';
+
+const Table = styled.table`
+  width: 100%;
+`;
 
 const Row = row => (
   <tr>
@@ -81,7 +86,7 @@ class Timing extends Component {
 
   render() {
     return (
-      <table>
+      <Table>
         <thead>
           <tr>
             <td>POS</td>
@@ -102,7 +107,7 @@ class Timing extends Component {
             <Row key={row.name} {...row} />
           ))}
         </tbody>
-      </table>
+      </Table>
     );
   }
 }

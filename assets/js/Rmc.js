@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Panel, PanelBody, PanelHeader, Tab, Tabs } from './components';
+import { Panel, PanelBody, PanelHeader } from './components';
 import Routes from './Routes';
 import Nav from './components/Nav';
 
@@ -7,9 +7,7 @@ class Rmc extends Component {
   render() {
     return (
       <Panel>
-        <PanelHeader>
-          <h2>|>RACE CONTROL</h2>
-        </PanelHeader>
+        <PanelHeader>{'|>RACE CONTROL'}</PanelHeader>
         <Nav />
         <PanelBody>
           <Routes />
