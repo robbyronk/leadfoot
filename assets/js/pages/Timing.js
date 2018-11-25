@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
-import { Socket } from 'phoenix';
+import React from 'react';
 import map from 'lodash/map';
 import Tyre from '../components/Tyre';
 import Time from '../components/Time';
 import sortBy from 'lodash/sortBy';
 import get from 'lodash/get';
 import styled from 'styled-components';
+import Page from '../Page';
 
 const Table = styled.table`
   width: 100%;
@@ -43,49 +43,16 @@ const Row = row => (
   </tr>
 );
 
-class Timing extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {};
-  }
+const transformTimingInput = unsorted =>
+  sortBy(map(unsorted, (p, i) => ({ ...p, index: i })), ({ index }) =>
+    get(unsorted, [index, 'car_position']),
+  );
 
-  updateState = unsorted => {
-    const timing = sortBy(
-      map(unsorted, (p, i) => ({ ...p, index: i })),
-      ({ index }) => get(unsorted, [index, 'car_position']),
-    );
-    this.setState({ timing });
-  };
-
-  componentDidMount() {
-    const socket = new Socket('/socket', {
-      params: { token: window.userToken },
-    });
-    socket.connect();
-
-    const channel = socket.channel('telemetry:timing', {});
-    channel.on('update', ({ timing }) => {
-      this.updateState(timing);
-    });
-
-    channel
-      .join()
-      .receive('ok', resp => {
-        console.log('Joined successfully', resp);
-      })
-      .receive('error', resp => {
-        console.log('Unable to join', resp);
-      });
-
-    fetch('/api/timing').then(response => {
-      response.json().then(({ data }) => {
-        this.updateState(data);
-      });
-    });
-  }
-
-  render() {
-    return (
+const Timing = () => (
+  <Page
+    name={'timing'}
+    transformInput={transformTimingInput}
+    render={timing => (
       <Table>
         <thead>
           <tr>
@@ -103,13 +70,13 @@ class Timing extends Component {
           </tr>
         </thead>
         <tbody>
-          {map(this.state.timing, row => (
+          {map(timing, row => (
             <Row key={row.name} {...row} />
           ))}
         </tbody>
       </Table>
-    );
-  }
-}
+    )}
+  />
+);
 
 export default Timing;
