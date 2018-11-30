@@ -24,6 +24,13 @@ defmodule Rmc.RaceState do
     Agent.get(name, fn x -> x end)
   end
 
+  def get_session_time(name \\ @name) do
+    Agent.get(name, fn
+      %{packet_header: %{session_time: time}} -> time
+      _ -> :nil
+    end)
+  end
+
   def merge_racer(%{current_lap_num: old_lap} = old, %{current_lap_num: now_lap} = now)
       when old_lap != now_lap do
     sector_three_time =

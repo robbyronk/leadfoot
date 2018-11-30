@@ -11,7 +11,7 @@ defmodule Rmc.Application do
       # Start the endpoint when the application starts
       supervisor(RmcWeb.Endpoint, []),
       # Start your own worker by calling: Rmc.Worker.start_link(arg1, arg2, arg3)
-      worker(Rmc.Udp, []),
+      worker(Rmc.StateBroker, []),
       worker(Rmc.RaceState, [])
     ]
 

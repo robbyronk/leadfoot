@@ -6,45 +6,36 @@ defmodule Rmc.File do
   require Logger
   alias Rmc.RaceState
 
-  def start_link(filename \\ "858860707279373194.f1") do
-    GenServer.start_link(__MODULE__, filename)
+  def start_link(parent_pid, filename) do
+    GenServer.start_link(__MODULE__, {parent_pid, filename})
   end
 
-  # {:ok, pid} = Rmc.File.start_link()
-  # send(pid, :start)
-
-  def init(filename) do
+  def init({parent_pid, filename}) do
     Logger.info("Started File")
     packets = File.read!(filename)
-    {:ok, %{packets: packets, next_packet: nil}}
+    Process.send_after(self(), :start, 1000)
+    {:ok, %{parent_pid: parent_pid, packets: packets, next_packet: nil}}
   end
 
-  def handle_info(:start, %{packets: packets}) do
+  def handle_info(:start, %{packets: packets} = state) do
     {next_packet, packets} = read_packet(packets)
     send(self(), :next)
-    {:noreply, %{packets: packets, next_packet: next_packet}}
+    {:noreply, %{state | packets: packets, next_packet: next_packet}}
   end
 
-  def handle_info(:next, %{packets: packets, next_packet: this_packet}) do
+  def handle_info(:next, %{parent_pid: parent_pid, packets: packets, next_packet: this_packet}) do
     %{packet_header: %{session_time: this_time}} = this_packet
-    RaceState.put(this_packet)
+    GenServer.cast(parent_pid, this_packet)
     {next_packet, packets} = read_packet(packets)
     %{packet_header: %{session_time: next_time}} = next_packet
 
     if next_time > this_time do
-      broadcast()
       Process.send_after(self(), :next, round((next_time - this_time) * 1000))
     else
       send(self(), :next)
     end
 
-    {:noreply, %{packets: packets, next_packet: next_packet}}
-  end
-
-  # TODO move broadcasting and RaceState usages to a module to share between file and udp
-  def broadcast() do
-    RmcWeb.Endpoint.broadcast!("telemetry:session", "update", RaceState.get_session())
-    RmcWeb.Endpoint.broadcast!("telemetry:timing", "update", %{timing: RaceState.get_timing()})
+    {:noreply, %{parent_pid: parent_pid, packets: packets, next_packet: next_packet}}
   end
 
   def read_packet(<<>>), do: {}
