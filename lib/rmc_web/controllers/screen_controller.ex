@@ -8,7 +8,6 @@ defmodule RmcWeb.ScreenController do
   end
 
   def timing(conn, _params) do
-    timing = RaceState.get_timing()
-    render(conn, "index.json", screen_data: timing)
+    render(conn, "index.json", screen_data: %{timing: RaceState.get_timing()})
   end
 end

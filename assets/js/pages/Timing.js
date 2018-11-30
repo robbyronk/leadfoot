@@ -43,9 +43,9 @@ const Row = row => (
   </tr>
 );
 
-const transformTimingInput = unsorted =>
-  sortBy(map(unsorted, (p, i) => ({ ...p, index: i })), ({ index }) =>
-    get(unsorted, [index, 'car_position']),
+const transformTimingInput = ({ timing }) =>
+  sortBy(map(timing, (p, i) => ({ ...p, index: i })), ({ index }) =>
+    get(timing, [index, 'car_position']),
   );
 
 const Timing = () => (
