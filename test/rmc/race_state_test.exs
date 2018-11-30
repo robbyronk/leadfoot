@@ -5,11 +5,12 @@ defmodule RaceStateTest do
   alias Rmc.FOne2018
 
   @moduletag :capture_log
+  @name __MODULE__
 
   doctest RaceState
 
   setup do
-    RaceState.start_link(name: __MODULE__)
+    RaceState.start_link(name: @name)
     :ok
   end
 
@@ -18,18 +19,18 @@ defmodule RaceStateTest do
   end
 
   test "stores basic values" do
-    assert RaceState.get(__MODULE__) == %{}
+    assert RaceState.get(@name) == %{}
 
-    RaceState.put(%{session_id: 1}, __MODULE__)
-    assert RaceState.get(__MODULE__) == %{session_id: 1}
+    RaceState.put(%{session_id: 1}, @name)
+    assert RaceState.get(@name) == %{session_id: 1}
   end
 
   test "overwrites nested maps" do
-    RaceState.put(%{header: %{session_id: 1}, weather: "sunny"}, __MODULE__)
-    assert RaceState.get(__MODULE__) == %{header: %{session_id: 1}, weather: "sunny"}
+    RaceState.put(%{header: %{session_id: 1}, weather: "sunny"}, @name)
+    assert RaceState.get(@name) == %{header: %{session_id: 1}, weather: "sunny"}
 
-    RaceState.put(%{header: %{session_id: 2}}, __MODULE__)
-    assert RaceState.get(__MODULE__) == %{header: %{session_id: 2}, weather: "sunny"}
+    RaceState.put(%{header: %{session_id: 2}}, @name)
+    assert RaceState.get(@name) == %{header: %{session_id: 2}, weather: "sunny"}
   end
 
   test "merges two parsed packets" do
@@ -38,10 +39,10 @@ defmodule RaceStateTest do
         code: "SSTA",
         packet_header: %FOne2018.PacketHeader{session_uid: 4}
       },
-      __MODULE__
+      @name
     )
 
-    %{code: code} = RaceState.get(__MODULE__)
+    %{code: code} = RaceState.get(@name)
     assert code == "SSTA"
 
     RaceState.put(
@@ -49,10 +50,10 @@ defmodule RaceStateTest do
         total_laps: 3,
         packet_header: %FOne2018.PacketHeader{session_uid: 4}
       },
-      __MODULE__
+      @name
     )
 
-    %{code: code, total_laps: total_laps} = RaceState.get(__MODULE__)
+    %{code: code, total_laps: total_laps} = RaceState.get(@name)
     assert code == "SSTA"
     assert total_laps == 3
   end
@@ -63,7 +64,7 @@ defmodule RaceStateTest do
         code: "SSTA",
         packet_header: %FOne2018.PacketHeader{session_uid: 4}
       },
-      __MODULE__
+      @name
     )
 
     RaceState.put(
@@ -71,10 +72,10 @@ defmodule RaceStateTest do
         total_laps: 3,
         packet_header: %FOne2018.PacketHeader{session_uid: 4}
       },
-      __MODULE__
+      @name
     )
 
-    session = RaceState.get_session(__MODULE__)
+    session = RaceState.get_session(@name)
     assert session[:total_laps] == 3
     assert Map.get(session, :code) == nil
   end
@@ -84,7 +85,7 @@ defmodule RaceStateTest do
       %FOne2018.Laps{
         laps: [%FOne2018.Lap{last_lap_time: 23.4}, %FOne2018.Lap{last_lap_time: 98.8}]
       },
-      __MODULE__
+      @name
     )
 
     RaceState.put(
@@ -94,10 +95,10 @@ defmodule RaceStateTest do
           %FOne2018.Participant{race_number: 2}
         ]
       },
-      __MODULE__
+      @name
     )
 
-    [first, second] = RaceState.get_timing(__MODULE__)
+    [first, second] = RaceState.get_timing(@name)
     assert first.last_lap_time == 23.4
     assert second.race_number == 2
   end
