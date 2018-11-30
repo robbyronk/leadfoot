@@ -38,7 +38,7 @@ defmodule Rmc.RaceState do
       when old_lap != now_lap do
     sector_three_time =
       Map.get(now, :last_lap_time, 0) -
-        (Map.get(old, :sector_one_time, 0) + Map.get(old, :sector_one_time, 0))
+        (Map.get(old, :sector_one_time, 0) + Map.get(old, :sector_two_time, 0))
 
     old
     |> Map.merge(now)
