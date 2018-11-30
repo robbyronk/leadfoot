@@ -27,10 +27,13 @@ defmodule Rmc.RaceState do
   def get_session_time(name \\ @name) do
     Agent.get(name, fn
       %{packet_header: %{session_time: time}} -> time
-      _ -> :nil
+      _ -> nil
     end)
   end
 
+  @doc """
+  merge_racer calculates the sector three time when a new lap starts and merges new data into the existing map
+  """
   def merge_racer(%{current_lap_num: old_lap} = old, %{current_lap_num: now_lap} = now)
       when old_lap != now_lap do
     sector_three_time =
@@ -44,12 +47,19 @@ defmodule Rmc.RaceState do
 
   def merge_racer(old, now), do: Map.merge(old, now)
 
+  @doc """
+  merge_racers steps through each of the maps in the given list and runs merge_racer
+  """
   def merge_racers([], now), do: now
 
   def merge_racers([old | rest_old], [now | rest_now]),
     do: [merge_racer(old, now) | merge_racers(rest_old, rest_now)]
 
-  def merge_state(old, %{} = now), do: merge_state(old, Map.to_list(now))
+  @doc """
+  merge_state takes a state and a list of key value pairs to merge in
+
+  Some key value pairs get diverted to be merged into the :racers key, which is a list of maps
+  """
   def merge_state(acc, []), do: acc
 
   def merge_state(acc, [{key, value} | rest])
@@ -65,7 +75,7 @@ defmodule Rmc.RaceState do
     |> merge_state(rest)
   end
 
-  def put(u, name \\ @name), do: Agent.update(name, &merge_state(&1, u))
+  def put(u, name \\ @name), do: Agent.update(name, &merge_state(&1, Map.to_list(u)))
 
   def get_session(name \\ @name) do
     fields = [

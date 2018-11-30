@@ -25,8 +25,7 @@ defmodule Rmc.FOne2018.Telemetries do
 
     %Telemetries{
       packet_header: packet_header,
-      telemetries:
-        FOne2018.Telemetry.parse_telemetries(binary_part(telemetry_data, 0, 20 * 53))
+      telemetries: FOne2018.Telemetry.parse_telemetries(binary_part(telemetry_data, 0, 20 * 53))
     }
   end
 end
