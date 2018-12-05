@@ -26,18 +26,45 @@ defmodule RaceStateTest do
   end
 
   test "overwrites nested maps" do
-    RaceState.put(%{header: %{session_id: 1}, weather: "sunny"}, @name)
-    assert RaceState.get(@name) == %{header: %{session_id: 1}, weather: "sunny"}
+    RaceState.put(
+      %{
+        header: %{
+          session_id: 1
+        },
+        weather: "sunny"
+      },
+      @name
+    )
+    assert RaceState.get(@name) == %{
+             header: %{
+               session_id: 1
+             },
+             weather: "sunny"
+           }
 
-    RaceState.put(%{header: %{session_id: 2}}, @name)
-    assert RaceState.get(@name) == %{header: %{session_id: 2}, weather: "sunny"}
+    RaceState.put(
+      %{
+        header: %{
+          session_id: 2
+        }
+      },
+      @name
+    )
+    assert RaceState.get(@name) == %{
+             header: %{
+               session_id: 2
+             },
+             weather: "sunny"
+           }
   end
 
   test "merges two parsed packets" do
     RaceState.put(
       %FOne2018.Event{
         code: "SSTA",
-        packet_header: %FOne2018.PacketHeader{session_uid: 4}
+        packet_header: %FOne2018.PacketHeader{
+          session_uid: 4
+        }
       },
       @name
     )
@@ -48,7 +75,9 @@ defmodule RaceStateTest do
     RaceState.put(
       %FOne2018.Session{
         total_laps: 3,
-        packet_header: %FOne2018.PacketHeader{session_uid: 4}
+        packet_header: %FOne2018.PacketHeader{
+          session_uid: 4
+        }
       },
       @name
     )
@@ -62,7 +91,9 @@ defmodule RaceStateTest do
     RaceState.put(
       %FOne2018.Event{
         code: "SSTA",
-        packet_header: %FOne2018.PacketHeader{session_uid: 4}
+        packet_header: %FOne2018.PacketHeader{
+          session_uid: 4
+        }
       },
       @name
     )
@@ -70,7 +101,9 @@ defmodule RaceStateTest do
     RaceState.put(
       %FOne2018.Session{
         total_laps: 3,
-        packet_header: %FOne2018.PacketHeader{session_uid: 4}
+        packet_header: %FOne2018.PacketHeader{
+          session_uid: 4
+        }
       },
       @name
     )
@@ -101,5 +134,29 @@ defmodule RaceStateTest do
     [first, second] = RaceState.get_timing(@name)
     assert first.last_lap_time == 23.4
     assert second.race_number == 2
+  end
+
+  test "get sector 3 time" do
+    RaceState.put(
+      %FOne2018.Laps{
+        laps: [
+          %FOne2018.Lap{current_lap_num: 1, last_lap_time: 23.4, sector_one_time: 10.1, sector_two_time: 5.5},
+        ]
+      },
+      @name
+    )
+
+
+    RaceState.put(
+      %FOne2018.Laps{
+        laps: [
+          %FOne2018.Lap{current_lap_num: 2, last_lap_time: 19.9},
+        ]
+      },
+      @name
+    )
+
+    [first] = RaceState.get_timing(@name)
+    assert_in_delta(first.sector_three_time, 4.3, 0.1)
   end
 end
