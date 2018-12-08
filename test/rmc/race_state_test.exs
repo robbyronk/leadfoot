@@ -159,4 +159,28 @@ defmodule RaceStateTest do
     [first] = RaceState.get_timing(@name)
     assert_in_delta(first.sector_three_time, 4.3, 0.1)
   end
+
+  test "get all lap times" do
+    RaceState.put(
+      %FOne2018.Laps{
+        laps: [
+          %FOne2018.Lap{current_lap_num: 1, sector_one_time: 5.5, sector_two_time: 5.6},
+        ]
+      },
+      @name
+    )
+
+
+    RaceState.put(
+      %FOne2018.Laps{
+        laps: [
+          %FOne2018.Lap{current_lap_num: 2, last_lap_time: 19.9},
+        ]
+      },
+      @name
+    )
+
+    [first] = RaceState.get_timing(@name)
+    assert [{1, 19.9}] = first.laps
+  end
 end

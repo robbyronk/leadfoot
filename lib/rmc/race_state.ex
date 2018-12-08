@@ -31,6 +31,14 @@ defmodule Rmc.RaceState do
     end)
   end
 
+  defp true_map_update(map, key, initial, func) do
+    if Map.has_key?(map, key) do
+      Map.update(map, key, initial, func)
+    else
+      Map.put(map, key, func.(initial))
+    end
+  end
+
   @doc """
   merge_racer calculates the sector three time when a new lap starts and merges new data into the existing map
   """
@@ -43,6 +51,7 @@ defmodule Rmc.RaceState do
     old
     |> Map.merge(now)
     |> Map.put(:sector_three_time, sector_three_time)
+    |> true_map_update(:laps, [], &List.insert_at(&1, 0, {old.current_lap_num, now.last_lap_time}))
   end
 
   def merge_racer(old, now), do: Map.merge(old, now)
@@ -93,6 +102,7 @@ defmodule Rmc.RaceState do
   def get_timing(name \\ @name) do
     fields = [
       :car_position,
+      :laps,
       :tyre_compound,
       :best_lap_time,
       :last_lap_time,
