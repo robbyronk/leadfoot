@@ -183,4 +183,16 @@ defmodule RaceStateTest do
     [first] = RaceState.get_timing(@name)
     assert [{1, 19.9}] = first.laps
   end
+
+  def load_entire_file(<<>>), do: RaceState.get(@name)
+  def load_entire_file(packets) do
+    {packet, packets} = Rmc.File.read_packet(packets)
+    RaceState.put(packet, @name)
+    load_entire_file(packets)
+  end
+
+  test "load entire file" do
+    packets = File.read!("858860707279373194.f1")
+    load_entire_file(packets)
+  end
 end
