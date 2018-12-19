@@ -33,6 +33,7 @@ defmodule Rmc.MixProject do
   defp deps do
     [
       {:credo, "~> 1.0.0", only: [:dev, :test], runtime: false},
+      {:gen_stage, "~> 0.14"},
       {:nerves_uart, "~> 1.2"},
       {:phoenix, "~> 1.4.0-rc"},
       {:phoenix_pubsub, "~> 1.1"},

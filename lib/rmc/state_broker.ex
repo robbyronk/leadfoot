@@ -30,13 +30,8 @@ defmodule Rmc.StateBroker do
     {:reply, :ok, state}
   end
 
-  def handle_cast(%{packet_header: %{session_time: session_time}} = msg, state) do
-    old_session_time = RaceState.get_session_time()
-    RaceState.put(msg)
-
-    if session_time != old_session_time do
-      broadcast()
-    end
+  def handle_cast(packet, state) do
+    Rmc.DataIn.add([packet])
 
     {:noreply, state}
   end

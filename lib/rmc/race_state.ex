@@ -1,10 +1,10 @@
 defmodule Rmc.RaceState do
   @moduledoc """
-  This agent holds state about the race.
+  This module contains functions that take in a Race State and a parsed packet and produce a new Race State.
 
   The state is a map.
 
-  The :racers key holds all the data about racers: (TODO)
+  The :racers key holds all the data about racers:
   - motion
   - setup
   - status
@@ -12,24 +12,8 @@ defmodule Rmc.RaceState do
   - participant
   - telemetry
   """
-  use Agent
+  alias Rmc.FOne2018.Lap
   @name __MODULE__
-
-  def start_link(opts \\ []) do
-    opts = Keyword.put_new(opts, :name, @name)
-    Agent.start_link(fn -> %{} end, opts)
-  end
-
-  def get(name \\ @name) do
-    Agent.get(name, fn x -> x end)
-  end
-
-  def get_session_time(name \\ @name) do
-    Agent.get(name, fn
-      %{packet_header: %{session_time: time}} -> time
-      _ -> nil
-    end)
-  end
 
   defp true_map_update(map, key, initial, func) do
     if Map.has_key?(map, key) do
@@ -54,6 +38,13 @@ defmodule Rmc.RaceState do
     |> true_map_update(:laps, [], &List.insert_at(&1, 0, {old.current_lap_num, now.last_lap_time}))
   end
 
+  # todo needs to have session time available here
+  def merge_racer(old, %Lap{} = now) do
+    old
+    |> Map.merge(now)
+    |> true_map_update(:track_time_locations, [], &List.insert_at(&1, 0, {now.current_lap_time, now.lap_distance}))
+  end
+
   def merge_racer(old, now), do: Map.merge(old, now)
 
   @doc """
@@ -62,13 +53,15 @@ defmodule Rmc.RaceState do
   def merge_racers([], now), do: now
 
   def merge_racers([old | rest_old], [now | rest_now]),
-    do: [merge_racer(old, now) | merge_racers(rest_old, rest_now)]
+      do: [merge_racer(old, now) | merge_racers(rest_old, rest_now)]
 
   @doc """
   merge_state takes a state and a list of key value pairs to merge in
 
   Some key value pairs get diverted to be merged into the :racers key, which is a list of maps
   """
+  def merge_state(state, parsed_packet) when is_map?(parsed_packet), do: merge_state(state, Map.to_list(parsed_packet))
+
   def merge_state(acc, []), do: acc
 
   def merge_state(acc, [{key, value} | rest])
@@ -84,39 +77,4 @@ defmodule Rmc.RaceState do
     |> merge_state(rest)
   end
 
-  def put(u, name \\ @name), do: Agent.update(name, &merge_state(&1, Map.to_list(u)))
-
-  def get_session(name \\ @name) do
-    fields = [
-      :total_laps,
-      :track_temperature,
-      :air_temperature,
-      :weather,
-      :session_type,
-      :track_id
-    ]
-
-    Agent.get(name, &Map.take(&1, fields))
-  end
-
-  def get_timing(name \\ @name) do
-    fields = [
-      :car_position,
-      :laps,
-      :tyre_compound,
-      :best_lap_time,
-      :last_lap_time,
-      :sector_one_time,
-      :sector_two_time,
-      :sector_three_time,
-      :name,
-      :race_number
-    ]
-
-    Agent.get(name, fn state ->
-      state
-      |> Map.get(:racers, [])
-      |> Enum.map(&Map.take(&1, fields))
-    end)
-  end
 end

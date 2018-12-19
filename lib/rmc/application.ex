@@ -12,7 +12,11 @@ defmodule Rmc.Application do
       supervisor(RmcWeb.Endpoint, []),
       # Start your own worker by calling: Rmc.Worker.start_link(arg1, arg2, arg3)
       worker(Rmc.StateBroker, []),
-      worker(Rmc.RaceState, [])
+      worker(Rmc.RaceState, []),
+
+      worker(Rmc.DataIn, []),
+      worker(Rmc.ParsePacket, []),
+      worker(Rmc.InspectOut, []),
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
