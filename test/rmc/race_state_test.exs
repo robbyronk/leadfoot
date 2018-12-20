@@ -22,7 +22,8 @@ defmodule RaceStateTest do
     assert RaceState.get(@name) == %{}
 
     RaceState.put(%{session_id: 1}, @name)
-    assert RaceState.get(@name) == %{session_id: 1}
+    actual = RaceState.get(@name)
+    assert actual.session_id == 1
   end
 
   test "overwrites nested maps" do
@@ -35,12 +36,9 @@ defmodule RaceStateTest do
       },
       @name
     )
-    assert RaceState.get(@name) == %{
-             header: %{
-               session_id: 1
-             },
-             weather: "sunny"
-           }
+    actual = RaceState.get(@name)
+    assert actual.header.session_id == 1
+    assert actual.weather == "sunny"
 
     RaceState.put(
       %{
@@ -50,12 +48,9 @@ defmodule RaceStateTest do
       },
       @name
     )
-    assert RaceState.get(@name) == %{
-             header: %{
-               session_id: 2
-             },
-             weather: "sunny"
-           }
+    actual = RaceState.get(@name)
+    assert actual.header.session_id == 2
+    assert actual.weather == "sunny"
   end
 
   test "merges two parsed packets" do
