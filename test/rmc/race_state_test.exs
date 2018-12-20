@@ -36,6 +36,7 @@ defmodule RaceStateTest do
       },
       @name
     )
+
     actual = RaceState.get(@name)
     assert actual.header.session_id == 1
     assert actual.weather == "sunny"
@@ -48,6 +49,7 @@ defmodule RaceStateTest do
       },
       @name
     )
+
     actual = RaceState.get(@name)
     assert actual.header.session_id == 2
     assert actual.weather == "sunny"
@@ -135,17 +137,21 @@ defmodule RaceStateTest do
     RaceState.put(
       %FOne2018.Laps{
         laps: [
-          %FOne2018.Lap{current_lap_num: 1, last_lap_time: 23.4, sector_one_time: 10.1, sector_two_time: 5.5},
+          %FOne2018.Lap{
+            current_lap_num: 1,
+            last_lap_time: 23.4,
+            sector_one_time: 10.1,
+            sector_two_time: 5.5
+          }
         ]
       },
       @name
     )
 
-
     RaceState.put(
       %FOne2018.Laps{
         laps: [
-          %FOne2018.Lap{current_lap_num: 2, last_lap_time: 19.9},
+          %FOne2018.Lap{current_lap_num: 2, last_lap_time: 19.9}
         ]
       },
       @name
@@ -159,17 +165,16 @@ defmodule RaceStateTest do
     RaceState.put(
       %FOne2018.Laps{
         laps: [
-          %FOne2018.Lap{current_lap_num: 1, sector_one_time: 5.5, sector_two_time: 5.6},
+          %FOne2018.Lap{current_lap_num: 1, sector_one_time: 5.5, sector_two_time: 5.6}
         ]
       },
       @name
     )
 
-
     RaceState.put(
       %FOne2018.Laps{
         laps: [
-          %FOne2018.Lap{current_lap_num: 2, last_lap_time: 19.9},
+          %FOne2018.Lap{current_lap_num: 2, last_lap_time: 19.9}
         ]
       },
       @name
@@ -180,6 +185,7 @@ defmodule RaceStateTest do
   end
 
   def load_entire_file(<<>>), do: RaceState.get(@name)
+
   def load_entire_file(packets) do
     {packet, packets} = Rmc.File.read_packet(packets)
     RaceState.put(packet, @name)
