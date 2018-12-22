@@ -12,6 +12,7 @@ defmodule Rmc.RaceState do
   - participant
   - telemetry
   """
+  alias Rmc.FOne2018.{Lap, Laps}
   use Agent
   @name __MODULE__
 
@@ -51,7 +52,11 @@ defmodule Rmc.RaceState do
     old
     |> Map.merge(now)
     |> Map.put(:sector_three_time, sector_three_time)
-    |> true_map_update(:laps, [], &List.insert_at(&1, 0, {old.current_lap_num, now.last_lap_time}))
+    |> true_map_update(
+      :laps,
+      [],
+      &List.insert_at(&1, 0, [old.current_lap_num, now.last_lap_time])
+    )
   end
 
   def merge_racer(old, now), do: Map.merge(old, now)
@@ -69,6 +74,7 @@ defmodule Rmc.RaceState do
 
   Some key value pairs get diverted to be merged into the :racers key, which is a list of maps
   """
+  def merge_state(state, %{} = update), do: merge_state(state, Map.to_list(update))
   def merge_state(acc, []), do: acc
 
   def merge_state(acc, [{key, value} | rest])
@@ -84,7 +90,60 @@ defmodule Rmc.RaceState do
     |> merge_state(rest)
   end
 
-  def put(u, name \\ @name), do: Agent.update(name, &merge_state(&1, Map.to_list(u)))
+  def find_gap({time, distance}, front_locations) do
+    case Enum.find(front_locations, fn {_time, dist} -> dist < distance end) do
+      {front_time, _dist} -> time - front_time
+      _ -> nil
+    end
+  end
+
+  def find_gap_to_front(%{car_position: 1}, _racers), do: nil
+
+  def find_gap_to_front(%{car_position: p, time_distance: [first | _rest]}, racers) do
+    case Enum.find(racers, fn %{car_position: cp} -> cp == p - 1 end) do
+      %{time_distance: locations} -> find_gap(first, locations)
+      _ -> nil
+    end
+  end
+
+  def find_gap_to_front(_, _racers), do: nil
+
+  def calculate_gaps(state) do
+    Map.update(state, :racers, [], fn racers ->
+      Enum.map(racers, fn racer ->
+        Map.put(racer, :gap, find_gap_to_front(racer, racers))
+      end)
+    end)
+  end
+
+  def add_time_distance(state, %Laps{packet_header: %{session_time: time}}) do
+    Map.update(state, :racers, [], fn racers ->
+      Enum.map(racers, fn racer ->
+        true_map_update(
+          racer,
+          :time_distance,
+          [],
+          &List.insert_at(&1, 0, {time, Map.get(racer, :total_distance)})
+        )
+      end)
+    end)
+  end
+
+  def add_time_distance(state, _), do: state
+
+  def log_gaps(%{racers: racers} = state) do
+    Enum.each(racers, fn %{gap: gap} -> IO.inspect(gap) end)
+    state
+  end
+
+  def put(update, name \\ @name) do
+    Agent.update(name, fn state ->
+      state
+      |> merge_state(update)
+      |> add_time_distance(update)
+      |> calculate_gaps
+    end)
+  end
 
   def get_session(name \\ @name) do
     fields = [
@@ -102,6 +161,7 @@ defmodule Rmc.RaceState do
   def get_timing(name \\ @name) do
     fields = [
       :car_position,
+      :gap,
       :laps,
       :tyre_compound,
       :best_lap_time,
