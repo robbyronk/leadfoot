@@ -1,4 +1,4 @@
-defmodule RmcWeb.ChannelCase do
+defmodule RaceControlWeb.ChannelCase do
   @moduledoc """
   This module defines the test case to be used by
   channel tests.
@@ -8,9 +8,11 @@ defmodule RmcWeb.ChannelCase do
   to build common data structures and query the data layer.
 
   Finally, if the test case interacts with the database,
-  it cannot be async. For this reason, every test runs
-  inside a transaction which is reset at the beginning
-  of the test unless the test case is marked as async.
+  we enable the SQL sandbox, so changes done to the database
+  are reverted at the end of every test. If you are using
+  PostgreSQL, you can even run database tests asynchronously
+  by setting `use RaceControlWeb.ChannelCase, async: true`, although
+  this option is not recommended for other databases.
   """
 
   use ExUnit.CaseTemplate
@@ -18,14 +20,17 @@ defmodule RmcWeb.ChannelCase do
   using do
     quote do
       # Import conveniences for testing with channels
-      use Phoenix.ChannelTest
+      import Phoenix.ChannelTest
+      import RaceControlWeb.ChannelCase
 
       # The default endpoint for testing
-      @endpoint RmcWeb.Endpoint
+      @endpoint RaceControlWeb.Endpoint
     end
   end
 
-  setup _tags do
+  setup tags do
+    pid = Ecto.Adapters.SQL.Sandbox.start_owner!(RaceControl.Repo, shared: not tags[:async])
+    on_exit(fn -> Ecto.Adapters.SQL.Sandbox.stop_owner(pid) end)
     :ok
   end
 end
