@@ -5,7 +5,8 @@ config :race_control, RaceControl.Repo,
   username: "postgres",
   password: "postgres",
   hostname: "localhost",
-  database: "race_control_dev",
+  database: "postgres",
+  port: 5252,
   show_sensitive_data_on_connection_error: true,
   pool_size: 10
 
