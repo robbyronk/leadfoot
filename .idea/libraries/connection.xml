@@ -1,7 +1,21 @@
 <component name="libraryTable">
   <library name="connection" type="mix">
-    <CLASSES />
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/connection/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/connection/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/connection/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/connection/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/connection/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/connection/ebin" />
+    </CLASSES>
     <JAVADOC />
-    <SOURCES />
+    <SOURCES>
+      <root url="file://$PROJECT_DIR$/deps/connection/lib" />
+      <root url="file://$PROJECT_DIR$/deps/connection/lib" />
+      <root url="file://$PROJECT_DIR$/deps/connection/lib" />
+      <root url="file://$PROJECT_DIR$/deps/connection/lib" />
+      <root url="file://$PROJECT_DIR$/deps/connection/lib" />
+      <root url="file://$PROJECT_DIR$/deps/connection/lib" />
+    </SOURCES>
   </library>
 </component>

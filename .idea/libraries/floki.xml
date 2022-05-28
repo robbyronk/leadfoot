@@ -2,6 +2,17 @@
   <library name="floki" type="mix">
     <CLASSES />
     <JAVADOC />
-    <SOURCES />
+    <SOURCES>
+      <root url="file://$PROJECT_DIR$/deps/floki/lib" />
+      <root url="file://$PROJECT_DIR$/deps/floki/src" />
+      <root url="file://$PROJECT_DIR$/deps/floki/lib" />
+      <root url="file://$PROJECT_DIR$/deps/floki/src" />
+      <root url="file://$PROJECT_DIR$/deps/floki/lib" />
+      <root url="file://$PROJECT_DIR$/deps/floki/src" />
+      <root url="file://$PROJECT_DIR$/deps/floki/lib" />
+      <root url="file://$PROJECT_DIR$/deps/floki/src" />
+      <root url="file://$PROJECT_DIR$/deps/floki/lib" />
+      <root url="file://$PROJECT_DIR$/deps/floki/src" />
+    </SOURCES>
   </library>
 </component>

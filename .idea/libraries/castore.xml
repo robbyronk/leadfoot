@@ -1,7 +1,27 @@
 <component name="libraryTable">
   <library name="castore" type="mix">
-    <CLASSES />
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/castore/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/castore/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/castore/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/castore/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/castore/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/castore/ebin" />
+    </CLASSES>
     <JAVADOC />
-    <SOURCES />
+    <SOURCES>
+      <root url="file://$PROJECT_DIR$/deps/castore/lib" />
+      <root url="file://$PROJECT_DIR$/deps/castore/priv" />
+      <root url="file://$PROJECT_DIR$/deps/castore/lib" />
+      <root url="file://$PROJECT_DIR$/deps/castore/priv" />
+      <root url="file://$PROJECT_DIR$/deps/castore/lib" />
+      <root url="file://$PROJECT_DIR$/deps/castore/priv" />
+      <root url="file://$PROJECT_DIR$/deps/castore/lib" />
+      <root url="file://$PROJECT_DIR$/deps/castore/priv" />
+      <root url="file://$PROJECT_DIR$/deps/castore/lib" />
+      <root url="file://$PROJECT_DIR$/deps/castore/priv" />
+      <root url="file://$PROJECT_DIR$/deps/castore/lib" />
+      <root url="file://$PROJECT_DIR$/deps/castore/priv" />
+    </SOURCES>
   </library>
 </component>
