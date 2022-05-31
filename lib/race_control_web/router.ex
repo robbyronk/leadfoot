@@ -18,6 +18,8 @@ defmodule RaceControlWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :index
+
+    live "/telemetry", TelemetryLive.View, :view
   end
 
   # Other scopes may use custom stacks.

@@ -1,0 +1,5 @@
+<h1>View</h1>
+
+racing: <%= @event["racing"] %><br>
+current rpm: <%= @event["idle_rpm"] %><br>
+<pre><%= Jason.encode!(@event) %></pre>
