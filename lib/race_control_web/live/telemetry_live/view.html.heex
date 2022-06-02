@@ -1,5 +1,17 @@
 <h1>View</h1>
 
-racing: <%= @event["racing"] %><br>
-current rpm: <%= @event["idle_rpm"] %><br>
-<pre><%= Jason.encode!(@event) %></pre>
+<div class="top-display display">
+    <div class="tire-temp"><%= round(@event[:tire_temp][:front][:left]) %></div>
+    <div class="gear"><%= @event[:gear] %></div>
+    <div class="tire-temp"><%= round(@event[:tire_temp][:front][:right]) %></div>
+    <div class="tire-temp"><%= round(@event[:tire_temp][:rear][:left]) %></div>
+    <div class="speed"><%= round(@event[:speed]) %></div>
+    <div class="tire-temp"><%= round(@event[:tire_temp][:rear][:right]) %></div>
+</div>
+
+<div class="bottom-display display">
+    <div>C <%= Float.round(@event[:current_lap_time], 3) %></div>
+    <div>L <%= Float.round(@event[:last_lap_time], 3) %></div>
+    <div>S <%= Float.round(@event[:current_race_time], 3) %></div>
+    <div>B <%= Float.round(@event[:best_lap_time], 3) %></div>
+</div>
