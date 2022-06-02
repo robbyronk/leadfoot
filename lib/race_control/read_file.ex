@@ -3,13 +3,17 @@ defmodule RaceControl.ReadFile do
   Reads packets from a file and publishes them to pubsub.
   """
 
-  @pace 6 # ms
+  # ms
+  @pace 6
+
+  # todo change this to read packet, then wait, then send
+  #
 
   use GenServer
   alias RaceControl.ParsePacket
   alias Phoenix.PubSub
 
-  def start_link(state, opts) do
+  def start_link(state \\ %{}, opts \\ []) do
     GenServer.start_link(__MODULE__, state, opts)
   end
 
@@ -25,7 +29,7 @@ defmodule RaceControl.ReadFile do
     {:noreply, Map.put(state, :file, file)}
   end
 
-  def handle_info(read_and_publish, state) do
+  def handle_info(:read_and_publish, state) do
     packet = read_packet(state.file)
     PubSub.broadcast(RaceControl.PubSub, "session", {:event, packet})
     Process.send_after(self(), :read_and_publish, @pace)
