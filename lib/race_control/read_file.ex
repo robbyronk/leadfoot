@@ -76,6 +76,7 @@ defmodule RaceControl.ReadFile do
   end
 
   def read_packet(file) do
+    # todo handle :eof from binread
     <<size::16>> = IO.binread(file, 2)
 
     packet = IO.binread(file, size)
