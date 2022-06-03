@@ -7,11 +7,29 @@ defmodule RaceControlWeb.TelemetryLive.View do
   def mount(_params, session, socket) do
     #    file = RaceControl.ReadFile.read("session.forza")
     PubSub.subscribe(RaceControl.PubSub, "session")
-    {:ok, assign(socket, :event, sample)}
+    {
+      :ok,
+      socket
+      |> assign(:event, sample())
+      |> assign(:tach_pct, get_tach_pct(sample()))
+    }
   end
 
   def handle_info({:event, event}, socket) do
-    {:noreply, assign(socket, :event, event)}
+    {:noreply,
+     socket
+     |> assign(:event, event)
+     |> assign(:tach_pct, get_tach_pct(event))}
+  end
+
+  def get_tach_pct(event) do
+    max_rpm = event[:max_rpm]
+    current_rpm = event[:current_rpm]
+    idle_rpm = event[:idle_rpm]
+    case max_rpm do
+      0.0 -> 0
+      _ -> 100 * current_rpm / (max_rpm - idle_rpm)
+    end
   end
 
   def sample() do

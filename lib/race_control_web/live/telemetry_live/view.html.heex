@@ -1,5 +1,9 @@
 <h1>View</h1>
 
+<div class="tach">
+    <span style={"width: #{@tach_pct}%;"}>&nbsp;</span>
+</div>
+
 <div class="top-display display">
     <div class="tire-temp"><%= round(@event[:tire_temp][:front][:left]) %></div>
     <div class="gear"><%= @event[:gear] %></div>
