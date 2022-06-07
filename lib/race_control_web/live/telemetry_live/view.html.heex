@@ -19,3 +19,12 @@
     <div>S <%= Float.round(@event[:current_race_time], 3) %></div>
     <div>B <%= Float.round(@event[:best_lap_time], 3) %></div>
 </div>
+
+<div><%= @event[:acceleration][:x] / 9.8 %></div>
+<div><%= @event[:acceleration][:z] / 9.8 %></div>
+
+<div class="accelerometer">
+    <div class="ball" style={"top: #{@accel_top}px; left: #{@accel_left}px;"}></div>
+</div>
+
+<div><%= @event[:steer] %></div>

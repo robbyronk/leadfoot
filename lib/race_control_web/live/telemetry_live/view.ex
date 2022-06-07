@@ -7,19 +7,26 @@ defmodule RaceControlWeb.TelemetryLive.View do
   def mount(_params, session, socket) do
     #    file = RaceControl.ReadFile.read("session.forza")
     PubSub.subscribe(RaceControl.PubSub, "session")
+    event = sample()
     {
       :ok,
       socket
-      |> assign(:event, sample())
-      |> assign(:tach_pct, get_tach_pct(sample()))
+      |> assign(:event, event)
+      |> assign(:tach_pct, get_tach_pct(event))
+      |> assign(:accel_top, get_accel_top(event))
+      |> assign(:accel_left, get_accel_left(event))
     }
   end
 
   def handle_info({:event, event}, socket) do
-    {:noreply,
+    {
+      :noreply,
      socket
      |> assign(:event, event)
-     |> assign(:tach_pct, get_tach_pct(event))}
+     |> assign(:tach_pct, get_tach_pct(event))
+     |> assign(:accel_top, get_accel_top(event))
+     |> assign(:accel_left, get_accel_left(event))
+    }
   end
 
   def get_tach_pct(event) do
@@ -30,6 +37,28 @@ defmodule RaceControlWeb.TelemetryLive.View do
       0.0 -> 0
       _ -> 100 * current_rpm / (max_rpm - idle_rpm)
     end
+  end
+
+  def get_accel_top(event) do
+    z = event[:acceleration][:z]
+    z_g = z / 9.8
+    min = 0
+    max = 190
+    min_g = -2
+    max_g = 2
+    mid = (min + max) / 2
+    (z_g * mid / max_g) + mid
+  end
+
+  def get_accel_left(event) do
+    z = event[:acceleration][:x]
+    z_g = z / 9.8
+    min = 0
+    max = 190
+    min_g = -2
+    max_g = 2
+    mid = (min + max) / 2
+    (-z_g * mid / max_g) + mid
   end
 
   def sample() do

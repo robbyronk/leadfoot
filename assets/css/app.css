@@ -174,3 +174,19 @@
   position: relative;
   overflow: hidden;
 }
+
+.accelerometer {
+  height: 200px;
+  width: 200px;
+  background: grey;
+}
+
+.ball {
+  height: 10px;
+  width: 10px;
+  border-radius: 20px;
+  background: yellow;
+  position: relative;
+  top: 95px;
+  left: 95px;
+}
