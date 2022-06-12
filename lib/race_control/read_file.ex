@@ -21,43 +21,42 @@ defmodule RaceControl.ReadFile do
     {:ok, %{}, {:continue, :open_file}}
   end
 
+  def get_pace(%{current_race_time: last_race_time}, %{current_race_time: next_race_time}) do
+    pace =
+      cond do
+        last_race_time == 0.0 -> @pace
+        next_race_time == 0.0 -> @pace
+        true -> (next_race_time - last_race_time) * 1000
+      end
+
+    round(pace)
+  end
+
   def handle_continue(:open_file, state) do
     {:ok, file} = File.open("session.forza", [:read])
-    first_packet = read_packet(file)
-    PubSub.broadcast(RaceControl.PubSub, "session", {:event, first_packet})
+    event = read_packet(file)
+    PubSub.broadcast(RaceControl.PubSub, "session", {:event, event})
     Process.send_after(self(), :read_and_publish, @pace)
-    {:noreply, Map.put(state, :file, file)}
+
+    {
+      :noreply,
+      state
+      |> Map.put(:file, file)
+      |> Map.put(:last_event, event)
+    }
   end
 
   def handle_info(:read_and_publish, state) do
-    packet = read_packet(state.file)
-    PubSub.broadcast(RaceControl.PubSub, "session", {:event, packet})
-    Process.send_after(self(), :read_and_publish, @pace)
-    {:noreply, state}
-  end
+    event = read_packet(state.file)
+    # todo handle :eof from read_packet
+    PubSub.broadcast(RaceControl.PubSub, "session", {:event, event})
+    Process.send_after(self(), :read_and_publish, get_pace(state.last_event, event))
 
-  #  def handle_call(_msg, _from, state) do
-  #    {:reply, :ok, state}
-  #  end
-  #
-  #  def handle_cast(_msg, state) do
-  #    {:noreply, state}
-  #  end
-
-  def scratch() do
-    # r RaceControl.ReadFile
-    f = RaceControl.ReadFile.read("session.forza")
-    us = Enum.filter(f, fn x -> :binary.decode_unsigned(x.unknown1) != 0.0 end)
-    Enum.each(us, fn x -> IO.inspect({x.unknown1, x.unknown2}) end)
-
-    lap = RaceControl.ReadFile.get_lap(f)
-    RaceControl.ReadFile.get_svg_path_from_events(lap)
-    # r RaceControl.ReadFile
-    lap = RaceControl.ReadFile.get_lap(f, 2)
-    svg = RaceControl.ReadFile.get_svg(lap)
-    {:ok, file} = File.open("lap.svg", [:write])
-    IO.binwrite(file, svg)
-    File.close(file)
+    {
+      :noreply,
+      state
+      |> Map.put(:last_event, event)
+    }
   end
 
   def read(file_name) do
