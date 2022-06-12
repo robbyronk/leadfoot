@@ -1,16 +1,14 @@
-<h1>View</h1>
-
 <div class="tach">
     <span style={"width: #{@tach_pct}%;"}>&nbsp;</span>
 </div>
 
 <div class="top-display display">
-    <div class="tire-temp"><%= round(@event[:tire_temp][:front][:left]) %></div>
-    <div class="gear"><%= @event[:gear] %></div>
-    <div class="tire-temp"><%= round(@event[:tire_temp][:front][:right]) %></div>
-    <div class="tire-temp"><%= round(@event[:tire_temp][:rear][:left]) %></div>
-    <div class="speed"><%= round(@event[:speed]) %></div>
-    <div class="tire-temp"><%= round(@event[:tire_temp][:rear][:right]) %></div>
+    <div class="tire-temp"><%= RaceControl.Translation.tire_temp((@event[:tire_temp][:front][:left])) %></div>
+    <div class="gear"><%= RaceControl.Translation.gear(@event[:gear]) %></div>
+    <div class="tire-temp"><%= RaceControl.Translation.tire_temp((@event[:tire_temp][:front][:right])) %></div>
+    <div class="tire-temp"><%= RaceControl.Translation.tire_temp((@event[:tire_temp][:rear][:left])) %></div>
+    <div class="speed"><%= RaceControl.Translation.speed((@event[:speed])) %></div>
+    <div class="tire-temp"><%= RaceControl.Translation.tire_temp((@event[:tire_temp][:rear][:right])) %></div>
 </div>
 
 <div class="bottom-display display">
@@ -20,11 +18,13 @@
     <div>B <%= Float.round(@event[:best_lap_time], 3) %></div>
 </div>
 
-<div><%= @event[:acceleration][:x] / 9.8 %></div>
-<div><%= @event[:acceleration][:z] / 9.8 %></div>
+<div><%= RaceControl.Translation.acceleration(@event[:acceleration][:x]) %></div>
+<div><%= RaceControl.Translation.acceleration(@event[:acceleration][:z]) %></div>
 
 <div class="accelerometer">
     <div class="ball" style={"top: #{@accel_top}px; left: #{@accel_left}px;"}></div>
 </div>
 
 <div><%= @event[:steer] %></div>
+
+<div><%= @event[:timestamp] %></div>
