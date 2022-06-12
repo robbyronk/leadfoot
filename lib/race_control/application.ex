@@ -9,7 +9,7 @@ defmodule RaceControl.Application do
   def start(_type, _args) do
     children = [
       # Start the Ecto repository
-      RaceControl.Repo,
+      #      RaceControl.Repo,
       # Start the Telemetry supervisor
       RaceControlWeb.Telemetry,
       # Start the PubSub system
