@@ -75,15 +75,22 @@ defmodule RaceControl.ParsePacket do
     yaw_pitch_roll = parse_triple(yaw_pitch_roll)
     norm_suspension = parse_corners(norm_suspension)
     tire_slip_ratio = parse_corners(tire_slip_ratio)
+    # wheel rotation is in rad/sec
     wheel_rotation = parse_corners(wheel_rotation)
     on_rumble = parse_corners(on_rumble)
     in_puddle = parse_corners(in_puddle)
     surface_rumble = parse_corners(surface_rumble)
     tire_slip_angle = parse_corners(tire_slip_angle)
     tire_comb_slip = parse_corners(tire_comb_slip)
+    # suspension travel is in meters
     suspension_travel = parse_corners(suspension_travel)
     position = parse_triple(position)
     tire_temp = parse_corners(tire_temp)
+
+    # tire temp is in f
+    # speed is in m/s
+    # power is in watts
+    # torque is in n/m
 
     %{
       racing: racing,
