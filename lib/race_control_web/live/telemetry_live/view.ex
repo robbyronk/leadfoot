@@ -12,10 +12,7 @@ defmodule RaceControlWeb.TelemetryLive.View do
     {
       :ok,
       socket
-      |> assign(:event, event)
-      |> assign(:tach_pct, get_tach_pct(event))
-      |> assign(:accel_top, get_accel_top(event))
-      |> assign(:accel_left, get_accel_left(event))
+      |> set_assigns(event)
     }
   end
 
@@ -23,11 +20,48 @@ defmodule RaceControlWeb.TelemetryLive.View do
     {
       :noreply,
       socket
-      |> assign(:event, event)
-      |> assign(:tach_pct, get_tach_pct(event))
-      |> assign(:accel_top, get_accel_top(event))
-      |> assign(:accel_left, get_accel_left(event))
+      |> set_assigns(event)
     }
+  end
+  
+  def set_assigns(socket, event) do
+    socket
+    |> assign(:event, event)
+    |> assign(:tach_pct, get_tach_pct(event))
+    |> assign(:accel_top, get_accel_top(event))
+    |> assign(:accel_left, get_accel_left(event))
+    |> assign(:rpm_ratio, get_rpm_ratio(event))
+  end
+
+
+  def get_fastest_drive_wheel(event, front_rear) do
+    case event[:drivetrain] do
+      0 -> get_fastest_wheel(event, :front)
+      1 -> get_fastest_wheel(event, :rear)
+      _ -> max(get_fastest_wheel(event, :front), get_fastest_wheel(event, :rear))
+    end
+
+  end
+
+  def get_fastest_wheel(event, front_rear) do
+    # wheel rotation is in rad/sec
+    left = event[:wheel_rotation][front_rear][:left]
+    right = event[:wheel_rotation][front_rear][:right]
+    max(left, right)
+  end
+
+
+  def get_fastest_rear_wheel(event) do
+    get_fastest_wheel(event, :rear)
+  end
+
+
+  def get_rpm_ratio(event) do
+    cond do
+      event[:gear] == 11 -> 0.0
+      event[:current_rpm] == 0.0 -> 0.0
+      true -> get_fastest_drive_wheel(event) / event[:current_rpm]
+    end
   end
 
   def get_tach_pct(event) do
@@ -68,11 +102,7 @@ defmodule RaceControlWeb.TelemetryLive.View do
       acceleration: %{x: 5.429727554321289, y: 0.8213579654693604, z: 1.2117763757705688},
       accelerator: 253,
       ai_brake: 0,
-      angular_velocity: %{
-        x: -0.00410887598991394,
-        y: 0.043515123426914215,
-        z: -0.3470175266265869
-      },
+      angular_velocity: %{ x: -0.00410887598991394, y: 0.043515123426914215, z: -0.3470175266265869 },
       best_lap_time: 60.85183334350586,
       boost: 0.0,
       brake: 0,
