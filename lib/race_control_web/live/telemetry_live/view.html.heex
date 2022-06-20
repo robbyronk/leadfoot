@@ -27,6 +27,13 @@
 
 <div><%= @event[:steer] %></div>
 
-<div>rpm ratio: <%= @rpm_ratio %></div>
+<div>engine torque: <%= @event[:torque] %></div>
+<div>engine rpm: <%= @event[:current_rpm] %></div>
+<div>1st torque: <%= @event[:torque] * 3.68 * 4.14 %></div>
+<div>2nd torque: <%= @event[:torque] * 3.68 * 2.67 %></div>
+<div>3rd torque: <%= @event[:torque] * 3.68 * 1.82 %></div>
+<div>4th torque: <%= @event[:torque] * 3.68 * 1.33 %></div>
+<div>5th torque: <%= @event[:torque] * 3.68 * 1.00 %></div>
+<div>6th torque: <%= @event[:torque] * 3.68 * 0.80 %></div>
 
 <div><%= @event[:timestamp] %></div>

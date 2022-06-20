@@ -30,39 +30,17 @@ defmodule RaceControlWeb.TelemetryLive.View do
     |> assign(:tach_pct, get_tach_pct(event))
     |> assign(:accel_top, get_accel_top(event))
     |> assign(:accel_left, get_accel_left(event))
-    |> assign(:rpm_ratio, get_rpm_ratio(event))
+#    |> assign(:rpm_ratio, get_rpm_ratio(event))
+#    |> assign(:wheel_rpm, event |> get_fastest_drive_wheel() |> rad_per_sec_to_rpm())
   end
 
-
-  def get_fastest_drive_wheel(event, front_rear) do
-    case event[:drivetrain] do
-      0 -> get_fastest_wheel(event, :front)
-      1 -> get_fastest_wheel(event, :rear)
-      _ -> max(get_fastest_wheel(event, :front), get_fastest_wheel(event, :rear))
-    end
-
-  end
-
-  def get_fastest_wheel(event, front_rear) do
-    # wheel rotation is in rad/sec
-    left = event[:wheel_rotation][front_rear][:left]
-    right = event[:wheel_rotation][front_rear][:right]
-    max(left, right)
-  end
-
-
-  def get_fastest_rear_wheel(event) do
-    get_fastest_wheel(event, :rear)
-  end
-
-
-  def get_rpm_ratio(event) do
-    cond do
-      event[:gear] == 11 -> 0.0
-      event[:current_rpm] == 0.0 -> 0.0
-      true -> get_fastest_drive_wheel(event) / event[:current_rpm]
-    end
-  end
+#  def get_rpm_ratio(event) do
+#    cond do
+#      event[:gear] == 11 -> 0.0
+#      event[:current_rpm] == 0.0 -> 0.0
+#      true -> get_fastest_drive_wheel(event) / event[:current_rpm]
+#    end
+#  end
 
   def get_tach_pct(event) do
     max_rpm = event[:max_rpm]
