@@ -23,7 +23,7 @@ defmodule RaceControlWeb.TelemetryLive.View do
       |> set_assigns(event)
     }
   end
-  
+
   def set_assigns(socket, event) do
     socket
     |> assign(:event, event)
@@ -64,5 +64,4 @@ defmodule RaceControlWeb.TelemetryLive.View do
     mid = (min + max) / 2
     -x_g * mid / max_g + mid
   end
-
 end
