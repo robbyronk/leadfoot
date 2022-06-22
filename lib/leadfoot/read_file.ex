@@ -22,19 +22,20 @@ defmodule Leadfoot.ReadFile do
   end
 
   def get_pace(%{current_race_time: last_race_time}, %{current_race_time: next_race_time}) do
-    pace =
-      cond do
-        last_race_time == 0.0 -> @pace
-        next_race_time == 0.0 -> @pace
-        true -> (next_race_time - last_race_time) * 1000
-      end
-
-    round(pace)
+    cond do
+      last_race_time == 0.0 -> @pace
+      next_race_time == 0.0 -> @pace
+      true -> round((next_race_time - last_race_time) * 1000)
+    end
   end
 
   def handle_continue(:open_file, state) do
     {:ok, file} = File.open("session.forza", [:read])
-    event = read_packet(file)
+
+    event =
+      read_packet(file)
+      |> ParsePacket.parse_packet()
+
     PubSub.broadcast(Leadfoot.PubSub, "session", {:event, event})
     Process.send_after(self(), :read_and_publish, @pace)
 
@@ -48,15 +49,27 @@ defmodule Leadfoot.ReadFile do
 
   def handle_info(:read_and_publish, state) do
     event = read_packet(state.file)
-    # todo handle :eof from read_packet
-    PubSub.broadcast(Leadfoot.PubSub, "session", {:event, event})
-    Process.send_after(self(), :read_and_publish, get_pace(state.last_event, event))
 
-    {
-      :noreply,
-      state
-      |> Map.put(:last_event, event)
-    }
+    if event != :eof do
+      event = ParsePacket.parse_packet(event)
+      PubSub.broadcast(Leadfoot.PubSub, "session", {:event, event})
+      Process.send_after(self(), :read_and_publish, get_pace(state.last_event, event))
+
+      {
+        :noreply,
+        state
+        |> Map.put(:last_event, event)
+      }
+    else
+      {:noreply, state}
+    end
+  end
+
+  def read_packet(file) do
+    case IO.binread(file, 2) do
+      :eof -> :eof
+      <<size::16>> -> IO.binread(file, size)
+    end
   end
 
   def read(file_name) do
@@ -72,13 +85,5 @@ defmodule Leadfoot.ReadFile do
         rest::binary
       >>) do
     [ParsePacket.parse_packet(packet) | read_packets(rest)]
-  end
-
-  def read_packet(file) do
-    # todo handle :eof from binread
-    <<size::16>> = IO.binread(file, 2)
-
-    packet = IO.binread(file, size)
-    ParsePacket.parse_packet(packet)
   end
 end
