@@ -3,6 +3,7 @@ defmodule LeadfootWeb.TelemetryLive.View do
   use LeadfootWeb, :live_view
   alias Phoenix.PubSub
   import Leadfoot.SampleEvent
+  import Leadfoot.Translation
 
   @impl true
   def mount(_params, session, socket) do

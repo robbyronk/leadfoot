@@ -3,12 +3,14 @@
 </div>
 
 <div class="top-display display">
-    <div class="tire-temp"><%= Leadfoot.Translation.tire_temp((@event[:tire_temp][:front][:left])) %></div>
-    <div class="gear"><%= Leadfoot.Translation.gear(@event[:gear]) %></div>
-    <div class="tire-temp"><%= Leadfoot.Translation.tire_temp((@event[:tire_temp][:front][:right])) %></div>
-    <div class="tire-temp"><%= Leadfoot.Translation.tire_temp((@event[:tire_temp][:rear][:left])) %></div>
-    <div class="speed"><%= Leadfoot.Translation.speed((@event[:speed])) %></div>
-    <div class="tire-temp"><%= Leadfoot.Translation.tire_temp((@event[:tire_temp][:rear][:right])) %></div>
+    <div class="tire-temps">
+        <div class="tire-temp"><%= tire_temp((@event[:tire_temp][:front][:left])) %></div>
+        <div class="tire-temp"><%= tire_temp((@event[:tire_temp][:front][:right])) %></div>
+        <div class="tire-temp"><%= tire_temp((@event[:tire_temp][:rear][:left])) %></div>
+        <div class="tire-temp"><%= tire_temp((@event[:tire_temp][:rear][:right])) %></div>
+    </div>
+    <div class="gear"><%= gear(@event[:gear]) %></div>
+    <div class="speed"><%= speed((@event[:speed])) %></div>
 </div>
 
 <div class="bottom-display display">
@@ -18,22 +20,11 @@
     <div>B <%= Float.round(@event[:best_lap_time], 3) %></div>
 </div>
 
-<div><%= Leadfoot.Translation.acceleration(@event[:acceleration][:x]) %></div>
-<div><%= Leadfoot.Translation.acceleration(@event[:acceleration][:z]) %></div>
+<div><%= acceleration(@event[:acceleration][:x]) %></div>
+<div><%= acceleration(@event[:acceleration][:z]) %></div>
 
 <div class="accelerometer">
     <div class="ball" style={"top: #{@accel_top}px; left: #{@accel_left}px;"}></div>
 </div>
-
-<div><%= @event[:steer] %></div>
-
-<div>engine torque: <%= @event[:torque] %></div>
-<div>engine rpm: <%= @event[:current_rpm] %></div>
-<div>1st torque: <%= @event[:torque] * 3.68 * 4.14 %></div>
-<div>2nd torque: <%= @event[:torque] * 3.68 * 2.67 %></div>
-<div>3rd torque: <%= @event[:torque] * 3.68 * 1.82 %></div>
-<div>4th torque: <%= @event[:torque] * 3.68 * 1.33 %></div>
-<div>5th torque: <%= @event[:torque] * 3.68 * 1.00 %></div>
-<div>6th torque: <%= @event[:torque] * 3.68 * 0.80 %></div>
 
 <div><%= @event[:timestamp] %></div>

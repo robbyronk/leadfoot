@@ -137,6 +137,11 @@
   font-size: 2.5rem;
 }
 
+.tire-temps {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+}
+
 .tire-temp {
   font-size: 3rem;
   /*background: red;*/
