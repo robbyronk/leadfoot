@@ -69,6 +69,7 @@ defmodule Leadfoot.ParsePacket do
         ai_brake::little-8,
         rest::bytes
       >>) do
+    # acceleration is in m/s^2
     acceleration = parse_triple(acceleration)
     velocity = parse_triple(velocity)
     angular_velocity = parse_triple(angular_velocity)
