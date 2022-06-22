@@ -14,16 +14,13 @@ defmodule Leadfoot.ReadUdp do
   end
 
   def handle_continue(:open_port, state) do
-    {:ok, _socket} = :gen_udp.open(21_337)
+    # todo allow for port selection at run time
+    {:ok, _socket} = :gen_udp.open(21_337, mode: :binary)
     {:noreply, state}
   end
 
   def handle_info({:udp, _socket, _ip, _port, data}, state) do
-    event =
-      data
-      |> :binary.list_to_bin()
-      |> ParsePacket.parse_packet()
-
+    event = ParsePacket.parse_packet(data)
     PubSub.broadcast(Leadfoot.PubSub, "session", {:event, event})
     {:noreply, state}
   end
