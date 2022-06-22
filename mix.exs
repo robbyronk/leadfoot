@@ -1,9 +1,9 @@
-defmodule RaceControl.MixProject do
+defmodule Leadfoot.MixProject do
   use Mix.Project
 
   def project do
     [
-      app: :race_control,
+      app: :leadfoot,
       version: "0.1.0",
       elixir: "~> 1.12",
       elixirc_paths: elixirc_paths(Mix.env()),
@@ -19,7 +19,7 @@ defmodule RaceControl.MixProject do
   # Type `mix help compile.app` for more information.
   def application do
     [
-      mod: {RaceControl.Application, []},
+      mod: {Leadfoot.Application, []},
       extra_applications: [:logger, :runtime_tools]
     ]
   end

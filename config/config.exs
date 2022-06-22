@@ -7,14 +7,14 @@
 # General application configuration
 import Config
 
-config :race_control,
-  ecto_repos: [RaceControl.Repo]
+config :leadfoot,
+  ecto_repos: [Leadfoot.Repo]
 
 # Configures the endpoint
-config :race_control, RaceControlWeb.Endpoint,
+config :leadfoot, LeadfootWeb.Endpoint,
   url: [host: "localhost"],
-  render_errors: [view: RaceControlWeb.ErrorView, accepts: ~w(html json), layout: false],
-  pubsub_server: RaceControl.PubSub,
+  render_errors: [view: LeadfootWeb.ErrorView, accepts: ~w(html json), layout: false],
+  pubsub_server: Leadfoot.PubSub,
   live_view: [signing_salt: "1VjZCDz5"]
 
 # Configures the mailer
@@ -24,7 +24,7 @@ config :race_control, RaceControlWeb.Endpoint,
 #
 # For production it's recommended to configure a different adapter
 # at the `config/runtime.exs`.
-config :race_control, RaceControl.Mailer, adapter: Swoosh.Adapters.Local
+config :leadfoot, Leadfoot.Mailer, adapter: Swoosh.Adapters.Local
 
 # Swoosh API client is needed for adapters other than SMTP.
 config :swoosh, :api_client, false

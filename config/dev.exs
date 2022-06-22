@@ -1,7 +1,7 @@
 import Config
 
 # Configure your database
-config :race_control, RaceControl.Repo,
+config :leadfoot, Leadfoot.Repo,
   username: "postgres",
   password: "postgres",
   hostname: "localhost",
@@ -16,7 +16,7 @@ config :race_control, RaceControl.Repo,
 # The watchers configuration can be used to run external
 # watchers to your application. For example, we use it
 # with esbuild to bundle .js and .css sources.
-config :race_control, RaceControlWeb.Endpoint,
+config :leadfoot, LeadfootWeb.Endpoint,
   # Binding to loopback ipv4 address prevents access from other machines.
   # Change to `ip: {0, 0, 0, 0}` to allow access from other machines.
   http: [ip: {0, 0, 0, 0}, port: 4000],
@@ -55,13 +55,13 @@ config :race_control, RaceControlWeb.Endpoint,
 # different ports.
 
 # Watch static and templates for browser reloading.
-config :race_control, RaceControlWeb.Endpoint,
+config :leadfoot, LeadfootWeb.Endpoint,
   live_reload: [
     patterns: [
       ~r"priv/static/.*(js|css|png|jpeg|jpg|gif|svg)$",
       ~r"priv/gettext/.*(po)$",
-      ~r"lib/race_control_web/(live|views)/.*(ex)$",
-      ~r"lib/race_control_web/templates/.*(eex)$"
+      ~r"lib/leadfoot_web/(live|views)/.*(ex)$",
+      ~r"lib/leadfoot_web/templates/.*(eex)$"
     ]
   ]
 
