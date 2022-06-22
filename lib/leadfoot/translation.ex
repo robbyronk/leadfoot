@@ -1,21 +1,32 @@
 defmodule Leadfoot.Translation do
-  @moduledoc false
+  @moduledoc """
+  Contains functions to convert raw values into human readable values.
+  """
 
+  @doc """
+  Given meters per second, returns miles per hour.
+  """
   def speed(value) do
-    # returns speed in mph
     round(value * 2.237)
   end
 
+  @doc """
+  Given meters per second^2, returns g.
+  """
   def acceleration(value) do
-    # returns acceleration in g
     Float.round(value / 9.8, 2)
   end
 
+  @doc """
+  Not sure why but tire temps are in F in the telemetry. Returns temp as C.
+  """
   def tire_temp(value) do
-    # returns tire temp in c
     round((value - 32) * 5 / 9)
   end
 
+  @doc """
+  Returns string describing drivetrain.
+  """
   def drivetrain(index) do
     case index do
       0 -> "FWD"
@@ -25,6 +36,9 @@ defmodule Leadfoot.Translation do
     end
   end
 
+  @doc """
+  Returns string describing selected gear.
+  """
   def gear(num) do
     case num do
       11 -> "N"
@@ -33,6 +47,9 @@ defmodule Leadfoot.Translation do
     end
   end
 
+  @doc """
+  Returns string describing car class, D through X.
+  """
   def car_class(index) do
     case index do
       0 -> "D"
@@ -46,7 +63,11 @@ defmodule Leadfoot.Translation do
     end
   end
 
+  @doc """
+  Returns string describing car category. IE: "Hyper Cars" or "Retro Saloons"
+  """
   def car_category(index) do
+    # todo is this complete?
     case index do
       11 -> "Modern Super Cars"
       12 -> "Retro Super Cars"
