@@ -19,7 +19,8 @@ defmodule LeadfootWeb.Router do
 
     get "/", PageController, :index
 
-    live "/telemetry", TelemetryLive.View, :view
+    live "/gear-ratios", GearRatiosLive.View, :view
+    live "/dashboard", DashboardLive.View, :view
   end
 
   # Other scopes may use custom stacks.
@@ -40,7 +41,7 @@ defmodule LeadfootWeb.Router do
     scope "/" do
       pipe_through :browser
 
-      live_dashboard "/dashboard", metrics: LeadfootWeb.Telemetry
+      live_dashboard "/server-dashboard", metrics: LeadfootWeb.Telemetry
     end
   end
 

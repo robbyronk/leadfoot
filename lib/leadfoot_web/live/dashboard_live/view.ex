@@ -1,4 +1,4 @@
-defmodule LeadfootWeb.TelemetryLive.View do
+defmodule LeadfootWeb.DashboardLive.View do
   @moduledoc false
   use LeadfootWeb, :live_view
   alias Phoenix.PubSub
