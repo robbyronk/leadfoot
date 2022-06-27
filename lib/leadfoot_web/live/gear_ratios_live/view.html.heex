@@ -1,0 +1,14 @@
+<div>ts: <%= @event[:timestamp] %></div>
+<div>torque: <%= @event[:torque] %></div>
+<div>accelerator: <%= @event[:accelerator] %></div>
+<div>gear: <%= @event[:gear] %></div>
+<div>idle rpm: <%= @event[:idle_rpm] %></div>
+<div>rpm: <%= @event[:current_rpm] %></div>
+<div>max rpm: <%= @event[:max_rpm] %></div>
+
+<div>recording: <%= @recording %></div>
+
+
+
+<div><%= @torque_plot %></div>
+<div><%= @force_plot %></div>
