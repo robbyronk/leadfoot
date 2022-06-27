@@ -49,8 +49,9 @@ defmodule Leadfoot.GearRatios do
   # 22b stock tires: 235/40R17
   @wheel_diameter 0.632
 
+  # todo capture drive wheels, peak power, peak torque
   @initial_state %{
-    gears: @ratios,
+    ratios: @ratios,
     final: @final,
     drive_wheels: 2,
     tire_width: 255,
@@ -59,7 +60,7 @@ defmodule Leadfoot.GearRatios do
     peak_power: 0,
     peak_torque: 0,
     torques: [],
-    recording: false
+    recording: true
   }
 
   use GenServer
@@ -129,9 +130,15 @@ defmodule Leadfoot.GearRatios do
   def handle_call(:get_wheel_forces, _from, state) do
     # todo include max power curve
     # P = F*v or put another way: F = P/v
+
+    wheel_radius = get_tire_height(state.tire_width, state.tire_ratio, state.wheel_size) / 2
+
     forces =
-      for v <- 1..100 do
-        {v, get_wheel_force_gear_speed(1, v, state)}
+      for {rpm, torque} <- state.torques, gear <- 1..6 do
+        {
+          get_velocity(state.final, Enum.at(state.ratios, gear), rpm, wheel_radius),
+          get_force(torque, gear, rpm, wheel_radius, state)
+        }
       end
 
     {
@@ -185,6 +192,11 @@ defmodule Leadfoot.GearRatios do
 
   def get_engine_rpm(gear, speed), do: get_wheel_rpm(speed) * (@final * Enum.at(@ratios, gear))
 
+  def get_velocity(final, gear, engine_rpm, wheel_radius) do
+    wheel_rpm = engine_rpm / (final * gear)
+    wheel_rpm * 60 * :math.pi() * wheel_radius * 2 / 1000
+  end
+
   def get_wheel_force_gear_speed(gear, speed) do
     wheel_radius = @wheel_diameter / 2
 
@@ -195,6 +207,17 @@ defmodule Leadfoot.GearRatios do
       get_wheel_torque(Enum.at(@ratios, gear), @final, engine_torque, 2, wheel_radius)
 
     get_wheel_force(wheel_torque, wheel_radius)
+  end
+
+  def get_force(engine_torque, gear, engine_rpm, wheel_radius, state) do
+    get_wheel_torque(
+      Enum.at(state.ratios, gear),
+      state.final,
+      engine_torque,
+      state.drive_wheels,
+      wheel_radius
+    )
+    |> get_wheel_force(wheel_radius)
   end
 
   def get_wheel_force_gear_speed(gear, speed, %{torques: []}), do: 0
