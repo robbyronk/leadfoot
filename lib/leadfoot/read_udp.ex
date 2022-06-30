@@ -9,8 +9,8 @@ defmodule Leadfoot.ReadUdp do
     file: nil
   }
 
-  def start_link(state \\ %{}, opts \\ []) do
-    GenServer.start_link(__MODULE__, state, opts)
+  def start_link(state \\ %{}, _opts \\ []) do
+    GenServer.start_link(__MODULE__, state, name: Leadfoot.ReadUdp)
   end
 
   def init(_opts) do
@@ -35,12 +35,12 @@ defmodule Leadfoot.ReadUdp do
     {:noreply, state}
   end
 
-  def start(pid, filename) do
-    GenServer.cast(pid, {:start, filename})
+  def start(filename) do
+    GenServer.cast(Leadfoot.ReadUdp, {:start, filename})
   end
 
-  def stop(pid) do
-    GenServer.cast(pid, :stop)
+  def stop() do
+    GenServer.cast(Leadfoot.ReadUdp, :stop)
   end
 
   def handle_cast({:start, filename}, state) do
