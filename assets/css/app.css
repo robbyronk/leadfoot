@@ -1,6 +1,10 @@
 /* This file is for your main application CSS */
 @import "./phoenix.css";
 
+.mt-3 {
+  margin-top: 1rem;
+}
+
 /* Alerts and form errors used by phx.new */
 .alert {
   padding: 15px;
@@ -194,4 +198,10 @@
   position: relative;
   top: 95px;
   left: 95px;
+}
+
+.grid-auto-fit {
+  display: grid;
+  grid-gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
 }
