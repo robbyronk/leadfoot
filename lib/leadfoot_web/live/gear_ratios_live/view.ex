@@ -134,7 +134,7 @@ defmodule LeadfootWeb.GearRatiosLive.View do
         gear7: gear7,
         gear8: gear8,
         gear9: gear9,
-        gear10: gear10,
+        gear10: gear10
       )
     }
   end

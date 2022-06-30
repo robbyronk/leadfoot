@@ -66,15 +66,11 @@ defmodule Leadfoot.GearRatios do
     peak_torque: 0,
     torques: [],
     forces: [],
-  power_multiple: 10,
+    power_multiple: 1,
     recording: true
   }
 
   use GenServer
-
-  def scratch() do
-    GearRatios.set_gears(3.85, [4.14, 2.67, 1.82, 1.33, 1.0, 0.8])
-  end
 
   def start_link(_opts) do
     GenServer.start_link(__MODULE__, %{}, name: Leadfoot.GearRatios)
@@ -151,20 +147,18 @@ defmodule Leadfoot.GearRatios do
   end
 
   def handle_call(:get_wheel_forces, _from, state) do
-    # todo include max power curve
-    # P = F*v or put another way: F = P/v
-
     state = calculate_forces(state)
 
-    power = state.peak_power * state.power_multiple
-
+    # todo accumulate force and max power curve in one loop
     forces =
       for {_gear, _rpm, velocity, force} <- state.forces do
         {velocity, force}
       end
 
+    power = state.peak_power * state.power_multiple
+
     power_curve =
-      for {_gear, _rpm, velocity, force} <- state.forces, (power / velocity) < 30000 do
+      for {_gear, _rpm, velocity, _force} <- state.forces, power / velocity < 30000 do
         {velocity, power / velocity}
       end
 
@@ -183,12 +177,12 @@ defmodule Leadfoot.GearRatios do
     {:noreply, %{state | recording: false}}
   end
 
-  def handle_cast({:set_power_multiple, power_multiple}, state) do
-    {:noreply, %{state | power_multiple: power_multiple}}
-  end
-
   def handle_cast(:clear_recording, state) do
     {:noreply, %{state | recording: false, torques: [], forces: []}}
+  end
+
+  def handle_cast({:set_power_multiple, power_multiple}, state) do
+    {:noreply, %{state | power_multiple: power_multiple}}
   end
 
   def calculate_shift_points(state) do
@@ -216,26 +210,22 @@ defmodule Leadfoot.GearRatios do
     calculate_shift_point(a)
   end
 
-  def calculate_shift_point([last_gear]) do
-    []
-  end
+  def calculate_shift_point([_last_gear]), do: []
 
-  def calculate_shift_point([current_gear, next_gear | rest_gears] = gears_speed_forces) do
+  def calculate_shift_point([current_gear, next_gear | rest_gears]) do
     {c, next_gear} = find_next_shift_point(current_gear, next_gear)
 
     [c | calculate_shift_point([next_gear | rest_gears])]
   end
 
-  def find_next_shift_point([], []) do
-    {nil, []}
-  end
+  def find_next_shift_point([], []), do: {nil, []}
 
   def find_next_shift_point([c | current_gear_forces], [n1, n2 | next_gear_forces]) do
     # find last current gear tuple c where c.force < n2.force,
     # where n1.speed < c.speed <= n2.speed
-    {c_gear, c_rpm, c_v, c_f} = c
-    {n1_gear, n1_rpm, n1_v, n1_f} = n1
-    {n2_gear, n2_rpm, n2_v, n2_f} = n2
+    {_c_gear, _c_rpm, c_v, c_f} = c
+    {_n1_gear, _n1_rpm, n1_v, _n1_f} = n1
+    {_n2_gear, _n2_rpm, n2_v, n2_f} = n2
 
     cond do
       n1_v < c_v and c_v <= n2_v and c_f <= n2_f ->
@@ -256,16 +246,20 @@ defmodule Leadfoot.GearRatios do
   end
 
   def calculate_forces(%{forces: []} = state) do
-    wheel_radius = get_tire_height(state.tire_width, state.tire_ratio, state.wheel_size) / 2
+    wheel_diameter = get_tire_height(state.tire_width, state.tire_ratio, state.wheel_size)
+    wheel_radius = wheel_diameter / 2
 
     gears_count = length(state.ratios) - 1
+
     forces =
       for {rpm, torque} <- state.torques, gear <- 1..gears_count do
+        gear_ratio = Enum.at(state.ratios, gear)
+
         {
           gear,
           rpm,
-          get_velocity(state.final, Enum.at(state.ratios, gear), rpm, wheel_radius),
-          get_force(torque, gear, rpm, wheel_radius, state)
+          get_velocity(state.final, gear_ratio, rpm, wheel_diameter),
+          get_wheel_force(gear_ratio, state.final, torque, state.drive_wheels, wheel_radius)
         }
       end
 
@@ -295,8 +289,7 @@ defmodule Leadfoot.GearRatios do
         %{
           state
           | torques: [{event[:current_rpm], event[:torque]} | state.torques],
-        peak_power: peak_power
-
+            peak_power: peak_power
         }
 
       true ->
@@ -304,91 +297,37 @@ defmodule Leadfoot.GearRatios do
     end
   end
 
-  def get_wheel_rpm(speed), do: speed * 1000 / (60 * :math.pi() * @wheel_diameter)
+  @doc """
+  Calculates the velocity of the car in kph
 
-  def get_engine_rpm(gear, speed), do: get_wheel_rpm(speed) * (@final * Enum.at(@ratios, gear))
+      iex> Float.round(Leadfoot.GearRatios.get_velocity(4.0, 1.0, 5000, 0.6), 2)
+      141.37
 
-  def get_velocity(final, gear, engine_rpm, wheel_radius) do
+      iex> Float.round(Leadfoot.GearRatios.get_velocity(4.0, 2.0, 5000, 0.6), 2)
+      70.69
+  """
+  def get_velocity(final, gear, engine_rpm, wheel_diameter) do
     wheel_rpm = engine_rpm / (final * gear)
-    wheel_rpm * 60 * :math.pi() * wheel_radius * 2 / 1000
+    wheel_rpm * 60 * :math.pi() * wheel_diameter / 1000
   end
 
-  def get_wheel_force_gear_speed(gear, speed) do
-    wheel_radius = @wheel_diameter / 2
-
-    engine_rpm = get_engine_rpm(gear, speed)
-    engine_torque = 0
-
-    wheel_torque =
-      get_wheel_torque(Enum.at(@ratios, gear), @final, engine_torque, 4, wheel_radius)
-
-    get_wheel_force(wheel_torque, wheel_radius)
-  end
-
-  def get_force(engine_torque, gear, engine_rpm, wheel_radius, state) do
-    get_wheel_torque(
-      Enum.at(state.ratios, gear),
-      state.final,
-      engine_torque,
-      state.drive_wheels,
-      wheel_radius
-    )
-    |> get_wheel_force(wheel_radius)
-  end
-
-  def get_wheel_force_gear_speed(gear, speed, %{torques: []}), do: 0
-
-  def get_wheel_force_gear_speed(gear, speed, state) do
-    wheel_radius = @wheel_diameter / 2
-    engine_torques = state.torques
-
-    engine_rpm = get_engine_rpm(gear, speed)
-    # todo this is blowing up when it cant find a torque
-    case Enum.find(engine_torques, 0, fn {rpm, t} -> rpm < engine_rpm end) do
-      0 ->
-        0
-
-      {_rpm, engine_torque} ->
-        get_wheel_torque(
-          Enum.at(@ratios, gear),
-          @final,
-          engine_torque,
-          4,
-          wheel_radius
-        )
-        |> get_wheel_force(wheel_radius)
-    end
-  end
-
-  def get_wheel_torque(gear_ratio, final_ratio, engine_torque, total_drive_wheels, wheel_radius) do
+  def get_wheel_force(gear_ratio, final_ratio, engine_torque, total_drive_wheels, wheel_radius) do
     gear_ratio * final_ratio * engine_torque / (total_drive_wheels * wheel_radius)
   end
 
-  def get_wheel_force(wheel_torque, wheel_radius) do
-    wheel_torque / wheel_radius
-  end
+  @doc """
+  Returns tire height in meters given the 3 parts of a standard tire size.
 
+  The format of a standard tire size is aaa/bbRcc.
+
+  - aaa is the tire width in millimeters, ex: 235 or 275
+  - bb is the tire aspect ratio, ex: 40 or 65
+  - cc is the wheel size in inches, ex: 16 or 20
+
+      iex> Float.round(Leadfoot.GearRatios.get_tire_height(235, 40, 17), 2)
+      0.62
+  """
   def get_tire_height(width, aspect_ratio, wheel_size) do
-    # width is in mm
-    # aspect ratio is a whole number, like 50 or 65
-    # wheel size is in inches
     wheel_size * 0.0254 + width * (aspect_ratio / 100) * 2 / 1000
-  end
-
-  def rad_per_sec_to_rpm(rads), do: rads * 9.549297
-
-  def get_fastest_drive_wheel(event) do
-    case event[:drivetrain] do
-      0 -> get_fastest_wheel(event, :front)
-      1 -> get_fastest_wheel(event, :rear)
-      _ -> max(get_fastest_wheel(event, :front), get_fastest_wheel(event, :rear))
-    end
-  end
-
-  def get_fastest_wheel(event, front_rear) do
-    # wheel rotation is in rad/sec
-    left = event[:wheel_rotation][front_rear][:left]
-    right = event[:wheel_rotation][front_rear][:right]
-    max(left, right)
   end
 end
