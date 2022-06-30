@@ -21,6 +21,11 @@ defmodule Leadfoot.GearRatios do
   22b gears:
   final: 3.85
   4.14 2.67 1.82 1.33 1.0 0.8
+
+  4 rotor:
+  final: 3.05
+  4.17 3.01 2.38 1.96 1.64 1.41 1.25 1.14
+  225/40R18 295/30R18
   """
 
   alias Phoenix.PubSub
@@ -49,21 +54,27 @@ defmodule Leadfoot.GearRatios do
   # 22b stock tires: 235/40R17
   @wheel_diameter 0.632
 
-  # todo capture drive wheels, peak power, peak torque
+  # todo capture drive wheels, peak torque
   @initial_state %{
     ratios: @ratios,
     final: @final,
-    drive_wheels: 2,
-    tire_width: 255,
-    tire_ratio: 50,
-    wheel_size: 16,
+    drive_wheels: 4,
+    tire_width: 235,
+    tire_ratio: 40,
+    wheel_size: 17,
     peak_power: 0,
     peak_torque: 0,
     torques: [],
+    forces: [],
+  power_multiple: 10,
     recording: true
   }
 
   use GenServer
+
+  def scratch() do
+    GearRatios.set_gears(3.85, [4.14, 2.67, 1.82, 1.33, 1.0, 0.8])
+  end
 
   def start_link(_opts) do
     GenServer.start_link(__MODULE__, %{}, name: Leadfoot.GearRatios)
@@ -91,6 +102,8 @@ defmodule Leadfoot.GearRatios do
 
   def get_wheel_forces(), do: GenServer.call(Leadfoot.GearRatios, :get_wheel_forces)
 
+  def get_shift_points(), do: GenServer.call(Leadfoot.GearRatios, :get_shift_points)
+
   def start_recording(), do: GenServer.cast(Leadfoot.GearRatios, :start_recording)
 
   def stop_recording(), do: GenServer.cast(Leadfoot.GearRatios, :stop_recording)
@@ -109,7 +122,7 @@ defmodule Leadfoot.GearRatios do
     {
       :reply,
       {:ok, get_tire_height(width, ratio, wheel_size)},
-      %{state | tire_width: width, tire_ratio: ratio, wheel_size: wheel_size}
+      %{state | tire_width: width, tire_ratio: ratio, wheel_size: wheel_size, forces: []}
     }
   end
 
@@ -119,7 +132,7 @@ defmodule Leadfoot.GearRatios do
     {
       :reply,
       :ok,
-      %{state | final: final, gears: gears}
+      %{state | final: final, ratios: gears, forces: []}
     }
   end
 
@@ -127,23 +140,37 @@ defmodule Leadfoot.GearRatios do
     {:reply, %{torques: state.torques, recording: state.recording}, state}
   end
 
+  def handle_call(:get_shift_points, _from, state) do
+    state = calculate_forces(state)
+
+    {
+      :reply,
+      calculate_shift_points(state),
+      state
+    }
+  end
+
   def handle_call(:get_wheel_forces, _from, state) do
     # todo include max power curve
     # P = F*v or put another way: F = P/v
 
-    wheel_radius = get_tire_height(state.tire_width, state.tire_ratio, state.wheel_size) / 2
+    state = calculate_forces(state)
+
+    power = state.peak_power * state.power_multiple
 
     forces =
-      for {rpm, torque} <- state.torques, gear <- 1..6 do
-        {
-          get_velocity(state.final, Enum.at(state.ratios, gear), rpm, wheel_radius),
-          get_force(torque, gear, rpm, wheel_radius, state)
-        }
+      for {_gear, _rpm, velocity, force} <- state.forces do
+        {velocity, force}
+      end
+
+    power_curve =
+      for {_gear, _rpm, velocity, force} <- state.forces, (power / velocity) < 30000 do
+        {velocity, power / velocity}
       end
 
     {
       :reply,
-      forces,
+      forces ++ power_curve,
       state
     }
   end
@@ -156,9 +183,96 @@ defmodule Leadfoot.GearRatios do
     {:noreply, %{state | recording: false}}
   end
 
-  def handle_cast(:clear_recording, state) do
-    {:noreply, %{state | recording: false, torques: []}}
+  def handle_cast({:set_power_multiple, power_multiple}, state) do
+    {:noreply, %{state | power_multiple: power_multiple}}
   end
+
+  def handle_cast(:clear_recording, state) do
+    {:noreply, %{state | recording: false, torques: [], forces: []}}
+  end
+
+  def calculate_shift_points(state) do
+    wheel_radius = get_tire_height(state.tire_width, state.tire_ratio, state.wheel_size) / 2
+
+    # todo use precalculated forces
+
+    gears_count = length(state.ratios) - 1
+
+    a =
+      for gear <- 1..gears_count do
+        x =
+          for {rpm, torque} <- state.torques do
+            {
+              gear,
+              rpm,
+              get_velocity(state.final, Enum.at(state.ratios, gear), rpm, wheel_radius),
+              get_force(torque, gear, rpm, wheel_radius, state)
+            }
+          end
+
+        Enum.sort_by(x, fn {_, _, v, _} -> v end)
+      end
+
+    calculate_shift_point(a)
+  end
+
+  def calculate_shift_point([last_gear]) do
+    []
+  end
+
+  def calculate_shift_point([current_gear, next_gear | rest_gears] = gears_speed_forces) do
+    {c, next_gear} = find_next_shift_point(current_gear, next_gear)
+
+    [c | calculate_shift_point([next_gear | rest_gears])]
+  end
+
+  def find_next_shift_point([], []) do
+    {nil, []}
+  end
+
+  def find_next_shift_point([c | current_gear_forces], [n1, n2 | next_gear_forces]) do
+    # find last current gear tuple c where c.force < n2.force,
+    # where n1.speed < c.speed <= n2.speed
+    {c_gear, c_rpm, c_v, c_f} = c
+    {n1_gear, n1_rpm, n1_v, n1_f} = n1
+    {n2_gear, n2_rpm, n2_v, n2_f} = n2
+
+    cond do
+      n1_v < c_v and c_v <= n2_v and c_f <= n2_f ->
+        {c, next_gear_forces}
+
+      n1_v < c_v and c_v <= n2_v and c_f > n2_f ->
+        find_next_shift_point(current_gear_forces, [n1, n2 | next_gear_forces])
+
+      n1_v >= c_v ->
+        find_next_shift_point(current_gear_forces, [n1, n2 | next_gear_forces])
+
+      c_v > n2_v ->
+        find_next_shift_point([c | current_gear_forces], [n2 | next_gear_forces])
+
+      true ->
+        {nil, next_gear_forces}
+    end
+  end
+
+  def calculate_forces(%{forces: []} = state) do
+    wheel_radius = get_tire_height(state.tire_width, state.tire_ratio, state.wheel_size) / 2
+
+    gears_count = length(state.ratios) - 1
+    forces =
+      for {rpm, torque} <- state.torques, gear <- 1..gears_count do
+        {
+          gear,
+          rpm,
+          get_velocity(state.final, Enum.at(state.ratios, gear), rpm, wheel_radius),
+          get_force(torque, gear, rpm, wheel_radius, state)
+        }
+      end
+
+    %{state | forces: forces}
+  end
+
+  def calculate_forces(state), do: state
 
   def get_most_recent_rpm(state) do
     case state.torques do
@@ -171,7 +285,7 @@ defmodule Leadfoot.GearRatios do
     positive_torque = event[:torque] > 0
     max_throttle = event[:accelerator] > 250
     not_first_gear = event[:gear] > 1
-    rpm_is_climbing = event[:current_rpm] > get_most_recent_rpm(state)
+    peak_power = max(event[:power], state.peak_power)
 
     cond do
       event[:current_rpm] < get_most_recent_rpm(state) ->
@@ -180,7 +294,9 @@ defmodule Leadfoot.GearRatios do
       positive_torque and max_throttle and not_first_gear ->
         %{
           state
-          | torques: [{event[:current_rpm], event[:torque]} | state.torques]
+          | torques: [{event[:current_rpm], event[:torque]} | state.torques],
+        peak_power: peak_power
+
         }
 
       true ->
@@ -204,7 +320,7 @@ defmodule Leadfoot.GearRatios do
     engine_torque = 0
 
     wheel_torque =
-      get_wheel_torque(Enum.at(@ratios, gear), @final, engine_torque, 2, wheel_radius)
+      get_wheel_torque(Enum.at(@ratios, gear), @final, engine_torque, 4, wheel_radius)
 
     get_wheel_force(wheel_torque, wheel_radius)
   end
@@ -237,7 +353,7 @@ defmodule Leadfoot.GearRatios do
           Enum.at(@ratios, gear),
           @final,
           engine_torque,
-          2,
+          4,
           wheel_radius
         )
         |> get_wheel_force(wheel_radius)
