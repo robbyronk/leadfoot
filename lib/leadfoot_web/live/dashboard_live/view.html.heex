@@ -1,30 +1,30 @@
 <div class="tach">
-    <span style={"width: #{@tach_pct}%;"}>&nbsp;</span>
+  <span style={"width: #{@tach_pct}%;"}>&nbsp;</span>
 </div>
 
 <div class="top-display display">
-    <div class="tire-temps">
-        <div class="tire-temp"><%= tire_temp((@event[:tire_temp][:front][:left])) %></div>
-        <div class="tire-temp"><%= tire_temp((@event[:tire_temp][:front][:right])) %></div>
-        <div class="tire-temp"><%= tire_temp((@event[:tire_temp][:rear][:left])) %></div>
-        <div class="tire-temp"><%= tire_temp((@event[:tire_temp][:rear][:right])) %></div>
-    </div>
-    <div class="gear"><%= gear(@event[:gear]) %></div>
-    <div class="speed"><%= speed((@event[:speed])) %></div>
+  <div class="tire-temps">
+    <div class="tire-temp"><%= tire_temp(@event[:tire_temp][:front][:left]) %></div>
+    <div class="tire-temp"><%= tire_temp(@event[:tire_temp][:front][:right]) %></div>
+    <div class="tire-temp"><%= tire_temp(@event[:tire_temp][:rear][:left]) %></div>
+    <div class="tire-temp"><%= tire_temp(@event[:tire_temp][:rear][:right]) %></div>
+  </div>
+  <div class="gear"><%= gear(@event[:gear]) %></div>
+  <div class="speed"><%= speed(@event[:speed]) %></div>
 </div>
 
 <div class="bottom-display display">
-    <div>C <%= Float.round(@event[:current_lap_time], 3) %></div>
-    <div>L <%= Float.round(@event[:last_lap_time], 3) %></div>
-    <div>S <%= Float.round(@event[:current_race_time], 3) %></div>
-    <div>B <%= Float.round(@event[:best_lap_time], 3) %></div>
+  <div>C <%= Float.round(@event[:current_lap_time], 3) %></div>
+  <div>L <%= Float.round(@event[:last_lap_time], 3) %></div>
+  <div>S <%= Float.round(@event[:current_race_time], 3) %></div>
+  <div>B <%= Float.round(@event[:best_lap_time], 3) %></div>
 </div>
 
 <div><%= acceleration(@event[:acceleration][:x]) %></div>
 <div><%= acceleration(@event[:acceleration][:z]) %></div>
 
 <div class="accelerometer">
-    <div class="ball" style={"top: #{@accel_top}px; left: #{@accel_left}px;"}></div>
+  <div class="ball" style={"top: #{@accel_top}px; left: #{@accel_left}px;"}></div>
 </div>
 
 <div><%= @event[:timestamp] %></div>
