@@ -1,41 +1,45 @@
 defmodule Leadfoot.GearRatios do
   @moduledoc """
-  Capture torque,rpm values (as long as gear is > 1 and throttle is 100%)
+  Calculates the ideal shift points and the ideal gearing for a car.
 
-  Can calculate wheel force for gear,speed.
+  To get ideal shift points:
+  1. Set the tire size with set_tire_size/3
+  2. Set the gear ratios with set_gears/2
+  3. Record a "dyno pull" with start_recording/0
+  4. Get the shift points with get_shift_points/0
 
-  1. Get wheel height and gear ratios.
-  2. Capture torque curve.
+  To record a "dyno pull":
+  1. Get your car to a long straight with no obstacles.
+  2. Start recording with start_recording/1
+  3. Get your car rolling with 50% power.
+  4. Shift into 2nd gear and keep accelerating with 50% power until your engine is at 2000-3000 RPM.
+  5. Full power.
+  6. Full power all the way until you hit the rev limiter.
 
-  Calls:
-  - Set wheel height, gear ratios.
-  - Get torque curve
-  - Get wheel force curves
+  To get the ideal gearing:
+  1. Find a first gear that launches nicely. Input the final and first gear ratios.
+  2. Enter target top speed.
+  Look at chart with speed on x axis, force on y axis.
+  The min speed shown is at the peak torque in 1st gear.
+  The max speed shown is the target top speed.
+  The plotted values are ideal_max_force - max_gear_force, for each speed.
+  Adjust gear ratios to minimize the plotted values.
 
-  Casts:
-  - Start recording torque curve
-  - Stop recording torque curve
-  - Clear torque data
 
+  Sample inputs:
 
   22b gears:
   final: 3.85
   4.14 2.67 1.82 1.33 1.0 0.8
+  235/40R17 235/40R17
 
-  4 rotor:
+  Twerkstallion 4 Rotor:
   final: 3.05
   4.17 3.01 2.38 1.96 1.64 1.41 1.25 1.14
   225/40R18 295/30R18
   """
 
   alias Phoenix.PubSub
-
-  # need to know what the torque will be in any gear at any speed
-  # https://x-engineer.org/calculate-wheel-torque-engine/
-
-  # need torque curve to know what torque will be at rpm
-  # need fn to know what rpm in what gear at speed
-  # fn to find highest torque gear for speed
 
   @final 3.67
 
@@ -52,7 +56,6 @@ defmodule Leadfoot.GearRatios do
 
   # rx7 stock tires: 225/50R16
   # 22b stock tires: 235/40R17
-  @wheel_diameter 0.632
 
   # todo capture drive wheels, peak torque
   @initial_state %{
@@ -62,10 +65,12 @@ defmodule Leadfoot.GearRatios do
     tire_width: 235,
     tire_ratio: 40,
     wheel_size: 17,
+
     peak_power: 0,
     peak_torque: 0,
     torques: [],
     forces: [],
+
     power_multiple: 1,
     recording: true
   }
@@ -80,6 +85,7 @@ defmodule Leadfoot.GearRatios do
     GenServer.start_link(__MODULE__, state, opts)
   end
 
+  @impl true
   def init(_opts) do
     PubSub.subscribe(Leadfoot.PubSub, "session")
 
@@ -106,6 +112,7 @@ defmodule Leadfoot.GearRatios do
 
   def clear_recording(), do: GenServer.cast(Leadfoot.GearRatios, :clear_recording)
 
+  @impl true
   def handle_info({:event, event}, state) do
     case state.recording do
       false -> {:noreply, state}
@@ -113,6 +120,7 @@ defmodule Leadfoot.GearRatios do
     end
   end
 
+  @impl true
   def handle_call({:tire_size, width, ratio, wheel_size}, _from, state) do
     # todo validate
     {
@@ -122,6 +130,7 @@ defmodule Leadfoot.GearRatios do
     }
   end
 
+  @impl true
   def handle_call({:gear_ratios, final, gears}, _from, state) do
     # todo validate
     # todo if a gear is too high or low, push the rest
@@ -132,10 +141,12 @@ defmodule Leadfoot.GearRatios do
     }
   end
 
+  @impl true
   def handle_call(:get_torques, _from, state) do
     {:reply, %{torques: state.torques, recording: state.recording}, state}
   end
 
+  @impl true
   def handle_call(:get_shift_points, _from, state) do
     state = calculate_forces(state)
 
@@ -146,6 +157,7 @@ defmodule Leadfoot.GearRatios do
     }
   end
 
+  @impl true
   def handle_call(:get_wheel_forces, _from, state) do
     state = calculate_forces(state)
 
@@ -169,24 +181,29 @@ defmodule Leadfoot.GearRatios do
     }
   end
 
+  @impl true
   def handle_cast(:start_recording, state) do
-    {:noreply, %{state | recording: true}}
+    {:noreply, %{state | recording: true, torques: [], forces: []}}
   end
 
+  @impl true
   def handle_cast(:stop_recording, state) do
     {:noreply, %{state | recording: false}}
   end
 
+  @impl true
   def handle_cast(:clear_recording, state) do
     {:noreply, %{state | recording: false, torques: [], forces: []}}
   end
 
+  @impl true
   def handle_cast({:set_power_multiple, power_multiple}, state) do
     {:noreply, %{state | power_multiple: power_multiple}}
   end
 
   def calculate_shift_points(state) do
-    wheel_radius = get_tire_height(state.tire_width, state.tire_ratio, state.wheel_size) / 2
+    wheel_diameter = get_tire_height(state.tire_width, state.tire_ratio, state.wheel_size)
+    wheel_radius = wheel_diameter / 2
 
     # todo use precalculated forces
 
@@ -196,11 +213,13 @@ defmodule Leadfoot.GearRatios do
       for gear <- 1..gears_count do
         x =
           for {rpm, torque} <- state.torques do
+            gear_ratio = Enum.at(state.ratios, gear)
+
             {
               gear,
               rpm,
-              get_velocity(state.final, Enum.at(state.ratios, gear), rpm, wheel_radius),
-              get_force(torque, gear, rpm, wheel_radius, state)
+              get_velocity(state.final, gear_ratio, rpm, wheel_diameter),
+              get_wheel_force(gear_ratio, state.final, torque, state.drive_wheels, wheel_radius)
             }
           end
 
