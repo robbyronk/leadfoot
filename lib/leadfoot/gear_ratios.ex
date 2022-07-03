@@ -28,7 +28,7 @@ defmodule Leadfoot.GearRatios do
 
   Sample inputs:
 
-  22b gears:
+  Subaru 22B:
   final: 3.85
   4.14 2.67 1.82 1.33 1.0 0.8
   235/40R17 235/40R17
@@ -57,7 +57,6 @@ defmodule Leadfoot.GearRatios do
   # rx7 stock tires: 225/50R16
   # 22b stock tires: 235/40R17
 
-  # todo capture drive wheels, peak torque
   @initial_state %{
     ratios: @ratios,
     final: @final,
@@ -299,6 +298,8 @@ defmodule Leadfoot.GearRatios do
     max_throttle = event[:accelerator] > 250
     not_first_gear = event[:gear] > 1
     peak_power = max(event[:power], state.peak_power)
+    peak_torque = max(event[:torque], state.peak_torque)
+    drive_wheels = if event[:drivetrain] == 2, do: 4, else: 2
 
     cond do
       event[:current_rpm] < get_most_recent_rpm(state) ->
@@ -308,7 +309,9 @@ defmodule Leadfoot.GearRatios do
         %{
           state
           | torques: [{event[:current_rpm], event[:torque]} | state.torques],
-            peak_power: peak_power
+            peak_power: peak_power,
+            peak_torque: peak_torque,
+            drive_wheels: drive_wheels
         }
 
       true ->
