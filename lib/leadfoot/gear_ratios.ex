@@ -246,6 +246,9 @@ defmodule Leadfoot.GearRatios do
     {_n2_gear, _n2_rpm, n2_v, n2_f} = n2
 
     cond do
+      length(current_gear_forces) == 0 ->
+        {c, next_gear_forces}
+
       n1_v < c_v and c_v <= n2_v and c_f <= n2_f ->
         {c, next_gear_forces}
 
