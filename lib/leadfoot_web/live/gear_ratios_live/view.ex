@@ -49,9 +49,9 @@ defmodule LeadfootWeb.GearRatiosLive.View do
 
   def handle_info({:event, event}, %{assigns: %{event: last_event}} = socket) do
     if last_event == nil or event[:timestamp] > last_event[:timestamp] do
-      { :noreply, socket |> set_assigns(event) }
+      {:noreply, socket |> set_assigns(event)}
     else
-      { :noreply, socket  }
+      {:noreply, socket}
     end
   end
 
