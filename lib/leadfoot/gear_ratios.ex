@@ -40,6 +40,7 @@ defmodule Leadfoot.GearRatios do
   """
 
   alias Phoenix.PubSub
+  alias Leadfoot.CarSettings.Tires
 
   @final 3.67
 
@@ -58,18 +59,14 @@ defmodule Leadfoot.GearRatios do
   # 22b stock tires: 235/40R17
 
   @initial_state %{
+  tires: %Tires{},
     ratios: @ratios,
     final: @final,
     drive_wheels: 4,
-    tire_width: 235,
-    tire_ratio: 40,
-    wheel_size: 17,
-
     peak_power: 0,
     peak_torque: 0,
     torques: [],
     forces: [],
-
     power_multiple: 1,
     recording: true
   }
@@ -91,8 +88,10 @@ defmodule Leadfoot.GearRatios do
     {:ok, @initial_state}
   end
 
-  def set_tire_size(width, ratio, wheel_size) do
-    GenServer.call(Leadfoot.GearRatios, {:tire_size, width, ratio, wheel_size})
+  def get_tires(), do: GenServer.call(Leadfoot.GearRatios, :get_tires)
+
+  def set_tire_size(%Tires{} = tires) do
+    GenServer.cast(Leadfoot.GearRatios, {:tire_size, tires})
   end
 
   def set_gears(final, gears) do
@@ -120,14 +119,7 @@ defmodule Leadfoot.GearRatios do
   end
 
   @impl true
-  def handle_call({:tire_size, width, ratio, wheel_size}, _from, state) do
-    # todo validate
-    {
-      :reply,
-      {:ok, get_tire_height(width, ratio, wheel_size)},
-      %{state | tire_width: width, tire_ratio: ratio, wheel_size: wheel_size, forces: []}
-    }
-  end
+  def handle_call(:get_tires, _from, state), do: {:reply, state.tires, state}
 
   @impl true
   def handle_call({:gear_ratios, final, gears}, _from, state) do
@@ -181,6 +173,11 @@ defmodule Leadfoot.GearRatios do
   end
 
   @impl true
+  def handle_cast({:tire_size, tires}, state) do
+    {:noreply, %{state | tires: tires, forces: []}}
+  end
+
+  @impl true
   def handle_cast(:start_recording, state) do
     {:noreply, %{state | recording: true, torques: [], forces: []}}
   end
@@ -201,7 +198,7 @@ defmodule Leadfoot.GearRatios do
   end
 
   def calculate_shift_points(state) do
-    wheel_diameter = get_tire_height(state.tire_width, state.tire_ratio, state.wheel_size)
+    wheel_diameter = Tires.get_tire_height(state.tire_width, state.tire_ratio, state.wheel_size)
     wheel_radius = wheel_diameter / 2
 
     # todo use precalculated forces
@@ -264,7 +261,7 @@ defmodule Leadfoot.GearRatios do
   end
 
   def calculate_forces(%{forces: []} = state) do
-    wheel_diameter = get_tire_height(state.tire_width, state.tire_ratio, state.wheel_size)
+    wheel_diameter = Tires.get_tire_height(state.tire_width, state.tire_ratio, state.wheel_size)
     wheel_radius = wheel_diameter / 2
 
     gears_count = length(state.ratios) - 1
@@ -335,21 +332,5 @@ defmodule Leadfoot.GearRatios do
 
   def get_wheel_force(gear_ratio, final_ratio, engine_torque, total_drive_wheels, wheel_radius) do
     gear_ratio * final_ratio * engine_torque / (total_drive_wheels * wheel_radius)
-  end
-
-  @doc """
-  Returns tire height in meters given the 3 parts of a standard tire size.
-
-  The format of a standard tire size is aaa/bbRcc.
-
-  - aaa is the tire width in millimeters, ex: 235 or 275
-  - bb is the tire aspect ratio, ex: 40 or 65
-  - cc is the wheel size in inches, ex: 16 or 20
-
-      iex> Float.round(Leadfoot.GearRatios.get_tire_height(235, 40, 17), 2)
-      0.62
-  """
-  def get_tire_height(width, aspect_ratio, wheel_size) do
-    wheel_size * 0.0254 + width * (aspect_ratio / 100) * 2 / 1000
   end
 end

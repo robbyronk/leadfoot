@@ -1,12 +1,35 @@
 tires:
-<form phx-submit="save_tires">
-  <div class="grid-auto-fit">
-    <div>width: <input type="number" name="tire_width" value={@tire_width} min="0" /></div>
-    <div>ratio: <input type="number" name="tire_ratio" value={@tire_ratio} min="0" /></div>
-    <div>wheel size: <input type="number" name="wheel_size" value={@wheel_size} min="0" /></div>
-    <div><button type="submit">save tire info</button></div>
-  </div>
-</form>
+<div>
+  <.form
+    let={f}
+    for={@tires_changeset}
+    id="tires-form"
+    phx-change="validate_tires"
+    phx-submit="save_tires"
+  >
+    <div class="grid-auto-fit">
+      <div>
+        <%= label(f, :width) %>
+        <%= number_input(f, :width) %>
+        <%= error_tag(f, :width) %>
+      </div>
+
+      <div>
+        <%= label(f, :ratio) %>
+        <%= number_input(f, :ratio) %>
+        <%= error_tag(f, :ratio) %>
+      </div>
+
+      <div>
+        <%= label(f, :size) %>
+        <%= number_input(f, :size) %>
+        <%= error_tag(f, :size) %>
+      </div>
+    </div>
+
+    <%= submit("Save Tires", phx_disable_with: "Saving tires...") %>
+  </.form>
+</div>
 <div class="grid-auto-fit">
   <div>ts: <%= @event[:timestamp] %></div>
   <div>torque: <%= @event[:torque] %></div>

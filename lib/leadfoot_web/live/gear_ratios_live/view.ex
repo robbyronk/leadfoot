@@ -4,6 +4,7 @@ defmodule LeadfootWeb.GearRatiosLive.View do
   alias Phoenix.PubSub
   alias Leadfoot.GearRatios
   alias Leadfoot.ReadFile
+  alias Leadfoot.CarSettings.Tires
   import Leadfoot.SampleEvent
   import Leadfoot.Translation
 
@@ -24,9 +25,8 @@ defmodule LeadfootWeb.GearRatiosLive.View do
     gear8: 0.0,
     gear9: 0.0,
     gear10: 0.0,
-    tire_width: 235,
-    tire_ratio: 40,
-    wheel_size: 17,
+    tires: %Tires{},
+    tires_changeset: nil,
     shift_points: []
   }
 
@@ -39,7 +39,12 @@ defmodule LeadfootWeb.GearRatiosLive.View do
       :ok,
       socket
       |> assign(@initial_assigns)
+      |> assign_tires_changeset()
     }
+  end
+
+  def assign_tires_changeset(%{assigns: %{tires: tires}} = socket) do
+    assign(socket, tires_changeset: Tires.changeset(tires, %{}))
   end
 
   def handle_info({:event, event}, socket) do
@@ -141,34 +146,44 @@ defmodule LeadfootWeb.GearRatiosLive.View do
 
   @impl true
   def handle_event(
-        "save_tires",
-        %{
-          "tire_width" => tire_width,
-          "tire_ratio" => tire_ratio,
-          "wheel_size" => wheel_size
-        },
-        socket
+        "validate_tires",
+        %{"tires" => tires_params},
+        %{assigns: %{tires: tires}} = socket
       ) do
-    {tire_width, _} = Integer.parse(tire_width)
-    {tire_ratio, _} = Integer.parse(tire_ratio)
-    {wheel_size, _} = Integer.parse(wheel_size)
+    changeset =
+      tires
+      |> Tires.changeset(tires_params)
+      |> Map.put(:action, :validate)
 
-    {:ok, _tire_height} =
-      GearRatios.set_tire_size(
-        tire_width,
-        tire_ratio,
-        wheel_size
-      )
+    {:noreply, assign(socket, tires_changeset: changeset)}
+  end
 
-    {
-      :noreply,
-      socket
-      |> assign(
-        tire_width: tire_width,
-        tire_ratio: tire_ratio,
-        wheel_size: wheel_size
-      )
-    }
+  @impl true
+  def handle_event(
+        "save_tires",
+        %{"tires" => tires_params},
+        %{assigns: %{tires: tires}} = socket
+      ) do
+    changeset =
+      tires
+      |> Tires.changeset(tires_params)
+
+    if changeset.valid? do
+      {:ok, new_tires} = Ecto.Changeset.apply_action(changeset, :update)
+      GearRatios.set_tire_size(new_tires)
+
+      {
+        :noreply,
+        socket
+        |> assign(tires: new_tires)
+      }
+    else
+      {
+        :noreply,
+        socket
+        |> assign(tires_changeset: changeset)
+      }
+    end
   end
 
   def handle_event("start_recording", data, socket) do
