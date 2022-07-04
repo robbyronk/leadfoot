@@ -47,12 +47,12 @@ defmodule LeadfootWeb.GearRatiosLive.View do
     assign(socket, tires_changeset: Tires.changeset(tires, %{}))
   end
 
-  def handle_info({:event, event}, socket) do
-    {
-      :noreply,
-      socket
-      |> set_assigns(event)
-    }
+  def handle_info({:event, event}, %{assigns: %{event: last_event}} = socket) do
+    if last_event == nil or event[:timestamp] > last_event[:timestamp] do
+      { :noreply, socket |> set_assigns(event) }
+    else
+      { :noreply, socket  }
+    end
   end
 
   @impl true
