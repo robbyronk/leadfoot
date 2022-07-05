@@ -27,10 +27,14 @@ defmodule LeadfootWeb.GearRatiosLive.View do
     PubSub.subscribe(Leadfoot.PubSub, "session")
     Process.send_after(self(), :get_torques, 1000)
 
+    tires = GearRatios.get_tires()
+    gearbox = GearRatios.get_gearbox()
+
     {
       :ok,
       socket
       |> assign(@initial_assigns)
+      |> assign(tires: tires, gearbox: gearbox)
       |> assign_tires_changeset()
       |> assign_gearbox_changeset()
     }

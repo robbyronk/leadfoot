@@ -81,6 +81,8 @@ defmodule Leadfoot.GearRatios do
 
   def set_tire_size(%Tires{} = tires), do: GenServer.cast(@server, {:tire_size, tires})
 
+  def get_gearbox(), do: GenServer.call(@server, :get_gearbox)
+
   def set_gearbox(%Gearbox{} = gearbox), do: GenServer.cast(@server, {:gearbox, gearbox})
 
   def get_torques(), do: GenServer.call(@server, :get_torques)
@@ -105,6 +107,9 @@ defmodule Leadfoot.GearRatios do
 
   @impl true
   def handle_call(:get_tires, _from, state), do: {:reply, state.tires, state}
+
+  @impl true
+  def handle_call(:get_gearbox, _from, state), do: {:reply, state.gearbox, state}
 
   @impl true
   def handle_call(:get_torques, _from, state) do
