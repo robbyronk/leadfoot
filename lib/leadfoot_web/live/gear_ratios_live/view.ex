@@ -5,6 +5,7 @@ defmodule LeadfootWeb.GearRatiosLive.View do
   alias Leadfoot.GearRatios
   alias Leadfoot.ReadFile
   alias Leadfoot.CarSettings.Tires
+  alias Leadfoot.CarSettings.Gearbox
   import Leadfoot.SampleEvent
   import Leadfoot.Translation
 
@@ -14,17 +15,8 @@ defmodule LeadfootWeb.GearRatiosLive.View do
     torque_plot: "",
     force_plot: "",
     torques: [],
-    final: 3.85,
-    gear1: 4.14,
-    gear2: 2.67,
-    gear3: 1.82,
-    gear4: 1.33,
-    gear5: 1.0,
-    gear6: 0.8,
-    gear7: 0.0,
-    gear8: 0.0,
-    gear9: 0.0,
-    gear10: 0.0,
+    gearbox: %Gearbox{},
+    gearbox_changeset: nil,
     tires: %Tires{},
     tires_changeset: nil,
     shift_points: []
@@ -40,6 +32,7 @@ defmodule LeadfootWeb.GearRatiosLive.View do
       socket
       |> assign(@initial_assigns)
       |> assign_tires_changeset()
+      |> assign_gearbox_changeset()
     }
   end
 
@@ -47,6 +40,11 @@ defmodule LeadfootWeb.GearRatiosLive.View do
     assign(socket, tires_changeset: Tires.changeset(tires, %{}))
   end
 
+  def assign_gearbox_changeset(%{assigns: %{gearbox: gearbox}} = socket) do
+    assign(socket, gearbox_changeset: Gearbox.changeset(gearbox, %{}))
+  end
+
+  @impl true
   def handle_info({:event, event}, %{assigns: %{event: last_event}} = socket) do
     if last_event == nil or event[:timestamp] > last_event[:timestamp] do
       {:noreply, socket |> set_assigns(event)}
@@ -93,55 +91,41 @@ defmodule LeadfootWeb.GearRatiosLive.View do
 
   @impl true
   def handle_event(
-        "save_gears",
-        %{
-          "final" => final,
-          "gear1" => gear1,
-          "gear2" => gear2,
-          "gear3" => gear3,
-          "gear4" => gear4,
-          "gear5" => gear5,
-          "gear6" => gear6,
-          "gear7" => gear7,
-          "gear8" => gear8,
-          "gear9" => gear9,
-          "gear10" => gear10
-        },
-        socket
+        "validate_gearbox",
+        %{"gearbox" => params},
+        %{assigns: %{gearbox: gearbox}} = socket
       ) do
-    {final, _} = Float.parse(final)
-    {gear1, _} = Float.parse(gear1)
-    {gear2, _} = Float.parse(gear2)
-    {gear3, _} = Float.parse(gear3)
-    {gear4, _} = Float.parse(gear4)
-    {gear5, _} = Float.parse(gear5)
-    {gear6, _} = Float.parse(gear6)
-    {gear7, _} = Float.parse(gear7)
-    {gear8, _} = Float.parse(gear8)
-    {gear9, _} = Float.parse(gear9)
-    {gear10, _} = Float.parse(gear10)
+    changeset =
+      gearbox
+      |> Gearbox.changeset(params)
+      |> Map.put(:action, :validate)
 
-    gears = [gear1, gear2, gear3, gear4, gear5, gear6, gear7, gear8, gear9, gear10]
-    gears = Enum.take_while(gears, fn g -> g > 0.0 end)
-    :ok = GearRatios.set_gears(final, gears)
+    {:noreply, assign(socket, gearbox_changeset: changeset)}
+  end
 
-    {
-      :noreply,
-      socket
-      |> assign(
-        final: final,
-        gear1: gear1,
-        gear2: gear2,
-        gear3: gear3,
-        gear4: gear4,
-        gear5: gear5,
-        gear6: gear6,
-        gear7: gear7,
-        gear8: gear8,
-        gear9: gear9,
-        gear10: gear10
-      )
-    }
+  @impl true
+  def handle_event(
+        "save_gearbox",
+        %{"gearbox" => params},
+        %{assigns: %{gearbox: gearbox}} = socket
+      ) do
+    changeset =
+      gearbox
+      |> Gearbox.changeset(params)
+
+    if changeset.valid? do
+      {:ok, gearbox} = Ecto.Changeset.apply_action(changeset, :update)
+      GearRatios.set_gearbox(gearbox)
+
+      {
+        :noreply,
+        socket
+        |> assign(gearbox: gearbox)
+        |> assign_gearbox_changeset()
+      }
+    else
+      {:noreply, socket |> assign(gearbox_changeset: changeset)}
+    end
   end
 
   @impl true
@@ -176,6 +160,7 @@ defmodule LeadfootWeb.GearRatiosLive.View do
         :noreply,
         socket
         |> assign(tires: new_tires)
+        |> assign_tires_changeset()
       }
     else
       {

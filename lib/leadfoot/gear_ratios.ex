@@ -41,27 +41,14 @@ defmodule Leadfoot.GearRatios do
 
   alias Phoenix.PubSub
   alias Leadfoot.CarSettings.Tires
-
-  @final 3.67
-
-  # 1 indexed, like a gear selection. Matches event data
-  @ratios [
-    0.0,
-    3.54,
-    2.56,
-    1.82,
-    1.34,
-    1.03,
-    0.84
-  ]
+  alias Leadfoot.CarSettings.Gearbox
 
   # rx7 stock tires: 225/50R16
   # 22b stock tires: 235/40R17
 
   @initial_state %{
-  tires: %Tires{},
-    ratios: @ratios,
-    final: @final,
+    tires: %Tires{width: 235, ratio: 40, size: 17},
+    gearbox: %Gearbox{final: 3.85, gear1: 4.14, gear2: 2.67, gear3: 1.82, gear4: 1.33, gear5: 1.0, gear6: 0.8},
     drive_wheels: 4,
     peak_power: 0,
     peak_torque: 0,
@@ -71,10 +58,12 @@ defmodule Leadfoot.GearRatios do
     recording: true
   }
 
+  @server Leadfoot.GearRatios
+
   use GenServer
 
   def start_link(_opts) do
-    GenServer.start_link(__MODULE__, %{}, name: Leadfoot.GearRatios)
+    GenServer.start_link(__MODULE__, %{}, name: @server)
   end
 
   def start_link(state, opts) do
@@ -88,27 +77,23 @@ defmodule Leadfoot.GearRatios do
     {:ok, @initial_state}
   end
 
-  def get_tires(), do: GenServer.call(Leadfoot.GearRatios, :get_tires)
+  def get_tires(), do: GenServer.call(@server, :get_tires)
 
-  def set_tire_size(%Tires{} = tires) do
-    GenServer.cast(Leadfoot.GearRatios, {:tire_size, tires})
-  end
+  def set_tire_size(%Tires{} = tires), do: GenServer.cast(@server, {:tire_size, tires})
 
-  def set_gears(final, gears) do
-    GenServer.call(Leadfoot.GearRatios, {:gear_ratios, final, [0 | gears]})
-  end
+  def set_gearbox(%Gearbox{} = gearbox), do: GenServer.cast(@server, {:gearbox, gearbox})
 
-  def get_torques(), do: GenServer.call(Leadfoot.GearRatios, :get_torques)
+  def get_torques(), do: GenServer.call(@server, :get_torques)
 
-  def get_wheel_forces(), do: GenServer.call(Leadfoot.GearRatios, :get_wheel_forces)
+  def get_wheel_forces(), do: GenServer.call(@server, :get_wheel_forces)
 
-  def get_shift_points(), do: GenServer.call(Leadfoot.GearRatios, :get_shift_points)
+  def get_shift_points(), do: GenServer.call(@server, :get_shift_points)
 
-  def start_recording(), do: GenServer.cast(Leadfoot.GearRatios, :start_recording)
+  def start_recording(), do: GenServer.cast(@server, :start_recording)
 
-  def stop_recording(), do: GenServer.cast(Leadfoot.GearRatios, :stop_recording)
+  def stop_recording(), do: GenServer.cast(@server, :stop_recording)
 
-  def clear_recording(), do: GenServer.cast(Leadfoot.GearRatios, :clear_recording)
+  def clear_recording(), do: GenServer.cast(@server, :clear_recording)
 
   @impl true
   def handle_info({:event, event}, state) do
@@ -120,17 +105,6 @@ defmodule Leadfoot.GearRatios do
 
   @impl true
   def handle_call(:get_tires, _from, state), do: {:reply, state.tires, state}
-
-  @impl true
-  def handle_call({:gear_ratios, final, gears}, _from, state) do
-    # todo validate
-    # todo if a gear is too high or low, push the rest
-    {
-      :reply,
-      :ok,
-      %{state | final: final, ratios: gears, forces: []}
-    }
-  end
 
   @impl true
   def handle_call(:get_torques, _from, state) do
@@ -173,6 +147,11 @@ defmodule Leadfoot.GearRatios do
   end
 
   @impl true
+  def handle_cast({:gearbox, gearbox}, state) do
+    { :noreply, %{state | gearbox: gearbox, forces: []} }
+  end
+
+  @impl true
   def handle_cast({:tire_size, tires}, state) do
     {:noreply, %{state | tires: tires, forces: []}}
   end
@@ -198,24 +177,23 @@ defmodule Leadfoot.GearRatios do
   end
 
   def calculate_shift_points(state) do
-    wheel_diameter = Tires.get_tire_height(state.tire_width, state.tire_ratio, state.wheel_size)
+    wheel_diameter = Tires.get_tire_height(state.tires)
     wheel_radius = wheel_diameter / 2
 
     # todo use precalculated forces
 
-    gears_count = length(state.ratios) - 1
+    gears = Gearbox.get_gears(state.gearbox) |> Enum.with_index()
+    final = state.gearbox.final
 
     a =
-      for gear <- 1..gears_count do
+      for {gear_ratio, gear_index} <- gears do
         x =
           for {rpm, torque} <- state.torques do
-            gear_ratio = Enum.at(state.ratios, gear)
-
             {
-              gear,
+              gear_index + 1,
               rpm,
-              get_velocity(state.final, gear_ratio, rpm, wheel_diameter),
-              get_wheel_force(gear_ratio, state.final, torque, state.drive_wheels, wheel_radius)
+              get_velocity(final, gear_ratio, rpm, wheel_diameter),
+              get_wheel_force(gear_ratio, final, torque, state.drive_wheels, wheel_radius)
             }
           end
 
@@ -264,20 +242,19 @@ defmodule Leadfoot.GearRatios do
   end
 
   def calculate_forces(%{forces: []} = state) do
-    wheel_diameter = Tires.get_tire_height(state.tire_width, state.tire_ratio, state.wheel_size)
+    wheel_diameter = Tires.get_tire_height(state.tires)
     wheel_radius = wheel_diameter / 2
 
-    gears_count = length(state.ratios) - 1
+    gears = Gearbox.get_gears(state.gearbox) |> Enum.with_index()
+    final = state.gearbox.final
 
     forces =
-      for {rpm, torque} <- state.torques, gear <- 1..gears_count do
-        gear_ratio = Enum.at(state.ratios, gear)
-
+      for {rpm, torque} <- state.torques, {gear_ratio, gear_index} <- gears do
         {
-          gear,
+          gear_index + 1,
           rpm,
-          get_velocity(state.final, gear_ratio, rpm, wheel_diameter),
-          get_wheel_force(gear_ratio, state.final, torque, state.drive_wheels, wheel_radius)
+          get_velocity(final, gear_ratio, rpm, wheel_diameter),
+          get_wheel_force(gear_ratio, final, torque, state.drive_wheels, wheel_radius)
         }
       end
 

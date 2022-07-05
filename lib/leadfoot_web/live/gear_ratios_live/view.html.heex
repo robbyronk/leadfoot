@@ -39,24 +39,38 @@ tires:
   <div>recording: <%= @recording %></div>
 </div>
 gears:
-<form phx-submit="save_gears">
+<.form
+  let={f}
+  for={@gearbox_changeset}
+  id="gearbox-form"
+  phx-change="validate_gearbox"
+  phx-submit="save_gearbox"
+>
   <div class="grid-auto-fit">
-    <div>final: <input type="number" name="final" value={@final} step="0.01" min="0" /></div>
-    <div>1st: <input type="number" name="gear1" value={@gear1} step="0.01" min="0" /></div>
-    <div>2nd: <input type="number" name="gear2" value={@gear2} step="0.01" min="0" /></div>
-    <div>3rd: <input type="number" name="gear3" value={@gear3} step="0.01" min="0" /></div>
-    <div>4th: <input type="number" name="gear4" value={@gear4} step="0.01" min="0" /></div>
-    <div>5th: <input type="number" name="gear5" value={@gear5} step="0.01" min="0" /></div>
-    <div>6th: <input type="number" name="gear6" value={@gear6} step="0.01" min="0" /></div>
-    <div>7th: <input type="number" name="gear7" value={@gear7} step="0.01" min="0" /></div>
-    <div>8th: <input type="number" name="gear8" value={@gear8} step="0.01" min="0" /></div>
-    <div>9th: <input type="number" name="gear9" value={@gear9} step="0.01" min="0" /></div>
-    <div>10th: <input type="number" name="gear10" value={@gear10} step="0.01" min="0" /></div>
-    <div><button type="submit">save gears</button></div>
+    <%= for field <- [
+    :final,
+    :gear1,
+    :gear2,
+    :gear3,
+    :gear4,
+    :gear5,
+    :gear6,
+    :gear7,
+    :gear8,
+    :gear9,
+    :gear10
+    ] do %>
+      <div>
+        <%= label(f, field) %>
+        <%= number_input(f, field, step: "0.01", min: "0") %>
+        <%= error_tag(f, field) %>
+      </div>
+    <% end %>
+    <%= submit("Save Gearbox", phx_disable_with: "Saving gearbox...") %>
     <div><button phx-click="get_wheel_forces">get gears chart</button></div>
     <div><button phx-click="get_shift_points">get shift points</button></div>
   </div>
-</form>
+</.form>
 shift points:
 <%= for {gear, rpm, speed, _force} <- @shift_points do %>
   <div><%= gear %> @ <%= round(rpm) %> RPM (<%= Float.round(speed, 1) %>km/h)</div>
