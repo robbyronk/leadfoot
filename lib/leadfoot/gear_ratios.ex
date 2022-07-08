@@ -42,13 +42,22 @@ defmodule Leadfoot.GearRatios do
   alias Phoenix.PubSub
   alias Leadfoot.CarSettings.Tires
   alias Leadfoot.CarSettings.Gearbox
+  import Leadfoot.Gearbox
 
   # rx7 stock tires: 225/50R16
   # 22b stock tires: 235/40R17
 
   @initial_state %{
     tires: %Tires{width: 235, ratio: 40, size: 17},
-    gearbox: %Gearbox{final: 3.85, gear1: 4.14, gear2: 2.67, gear3: 1.82, gear4: 1.33, gear5: 1.0, gear6: 0.8},
+    gearbox: %Gearbox{
+      final: 3.85,
+      gear1: 4.14,
+      gear2: 2.67,
+      gear3: 1.82,
+      gear4: 1.33,
+      gear5: 1.0,
+      gear6: 0.8
+    },
     drive_wheels: 4,
     peak_power: 0,
     peak_torque: 0,
@@ -133,15 +142,15 @@ defmodule Leadfoot.GearRatios do
 
     # todo accumulate force and max power curve in one loop
     forces =
-      for {_gear, _rpm, velocity, force} <- state.forces do
-        {velocity, force}
+      for {_gear, _rpm, speed, force} <- state.forces do
+        {speed, force}
       end
 
     power = state.peak_power * state.power_multiple
 
     power_curve =
-      for {_gear, _rpm, velocity, _force} <- state.forces, power / velocity < 30000 do
-        {velocity, power / velocity}
+      for {_gear, _rpm, speed, _force} <- state.forces, power / speed < 30000 do
+        {speed, power / speed}
       end
 
     {
@@ -153,7 +162,7 @@ defmodule Leadfoot.GearRatios do
 
   @impl true
   def handle_cast({:gearbox, gearbox}, state) do
-    { :noreply, %{state | gearbox: gearbox, forces: []} }
+    {:noreply, %{state | gearbox: gearbox, forces: []}}
   end
 
   @impl true
@@ -197,8 +206,8 @@ defmodule Leadfoot.GearRatios do
             {
               gear_index + 1,
               rpm,
-              get_velocity(final, gear_ratio, rpm, wheel_diameter),
-              get_wheel_force(gear_ratio, final, torque, state.drive_wheels, wheel_radius)
+              get_speed(final, gear_ratio, rpm, wheel_diameter),
+              get_wheel_force(final, gear_ratio, torque, state.drive_wheels, wheel_radius)
             }
           end
 
@@ -258,8 +267,8 @@ defmodule Leadfoot.GearRatios do
         {
           gear_index + 1,
           rpm,
-          get_velocity(final, gear_ratio, rpm, wheel_diameter),
-          get_wheel_force(gear_ratio, final, torque, state.drive_wheels, wheel_radius)
+          get_speed(final, gear_ratio, rpm, wheel_diameter),
+          get_wheel_force(final, gear_ratio, torque, state.drive_wheels, wheel_radius)
         }
       end
 
@@ -299,23 +308,5 @@ defmodule Leadfoot.GearRatios do
       true ->
         state
     end
-  end
-
-  @doc """
-  Calculates the velocity of the car in kph
-
-      iex> Float.round(Leadfoot.GearRatios.get_velocity(4.0, 1.0, 5000, 0.6), 2)
-      141.37
-
-      iex> Float.round(Leadfoot.GearRatios.get_velocity(4.0, 2.0, 5000, 0.6), 2)
-      70.69
-  """
-  def get_velocity(final, gear, engine_rpm, wheel_diameter) do
-    wheel_rpm = engine_rpm / (final * gear)
-    wheel_rpm * 60 * :math.pi() * wheel_diameter / 1000
-  end
-
-  def get_wheel_force(gear_ratio, final_ratio, engine_torque, total_drive_wheels, wheel_radius) do
-    gear_ratio * final_ratio * engine_torque / (total_drive_wheels * wheel_radius)
   end
 end
