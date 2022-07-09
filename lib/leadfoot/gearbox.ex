@@ -92,6 +92,9 @@ defmodule Leadfoot.Gearbox do
   The optimal_top_gear_forces are in ascending speed order.
 
   The optimal_down_gear_forces are in descending speed order, so they can be fed into the next call.
+
+  If this ends up being inefficient, another possible option is checking the intersection of line segments
+  like in https://stackoverflow.com/a/9997374
   """
   def rev_acc_optimal_forces([t | top_gear_forces], [d | down_gear_forces], acc \\ []) do
     {_, _, top_speed, top_force} = t
