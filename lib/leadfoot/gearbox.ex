@@ -56,13 +56,13 @@ defmodule Leadfoot.Gearbox do
   """
   def get_optimal_forces(forces) do
     forces
-    |> Enum.group_by(fn {gear, _, _, _} -> gear end)
+    |> Enum.group_by(&gear_elem/1)
     |> Enum.map(fn {gear, forces} ->
-      {gear, Enum.sort_by(forces, fn {_, _, speed, _} -> speed end) |> Enum.reverse()}
+      {gear, Enum.sort_by(forces, &speed_elem/1) |> Enum.reverse()}
     end)
     |> Enum.into(%{})
     |> optimal_forces_by_gear()
-    |> Enum.sort_by(fn {_, _, speed, _} -> speed end)
+    |> Enum.sort_by(&speed_elem/1)
   end
 
   def optimal_forces_by_gear(forces) when is_map(forces) do
@@ -111,4 +111,14 @@ defmodule Leadfoot.Gearbox do
         rev_acc_optimal_forces(top_gear_forces, [d | down_gear_forces], [t | acc])
     end
   end
+
+  def get_shift_points(optimal_forces) do
+    optimal_forces
+    |> Enum.chunk_by(&gear_elem/1)
+    |> Enum.map(&List.last/1)
+  end
+
+  defp gear_elem({gear, _, _, _}), do: gear
+
+  defp speed_elem({_, _, speed, _}), do: speed
 end

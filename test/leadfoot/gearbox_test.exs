@@ -31,9 +31,11 @@ defmodule Leadfoot.GearboxTest do
 
     forces = Gearbox.calculate_forces(gearbox, tires, torques, drive_wheels)
     optimal_forces = Gearbox.get_optimal_forces(forces)
+    shift_points = Gearbox.get_shift_points(optimal_forces)
 
     assert length(forces) > 2700
     assert length(optimal_forces) > 1100
+    assert length(shift_points) == 6
   end
 
   test "accumulate forces when the down gear is best over all speeds" do
