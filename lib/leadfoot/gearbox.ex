@@ -121,4 +121,20 @@ defmodule Leadfoot.Gearbox do
   defp gear_elem({gear, _, _, _}), do: gear
 
   defp speed_elem({_, _, speed, _}), do: speed
+
+  def get_max_power(forces) do
+    forces
+    |> Enum.map(fn {_, _, speed, force} -> speed * force end)
+    |> Enum.max()
+  end
+
+  def calculate_loss({gear, rpm, speed, force}, max_power) do
+    {gear, rpm, speed, force, max_power / speed - force}
+  end
+
+  def calculate_losses(optimal_forces) do
+    max_power = get_max_power(optimal_forces)
+
+    Enum.map(optimal_forces, &calculate_loss(&1, max_power))
+  end
 end

@@ -12,7 +12,7 @@ defmodule Leadfoot.GearboxTest do
   end
 
   test "calculate everything for 22b" do
-    %{torques: torques} = File.read!("test/fixtures/22b-torques") |> :erlang.binary_to_term
+    %{torques: torques} = File.read!("test/fixtures/22b-torques") |> :erlang.binary_to_term()
 
     gearbox = %Leadfoot.CarSettings.Gearbox{
       final: 3.85,
@@ -25,17 +25,22 @@ defmodule Leadfoot.GearboxTest do
     }
 
     tires = %Leadfoot.CarSettings.Tires{
-      width: 235, ratio: 40, size: 17
+      width: 235,
+      ratio: 40,
+      size: 17
     }
+
     drive_wheels = 4
 
     forces = Gearbox.calculate_forces(gearbox, tires, torques, drive_wheels)
     optimal_forces = Gearbox.get_optimal_forces(forces)
     shift_points = Gearbox.get_shift_points(optimal_forces)
+    transmission_losses = Gearbox.calculate_losses(optimal_forces)
 
     assert length(forces) > 2700
     assert length(optimal_forces) > 1100
     assert length(shift_points) == 6
+    assert length(transmission_losses) == length(optimal_forces)
   end
 
   test "accumulate forces when the down gear is best over all speeds" do
