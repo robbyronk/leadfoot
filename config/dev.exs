@@ -2,9 +2,9 @@ import Config
 
 # Configure your database
 config :leadfoot, Leadfoot.Repo,
-       database: Path.expand("../leadfoot_dev.db", Path.dirname(__ENV__.file)),
-       pool_size: 5,
-       show_sensitive_data_on_connection_error: true
+  database: Path.expand("../leadfoot_dev.db", Path.dirname(__ENV__.file)),
+  pool_size: 5,
+  show_sensitive_data_on_connection_error: true
 
 # For development, we disable any cache and enable
 # debugging and code reloading.
@@ -23,7 +23,8 @@ config :leadfoot, LeadfootWeb.Endpoint,
   secret_key_base: "hx+0S3vJwXa7OkQLkMGTd3qNjgWmawIzi+cxlrtcB32/QXLm9fPxQhnbai5+dsKT",
   watchers: [
     # Start the esbuild watcher by calling Esbuild.install_and_run(:default, args)
-    esbuild: {Esbuild, :install_and_run, [:default, ~w(--sourcemap=inline --watch)]}
+    esbuild: {Esbuild, :install_and_run, [:default, ~w(--sourcemap=inline --watch)]},
+    tailwind: {Tailwind, :install_and_run, [:default, ~w(--watch)]}
   ]
 
 # ## SSL Support

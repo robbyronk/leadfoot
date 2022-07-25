@@ -1,5 +1,8 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 /* This file is for your main application CSS */
-@import "./phoenix.css";
 
 .mt-3 {
   margin-top: 1rem;
