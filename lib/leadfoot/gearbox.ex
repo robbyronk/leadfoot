@@ -95,6 +95,8 @@ defmodule Leadfoot.Gearbox do
 
   If this ends up being inefficient, another possible option is checking the intersection of line segments
   like in https://stackoverflow.com/a/9997374
+
+  todo: this blows up sometimes, possibly when gears are identical?
   """
   def rev_acc_optimal_forces([t | top_gear_forces], [d | down_gear_forces], acc \\ []) do
     {_, _, top_speed, top_force} = t
@@ -107,6 +109,8 @@ defmodule Leadfoot.Gearbox do
       down_speed >= top_speed ->
         rev_acc_optimal_forces([t | top_gear_forces], down_gear_forces, acc)
 
+        length(top_gear_forces) == 0 ->
+          {acc, [d | down_gear_forces]}
       true ->
         rev_acc_optimal_forces(top_gear_forces, [d | down_gear_forces], [t | acc])
     end
