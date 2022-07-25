@@ -1,53 +1,47 @@
-tires:
-<div>
-  <.form
-    let={f}
-    for={@tires_changeset}
-    id="tires-form"
-    phx-change="validate_tires"
-    phx-submit="save_tires"
-  >
-    <div class="grid-auto-fit">
-      <div>
-        <%= label(f, :width) %>
-        <%= number_input(f, :width) %>
-        <%= error_tag(f, :width) %>
-      </div>
+<div class="grid grid-cols-4 gap-2">
+  <div>
+    tires:
+    <.form
+      let={f}
+      for={@tires_changeset}
+      id="tires-form"
+      phx-change="validate_tires"
+      phx-submit="save_tires"
+    >
+      <div class="grid-auto-fit">
+        <div>
+          <%= label(f, :width) %>
+          <%= number_input(f, :width) %>
+          <%= error_tag(f, :width) %>
+        </div>
 
-      <div>
-        <%= label(f, :ratio) %>
-        <%= number_input(f, :ratio) %>
-        <%= error_tag(f, :ratio) %>
-      </div>
+        <div>
+          <%= label(f, :ratio) %>
+          <%= number_input(f, :ratio) %>
+          <%= error_tag(f, :ratio) %>
+        </div>
 
-      <div>
-        <%= label(f, :size) %>
-        <%= number_input(f, :size) %>
-        <%= error_tag(f, :size) %>
+        <div>
+          <%= label(f, :size) %>
+          <%= number_input(f, :size) %>
+          <%= error_tag(f, :size) %>
+        </div>
+        <%= submit("Save Tires",
+          class: "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded",
+          phx_disable_with: "Saving tires..."
+        ) %>
       </div>
-    </div>
-
-    <%= submit("Save Tires", phx_disable_with: "Saving tires...") %>
-  </.form>
-</div>
-<div class="grid-auto-fit">
-  <div>ts: <%= @event[:timestamp] %></div>
-  <div>torque: <%= @event[:torque] %></div>
-  <div>accelerator: <%= @event[:accelerator] %></div>
-  <div>gear: <%= @event[:gear] %></div>
-  <div>rpm: <%= @event[:current_rpm] %></div>
-  <div>recording: <%= @recording %></div>
-</div>
-gears:
-<.form
-  let={f}
-  for={@gearbox_changeset}
-  id="gearbox-form"
-  phx-change="validate_gearbox"
-  phx-submit="save_gearbox"
->
-  <div class="grid-auto-fit">
-    <%= for field <- [
+    </.form>
+    gears:
+    <.form
+      let={f}
+      for={@gearbox_changeset}
+      id="gearbox-form"
+      phx-change="validate_gearbox"
+      phx-submit="save_gearbox"
+    >
+      <div class="grid-auto-fit">
+        <%= for field <- [
     :final,
     :gear1,
     :gear2,
@@ -60,21 +54,35 @@ gears:
     :gear9,
     :gear10
     ] do %>
-      <div>
-        <%= label(f, field) %>
-        <%= number_input(f, field, step: "0.01", min: "0") %>
-        <%= error_tag(f, field) %>
+          <div>
+            <%= label(f, field) %>
+            <%= number_input(f, field, step: "0.01", min: "0") %>
+            <%= error_tag(f, field) %>
+          </div>
+        <% end %>
+        <%= submit("Save Gearbox", phx_disable_with: "Saving gearbox...") %>
+        <div><button phx-click="get_wheel_forces">get gears chart</button></div>
+        <div><button phx-click="get_shift_points">get shift points</button></div>
       </div>
+    </.form>
+    shift points:
+    <%= for {gear, rpm, speed, _force} <- @shift_points do %>
+      <div><%= gear %> @ <%= round(rpm) %> RPM (<%= Float.round(speed, 1) %>km/h)</div>
     <% end %>
-    <%= submit("Save Gearbox", phx_disable_with: "Saving gearbox...") %>
-    <div><button phx-click="get_wheel_forces">get gears chart</button></div>
-    <div><button phx-click="get_shift_points">get shift points</button></div>
   </div>
-</.form>
-shift points:
-<%= for {gear, rpm, speed, _force} <- @shift_points do %>
-  <div><%= gear %> @ <%= round(rpm) %> RPM (<%= Float.round(speed, 1) %>km/h)</div>
-<% end %>
+  <div class="col-span-3">
+    <div class="grid grid-cols-2 gap-2">
+      <div>
+        torque curve <%= @torque_plot %>
+      </div>
+      <div>rpm gear chart</div>
+      <div>
+        all forces chart <%= @force_plot %>
+      </div>
+      <div>transmission losses chart</div>
+    </div>
+  </div>
+</div>
 
 <div class="grid-auto-fit mt-3">
   <div><button phx-click="start_recording">start recording</button></div>
@@ -82,6 +90,3 @@ shift points:
   <div><button phx-click="clear_recording">clear recording</button></div>
   <div><button phx-click="dyno_demo">play demo 22b</button></div>
 </div>
-
-<div><%= @torque_plot %></div>
-<div><%= @force_plot %></div>
