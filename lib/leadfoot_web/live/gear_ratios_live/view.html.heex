@@ -11,19 +11,19 @@
       <div class="grid-auto-fit">
         <div>
           <%= label(f, :width) %>
-          <%= number_input(f, :width) %>
+          <%= text_input(f, :width, inputmode: "numeric") %>
           <%= error_tag(f, :width) %>
         </div>
 
         <div>
           <%= label(f, :ratio) %>
-          <%= number_input(f, :ratio) %>
+          <%= text_input(f, :ratio, inputmode: "numeric") %>
           <%= error_tag(f, :ratio) %>
         </div>
 
         <div>
           <%= label(f, :size) %>
-          <%= number_input(f, :size) %>
+          <%= text_input(f, :size, inputmode: "numeric") %>
           <%= error_tag(f, :size) %>
         </div>
         <.btn type="submit">Save Tires</.btn>
@@ -53,11 +53,11 @@
     ] do %>
           <div>
             <%= label(f, field) %>
-            <%= number_input(f, field, step: "0.01", min: "0") %>
+            <%= text_input(f, field, inputmode: "decimal") %>
             <%= error_tag(f, field) %>
           </div>
         <% end %>
-        <.btn>Save Gearbox</.btn>
+        <.btn type="submit">Save Gearbox</.btn>
       </div>
     </.form>
     shift points:
@@ -70,9 +70,9 @@
       <div>
         torque curve <%= @torque_plot %>
       </div>
-      <div>rpm gear chart</div>
+      <div>rpm gear chart <%= @rpm_plot %></div>
       <div>
-        all forces chart <%= @force_plot %>
+        optimal forces chart <%= @force_plot %>
       </div>
       <div>transmission losses chart</div>
     </div>
