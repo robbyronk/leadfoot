@@ -8,6 +8,7 @@ defmodule LeadfootWeb.GearRatiosLive.View do
   alias Leadfoot.CarSettings.Gearbox
   import Leadfoot.SampleEvent
   import Leadfoot.Translation
+  import LeadfootWeb.UI.Buttons
 
   @initial_assigns %{
     event: nil,

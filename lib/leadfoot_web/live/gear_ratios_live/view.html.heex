@@ -26,10 +26,7 @@
           <%= number_input(f, :size) %>
           <%= error_tag(f, :size) %>
         </div>
-        <%= submit("Save Tires",
-          class: "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded",
-          phx_disable_with: "Saving tires..."
-        ) %>
+        <.btn type="submit">Save Tires</.btn>
       </div>
     </.form>
     gears:
@@ -60,9 +57,7 @@
             <%= error_tag(f, field) %>
           </div>
         <% end %>
-        <%= submit("Save Gearbox", phx_disable_with: "Saving gearbox...") %>
-        <div><button phx-click="get_wheel_forces">get gears chart</button></div>
-        <div><button phx-click="get_shift_points">get shift points</button></div>
+        <.btn>Save Gearbox</.btn>
       </div>
     </.form>
     shift points:
@@ -82,11 +77,4 @@
       <div>transmission losses chart</div>
     </div>
   </div>
-</div>
-
-<div class="grid-auto-fit mt-3">
-  <div><button phx-click="start_recording">start recording</button></div>
-  <div><button phx-click="stop_recording">stop recording</button></div>
-  <div><button phx-click="clear_recording">clear recording</button></div>
-  <div><button phx-click="dyno_demo">play demo 22b</button></div>
 </div>
