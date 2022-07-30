@@ -16,6 +16,7 @@ defmodule LeadfootWeb.GearRatiosLive.View do
     torque_plot: "",
     force_plot: "",
     rpm_plot: "",
+    loss_plot: "",
     torques: [],
     gearbox: %Gearbox{},
     gearbox_changeset: nil,
@@ -49,6 +50,7 @@ defmodule LeadfootWeb.GearRatiosLive.View do
     |> assign_torque_chart()
     |> assign_force_plot()
     |> assign_rpm_speed_chart()
+    |> assign_loss_plot()
   end
 
   def assign_tires_changeset(%{assigns: %{tires: tires}} = socket) do
@@ -180,13 +182,26 @@ defmodule LeadfootWeb.GearRatiosLive.View do
         socket.assigns.torques,
         4
       )
-      |> Leadfoot.Gearbox.get_optimal_forces()
 
-    assign(socket, forces: forces)
+    assign(socket, forces: forces, optimal_forces: Leadfoot.Gearbox.get_optimal_forces(forces))
+  end
+
+  def assign_loss_plot(socket) do
+    transmission_losses =
+      Leadfoot.Gearbox.calculate_losses(socket.assigns.optimal_forces)
+      |> Enum.drop_while(fn {_, _, _, _, loss} -> loss > 5 end)
+      |> Enum.take_while(fn {_, _, speed, _, _} -> speed < 250 end)
+
+    data =
+      for {_, _, speed, _, loss} <- transmission_losses do
+        {speed, loss}
+      end
+
+    assign(socket, loss_plot: force_plot(data), losses: transmission_losses)
   end
 
   def assign_shift_points(socket) do
-    assign(socket, shift_points: Leadfoot.Gearbox.get_shift_points(socket.assigns.forces))
+    assign(socket, shift_points: Leadfoot.Gearbox.get_shift_points(socket.assigns.optimal_forces))
   end
 
   def assign_torque_chart(socket) do
@@ -204,7 +219,7 @@ defmodule LeadfootWeb.GearRatiosLive.View do
 
   def assign_rpm_speed_chart(socket) do
     data =
-      for {_, rpm, speed, _} <- socket.assigns.forces do
+      for {_, rpm, speed, _} <- socket.assigns.optimal_forces do
         {speed, rpm}
       end
 
