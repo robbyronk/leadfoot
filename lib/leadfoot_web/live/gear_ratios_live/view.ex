@@ -43,12 +43,12 @@ defmodule LeadfootWeb.GearRatiosLive.View do
   end
 
   def assign_updated_outputs(socket) do
-socket
-      |> assign_forces()
-      |> assign_shift_points()
-      |> assign_torque_chart()
-      |> assign_force_plot()
-      |> assign_rpm_speed_chart()
+    socket
+    |> assign_forces()
+    |> assign_shift_points()
+    |> assign_torque_chart()
+    |> assign_force_plot()
+    |> assign_rpm_speed_chart()
   end
 
   def assign_tires_changeset(%{assigns: %{tires: tires}} = socket) do
@@ -194,16 +194,20 @@ socket
   end
 
   def assign_force_plot(socket) do
-  data = for {_, _, speed, force} <- socket.assigns.forces do
-    {speed, force}
-    end
+    data =
+      for {_, _, speed, force} <- socket.assigns.forces do
+        {speed, force}
+      end
+
     assign(socket, force_plot: force_plot(data))
   end
 
   def assign_rpm_speed_chart(socket) do
-  data = for {_, rpm, speed, _} <- socket.assigns.forces do
-    {speed, rpm}
-    end
+    data =
+      for {_, rpm, speed, _} <- socket.assigns.forces do
+        {speed, rpm}
+      end
+
     assign(socket, rpm_plot: force_plot(data))
   end
 end

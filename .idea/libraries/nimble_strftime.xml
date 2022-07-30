@@ -1,0 +1,53 @@
+<component name="libraryTable">
+  <library name="nimble_strftime" type="mix">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/nimble_strftime/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/nimble_strftime/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/nimble_strftime/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/nimble_strftime/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/nimble_strftime/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/nimble_strftime/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/nimble_strftime/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/nimble_strftime/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/nimble_strftime/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/test/lib/nimble_strftime/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/nimble_strftime/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/test/lib/nimble_strftime/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/nimble_strftime/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/test/lib/nimble_strftime/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/nimble_strftime/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/test/lib/nimble_strftime/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/nimble_strftime/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/test/lib/nimble_strftime/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/nimble_strftime/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/test/lib/nimble_strftime/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/nimble_strftime/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/test/lib/nimble_strftime/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/nimble_strftime/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/test/lib/nimble_strftime/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/nimble_strftime/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/test/lib/nimble_strftime/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/nimble_strftime/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/test/lib/nimble_strftime/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/nimble_strftime/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/test/lib/nimble_strftime/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/nimble_strftime/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/test/lib/nimble_strftime/ebin" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="file://$PROJECT_DIR$/deps/nimble_strftime/lib" />
+      <root url="file://$PROJECT_DIR$/deps/nimble_strftime/lib" />
+      <root url="file://$PROJECT_DIR$/deps/nimble_strftime/lib" />
+      <root url="file://$PROJECT_DIR$/deps/nimble_strftime/lib" />
+      <root url="file://$PROJECT_DIR$/deps/nimble_strftime/lib" />
+      <root url="file://$PROJECT_DIR$/deps/nimble_strftime/lib" />
+      <root url="file://$PROJECT_DIR$/deps/nimble_strftime/lib" />
+      <root url="file://$PROJECT_DIR$/deps/nimble_strftime/lib" />
+      <root url="file://$PROJECT_DIR$/deps/nimble_strftime/lib" />
+      <root url="file://$PROJECT_DIR$/deps/nimble_strftime/lib" />
+      <root url="file://$PROJECT_DIR$/deps/nimble_strftime/lib" />
+      <root url="file://$PROJECT_DIR$/deps/nimble_strftime/lib" />
+    </SOURCES>
+  </library>
+</component>

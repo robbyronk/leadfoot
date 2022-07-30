@@ -22,12 +22,15 @@ defmodule Leadfoot.Scratch do
       final: 3.85,
       gear1: 4.14
     }
-    random_gears = for _ <- 1..5 do
-                     Float.round(1.1 + :rand.uniform() * (4.1 - 1.1), 2)
-                   end
-                   |> List.insert_at(0, 1.0)
-                   |> Enum.sort()
-                   |> Enum.reverse()
+
+    random_gears =
+      for _ <- 1..5 do
+        Float.round(1.1 + :rand.uniform() * (4.1 - 1.1), 2)
+      end
+      |> List.insert_at(0, 1.0)
+      |> Enum.sort()
+      |> Enum.reverse()
+
     Leadfoot.CarSettings.Gearbox.fill_gears(gearbox, random_gears)
   end
 
@@ -46,11 +49,12 @@ defmodule Leadfoot.Scratch do
     optimal_forces = Gearbox.get_optimal_forces(forces)
     transmission_losses = Gearbox.calculate_losses(optimal_forces)
 
-    total_loss = transmission_losses
-    |> Enum.drop_while(fn {_, _, _, _, loss} -> loss > 5 end)
-    |> Enum.take_while(fn {_, _, speed, _, _} -> speed < 250 end)
-    |> Enum.map(fn {_, _, _, _, loss} -> loss end)
-    |> Enum.sum()
+    total_loss =
+      transmission_losses
+      |> Enum.drop_while(fn {_, _, _, _, loss} -> loss > 5 end)
+      |> Enum.take_while(fn {_, _, speed, _, _} -> speed < 250 end)
+      |> Enum.map(fn {_, _, _, _, loss} -> loss end)
+      |> Enum.sum()
 
     {gearbox, total_loss}
   end
@@ -58,10 +62,11 @@ defmodule Leadfoot.Scratch do
   def find_nice_gearbox(tries \\ 10000) do
     torques = get_torques()
 
-    {best_gearbox, best_loss} = 1..tries
-    |> Enum.map(fn _ -> Task.async(fn -> try_random_gearbox(torques) end) end)
-    |> Enum.map(&Task.await/1)
-    |> Enum.min_by(fn {_, loss} -> loss end)
+    {best_gearbox, best_loss} =
+      1..tries
+      |> Enum.map(fn _ -> Task.async(fn -> try_random_gearbox(torques) end) end)
+      |> Enum.map(&Task.await/1)
+      |> Enum.min_by(fn {_, loss} -> loss end)
 
     IO.inspect(best_gearbox)
     IO.inspect(best_loss)
@@ -82,15 +87,15 @@ defmodule Leadfoot.Scratch do
   end
 
   def ideal_gearbox() do
-#    %Leadfoot.CarSettings.Gearbox{
-#      final: 3.85,
-#      gear1: 4.14,
-#      gear2: 3.11,
-#      gear3: 2.39,
-#      gear4: 1.82,
-#      gear5: 1.33,
-#      gear6: 0.91,
-#    }
+    #    %Leadfoot.CarSettings.Gearbox{
+    #      final: 3.85,
+    #      gear1: 4.14,
+    #      gear2: 3.11,
+    #      gear3: 2.39,
+    #      gear4: 1.82,
+    #      gear5: 1.33,
+    #      gear6: 0.91,
+    #    }
     %Leadfoot.CarSettings.Gearbox{
       final: 3.85,
       gear1: 4.14,
@@ -107,7 +112,6 @@ defmodule Leadfoot.Scratch do
   end
 
   def chart_ideal_losses(torques) do
-
     gearbox = ideal_gearbox()
 
     tires = %Leadfoot.CarSettings.Tires{

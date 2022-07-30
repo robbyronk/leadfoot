@@ -109,8 +109,9 @@ defmodule Leadfoot.Gearbox do
       down_speed >= top_speed ->
         rev_acc_optimal_forces([t | top_gear_forces], down_gear_forces, acc)
 
-        length(top_gear_forces) == 0 ->
-          {acc, [d | down_gear_forces]}
+      length(top_gear_forces) == 0 ->
+        {acc, [d | down_gear_forces]}
+
       true ->
         rev_acc_optimal_forces(top_gear_forces, [d | down_gear_forces], [t | acc])
     end

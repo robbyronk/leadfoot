@@ -1,0 +1,65 @@
+<component name="libraryTable">
+  <library name="circuits_uart" type="mix">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/circuits_uart/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/circuits_uart/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/circuits_uart/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/circuits_uart/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/circuits_uart/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/circuits_uart/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/circuits_uart/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/circuits_uart/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/circuits_uart/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/test/lib/circuits_uart/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/circuits_uart/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/test/lib/circuits_uart/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/circuits_uart/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/test/lib/circuits_uart/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/circuits_uart/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/test/lib/circuits_uart/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/circuits_uart/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/test/lib/circuits_uart/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/circuits_uart/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/test/lib/circuits_uart/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/circuits_uart/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/test/lib/circuits_uart/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/circuits_uart/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/test/lib/circuits_uart/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/circuits_uart/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/test/lib/circuits_uart/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/circuits_uart/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/test/lib/circuits_uart/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/circuits_uart/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/test/lib/circuits_uart/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/circuits_uart/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/test/lib/circuits_uart/ebin" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="file://$PROJECT_DIR$/deps/circuits_uart/lib" />
+      <root url="file://$PROJECT_DIR$/deps/circuits_uart/src" />
+      <root url="file://$PROJECT_DIR$/deps/circuits_uart/lib" />
+      <root url="file://$PROJECT_DIR$/deps/circuits_uart/src" />
+      <root url="file://$PROJECT_DIR$/deps/circuits_uart/lib" />
+      <root url="file://$PROJECT_DIR$/deps/circuits_uart/src" />
+      <root url="file://$PROJECT_DIR$/deps/circuits_uart/lib" />
+      <root url="file://$PROJECT_DIR$/deps/circuits_uart/src" />
+      <root url="file://$PROJECT_DIR$/deps/circuits_uart/lib" />
+      <root url="file://$PROJECT_DIR$/deps/circuits_uart/src" />
+      <root url="file://$PROJECT_DIR$/deps/circuits_uart/lib" />
+      <root url="file://$PROJECT_DIR$/deps/circuits_uart/src" />
+      <root url="file://$PROJECT_DIR$/deps/circuits_uart/lib" />
+      <root url="file://$PROJECT_DIR$/deps/circuits_uart/src" />
+      <root url="file://$PROJECT_DIR$/deps/circuits_uart/lib" />
+      <root url="file://$PROJECT_DIR$/deps/circuits_uart/src" />
+      <root url="file://$PROJECT_DIR$/deps/circuits_uart/lib" />
+      <root url="file://$PROJECT_DIR$/deps/circuits_uart/src" />
+      <root url="file://$PROJECT_DIR$/deps/circuits_uart/lib" />
+      <root url="file://$PROJECT_DIR$/deps/circuits_uart/src" />
+      <root url="file://$PROJECT_DIR$/deps/circuits_uart/lib" />
+      <root url="file://$PROJECT_DIR$/deps/circuits_uart/src" />
+      <root url="file://$PROJECT_DIR$/deps/circuits_uart/lib" />
+      <root url="file://$PROJECT_DIR$/deps/circuits_uart/src" />
+    </SOURCES>
+  </library>
+</component>

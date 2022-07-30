@@ -1,0 +1,30 @@
+<component name="libraryTable">
+  <library name="ecto_sqlite3" type="mix">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/_build/test/lib/ecto_sqlite3/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/test/lib/ecto_sqlite3/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/test/lib/ecto_sqlite3/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/test/lib/ecto_sqlite3/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/ecto_sqlite3/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/test/lib/ecto_sqlite3/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/ecto_sqlite3/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/test/lib/ecto_sqlite3/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/ecto_sqlite3/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/test/lib/ecto_sqlite3/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/ecto_sqlite3/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/test/lib/ecto_sqlite3/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/ecto_sqlite3/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/test/lib/ecto_sqlite3/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/ecto_sqlite3/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/test/lib/ecto_sqlite3/ebin" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="file://$PROJECT_DIR$/deps/ecto_sqlite3/lib" />
+      <root url="file://$PROJECT_DIR$/deps/ecto_sqlite3/lib" />
+      <root url="file://$PROJECT_DIR$/deps/ecto_sqlite3/lib" />
+      <root url="file://$PROJECT_DIR$/deps/ecto_sqlite3/lib" />
+      <root url="file://$PROJECT_DIR$/deps/ecto_sqlite3/lib" />
+    </SOURCES>
+  </library>
+</component>

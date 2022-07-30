@@ -1,8 +1,45 @@
 <component name="libraryTable">
   <library name="floki" type="mix">
-    <CLASSES />
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/_build/test/lib/floki/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/test/lib/floki/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/test/lib/floki/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/test/lib/floki/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/test/lib/floki/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/test/lib/floki/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/test/lib/floki/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/test/lib/floki/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/test/lib/floki/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/test/lib/floki/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/test/lib/floki/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/test/lib/floki/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/test/lib/floki/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/test/lib/floki/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/test/lib/floki/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/test/lib/floki/ebin" />
+    </CLASSES>
     <JAVADOC />
     <SOURCES>
+      <root url="file://$PROJECT_DIR$/deps/floki/lib" />
+      <root url="file://$PROJECT_DIR$/deps/floki/src" />
+      <root url="file://$PROJECT_DIR$/deps/floki/lib" />
+      <root url="file://$PROJECT_DIR$/deps/floki/src" />
+      <root url="file://$PROJECT_DIR$/deps/floki/lib" />
+      <root url="file://$PROJECT_DIR$/deps/floki/src" />
+      <root url="file://$PROJECT_DIR$/deps/floki/lib" />
+      <root url="file://$PROJECT_DIR$/deps/floki/src" />
+      <root url="file://$PROJECT_DIR$/deps/floki/lib" />
+      <root url="file://$PROJECT_DIR$/deps/floki/src" />
+      <root url="file://$PROJECT_DIR$/deps/floki/lib" />
+      <root url="file://$PROJECT_DIR$/deps/floki/src" />
+      <root url="file://$PROJECT_DIR$/deps/floki/lib" />
+      <root url="file://$PROJECT_DIR$/deps/floki/src" />
+      <root url="file://$PROJECT_DIR$/deps/floki/lib" />
+      <root url="file://$PROJECT_DIR$/deps/floki/src" />
+      <root url="file://$PROJECT_DIR$/deps/floki/lib" />
+      <root url="file://$PROJECT_DIR$/deps/floki/src" />
+      <root url="file://$PROJECT_DIR$/deps/floki/lib" />
+      <root url="file://$PROJECT_DIR$/deps/floki/src" />
       <root url="file://$PROJECT_DIR$/deps/floki/lib" />
       <root url="file://$PROJECT_DIR$/deps/floki/src" />
       <root url="file://$PROJECT_DIR$/deps/floki/lib" />

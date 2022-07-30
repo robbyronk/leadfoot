@@ -1,0 +1,53 @@
+<component name="libraryTable">
+  <library name="contex" type="mix">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/contex/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/contex/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/contex/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/contex/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/contex/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/contex/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/contex/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/contex/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/contex/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/test/lib/contex/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/contex/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/test/lib/contex/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/contex/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/test/lib/contex/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/contex/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/test/lib/contex/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/contex/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/test/lib/contex/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/contex/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/test/lib/contex/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/contex/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/test/lib/contex/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/contex/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/test/lib/contex/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/contex/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/test/lib/contex/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/contex/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/test/lib/contex/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/contex/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/test/lib/contex/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/contex/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/test/lib/contex/ebin" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="file://$PROJECT_DIR$/deps/contex/lib" />
+      <root url="file://$PROJECT_DIR$/deps/contex/lib" />
+      <root url="file://$PROJECT_DIR$/deps/contex/lib" />
+      <root url="file://$PROJECT_DIR$/deps/contex/lib" />
+      <root url="file://$PROJECT_DIR$/deps/contex/lib" />
+      <root url="file://$PROJECT_DIR$/deps/contex/lib" />
+      <root url="file://$PROJECT_DIR$/deps/contex/lib" />
+      <root url="file://$PROJECT_DIR$/deps/contex/lib" />
+      <root url="file://$PROJECT_DIR$/deps/contex/lib" />
+      <root url="file://$PROJECT_DIR$/deps/contex/lib" />
+      <root url="file://$PROJECT_DIR$/deps/contex/lib" />
+      <root url="file://$PROJECT_DIR$/deps/contex/lib" />
+    </SOURCES>
+  </library>
+</component>
