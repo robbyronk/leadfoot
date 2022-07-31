@@ -1,21 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8"/>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <%= csrf_meta_tag() %>
-    <%= live_title_tag assigns[:page_title] || "Leadfoot", suffix: " · Phoenix Framework" %>
-    <link phx-track-static rel="stylesheet" href={Routes.static_path(@conn, "/assets/app.css")}/>
-    <script defer phx-track-static type="text/javascript" src={Routes.static_path(@conn, "/assets/app.js")}></script>
+    <%= live_title_tag(assigns[:page_title] || "Leadfoot", suffix: " · Phoenix Framework") %>
+    <link phx-track-static rel="stylesheet" href={Routes.static_path(@conn, "/assets/app.css")} />
+    <script
+      defer
+      phx-track-static
+      type="text/javascript"
+      src={Routes.static_path(@conn, "/assets/app.js")}
+    >
+    </script>
   </head>
   <body>
     <header>
-      <section class="container">
+      <section class="container p-3">
         <nav>
           <ul>
             <%= if function_exported?(Routes, :live_dashboard_path, 2) do %>
-              <li><%= link "LiveDashboard", to: Routes.live_dashboard_path(@conn, :home) %></li>
+              <li><%= link("LiveDashboard", to: Routes.live_dashboard_path(@conn, :home)) %></li>
             <% end %>
           </ul>
         </nav>
