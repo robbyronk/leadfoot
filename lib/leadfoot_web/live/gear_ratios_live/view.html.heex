@@ -60,21 +60,23 @@
         <.btn type="submit">Save Gearbox</.btn>
       </div>
     </.form>
-    shift points:
-    <%= for {gear, rpm, speed, _force} <- @shift_points do %>
-      <div><%= gear %> @ <%= round(rpm) %> RPM (<%= Float.round(speed, 1) %>km/h)</div>
-    <% end %>
   </div>
   <div class="col-span-3 bg-slate-200 p-2">
     <div class="grid grid-cols-2 gap-2">
-      <div>
-        torque curve <%= @torque_plot %>
-      </div>
       <div>rpm gear <%= @rpm_plot %></div>
+      <div>
+        shift points:
+        <%= for {gear, rpm, speed, _force} <- @shift_points do %>
+        <div><%= gear %> @ <%= round(rpm) %> RPM (<%= Float.round(speed, 1) %>km/h)</div>
+        <% end %>
+      </div>
       <div>
         all wheel forces <%= @force_plot %>
       </div>
       <div>transmission losses <%= @loss_plot %></div>
+      <div>
+        torque curve <%= @torque_plot %>
+      </div>
     </div>
   </div>
 </div>
