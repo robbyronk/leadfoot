@@ -1,5 +1,5 @@
 <div class="grid grid-cols-4 gap-2">
-  <div>
+  <div class="bg-slate-300 p-2">
     tires:
     <.form
       let={f}
@@ -65,7 +65,7 @@
       <div><%= gear %> @ <%= round(rpm) %> RPM (<%= Float.round(speed, 1) %>km/h)</div>
     <% end %>
   </div>
-  <div class="col-span-3">
+  <div class="col-span-3 bg-slate-200 p-2">
     <div class="grid grid-cols-2 gap-2">
       <div>
         torque curve <%= @torque_plot %>
@@ -74,7 +74,7 @@
       <div>
         all wheel forces <%= @force_plot %>
       </div>
-      <div>transmission losses <%= @loss_plot %> </div>
+      <div>transmission losses <%= @loss_plot %></div>
     </div>
   </div>
 </div>
