@@ -31,9 +31,18 @@
       <root url="file://$PROJECT_DIR$/_build/test/lib/math/ebin" />
       <root url="file://$PROJECT_DIR$/_build/dev/lib/math/ebin" />
       <root url="file://$PROJECT_DIR$/_build/test/lib/math/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/math/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/math/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/math/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/math/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/math/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/math/ebin" />
     </CLASSES>
     <JAVADOC />
     <SOURCES>
+      <root url="file://$PROJECT_DIR$/deps/math/lib" />
+      <root url="file://$PROJECT_DIR$/deps/math/lib" />
+      <root url="file://$PROJECT_DIR$/deps/math/lib" />
       <root url="file://$PROJECT_DIR$/deps/math/lib" />
       <root url="file://$PROJECT_DIR$/deps/math/lib" />
       <root url="file://$PROJECT_DIR$/deps/math/lib" />

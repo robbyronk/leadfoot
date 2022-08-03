@@ -44,6 +44,14 @@
       <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/telemetry" />
       <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/plug" />
       <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/decimal" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/math" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/contex" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/exqlite" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/tailwind" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/elixir_make" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/ecto_sqlite3" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/circuits_uart" />
+      <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/nimble_strftime" />
     </content>
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="phoenix" level="project" />
@@ -102,5 +110,19 @@
     <orderEntry type="library" name="cowboy_telemetry" level="project" />
     <orderEntry type="library" name="kadabra" level="project" />
     <orderEntry type="library" name="x509" level="project" />
+    <orderEntry type="library" name="ecto_sqlite3" level="project" />
+    <orderEntry type="library" name="circuits_uart" level="project" />
+    <orderEntry type="library" name="math" level="project" />
+    <orderEntry type="library" name="contex" level="project" />
+    <orderEntry type="library" name="tailwind" level="project" />
+    <orderEntry type="library" name="exqlite" level="project" />
+    <orderEntry type="library" name="temp" level="project" />
+    <orderEntry type="library" name="credo" level="project" />
+    <orderEntry type="library" name="benchee_markdown" level="project" />
+    <orderEntry type="library" name="elixir_make" level="project" />
+    <orderEntry type="library" name="inch_ex" level="project" />
+    <orderEntry type="library" name="nimble_strftime" level="project" />
+    <orderEntry type="library" name="sweet_xml" level="project" />
+    <orderEntry type="library" name="ex_sqlean" level="project" />
   </component>
 </module>

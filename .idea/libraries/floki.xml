@@ -50,6 +50,12 @@
       <root url="file://$PROJECT_DIR$/deps/floki/src" />
       <root url="file://$PROJECT_DIR$/deps/floki/lib" />
       <root url="file://$PROJECT_DIR$/deps/floki/src" />
+      <root url="file://$PROJECT_DIR$/deps/floki/lib" />
+      <root url="file://$PROJECT_DIR$/deps/floki/src" />
+      <root url="file://$PROJECT_DIR$/deps/floki/lib" />
+      <root url="file://$PROJECT_DIR$/deps/floki/src" />
+      <root url="file://$PROJECT_DIR$/deps/floki/lib" />
+      <root url="file://$PROJECT_DIR$/deps/floki/src" />
     </SOURCES>
   </library>
 </component>
