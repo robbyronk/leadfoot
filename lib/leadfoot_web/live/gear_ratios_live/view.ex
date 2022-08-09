@@ -164,8 +164,10 @@ defmodule LeadfootWeb.GearRatiosLive.View do
   end
 
   def assign_torques(%{assigns: %{torques: []}} = socket) do
+    priv_dir = :code.priv_dir(:leadfoot) |> to_string()
+
     torques =
-      File.read!("test/fixtures/22b-torques")
+      File.read!(priv_dir <> "/torques/22b-torques")
       |> :erlang.binary_to_term()
       |> Map.get(:torques)
 
