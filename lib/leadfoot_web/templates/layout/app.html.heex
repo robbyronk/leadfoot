@@ -1,3 +1,24 @@
+<header class="mx-auto container p-3">
+  <nav class="text-center">
+    <ul>
+      <li class="inline-block border border-sky-500 p-1">
+        <%= link("Dashboard", to: Routes.dashboard_view_path(@conn, :view)) %>
+      </li>
+      <li class="inline-block ml-2 border border-sky-500 p-1">
+        <a href="#">Live Lap Times</a>
+      </li>
+      <li class="inline-block ml-2 border border-sky-500 p-1"><a href="#">Tunes</a></li>
+      <li class="inline-block ml-2 border border-sky-500 p-1"><a href="#">Cars</a></li>
+      <li class="inline-block ml-2 border border-sky-500 p-1"><a href="#">Tracks</a></li>
+      <li class="inline-block ml-2 border border-sky-500 p-1"><a href="#">Tour</a></li>
+      <%= if function_exported?(Routes, :live_dashboard_path, 2) do %>
+        <li class="inline-block ml-2 border border-sky-500 p-1">
+          <%= link("Server Stats", to: Routes.live_dashboard_path(@conn, :home)) %>
+        </li>
+      <% end %>
+    </ul>
+  </nav>
+</header>
 <main class="container mx-auto p-3">
   <p class="alert alert-info" role="alert"><%= get_flash(@conn, :info) %></p>
   <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
