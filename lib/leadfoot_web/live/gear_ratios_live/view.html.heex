@@ -67,7 +67,7 @@
       <div>
         shift points:
         <%= for {gear, rpm, speed, _force} <- @shift_points do %>
-        <div><%= gear %> @ <%= round(rpm) %> RPM (<%= Float.round(speed, 1) %>km/h)</div>
+          <div><%= gear %> @ <%= round(rpm) %> RPM (<%= Float.round(speed, 1) %>km/h)</div>
         <% end %>
       </div>
       <div>
