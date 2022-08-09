@@ -12,7 +12,10 @@ defmodule Leadfoot.GearboxTest do
   end
 
   test "calculate everything for 22b" do
-    %{torques: torques} = File.read!("test/fixtures/22b-torques") |> :erlang.binary_to_term()
+    priv_dir = :code.priv_dir(:leadfoot) |> to_string()
+
+    %{torques: torques} =
+      File.read!(priv_dir <> "/torques/22b-torques") |> :erlang.binary_to_term()
 
     gearbox = %Leadfoot.CarSettings.Gearbox{
       final: 3.85,
