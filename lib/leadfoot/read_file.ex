@@ -3,11 +3,13 @@ defmodule Leadfoot.ReadFile do
   Reads packets from a file and publishes them to pubsub.
   """
 
+  # todo move dyno pulls to priv dir
+
+  # priv_dir = :code.priv_dir(:leadfoot) |> to_string()
+  # File.read!(priv_dir <> "/dyno-pulls/xyz")
+
   # ms
   @pace 6
-
-  # todo change this to read packet, then wait, then send
-  #
 
   use GenServer
   alias Leadfoot.ParsePacket
@@ -17,20 +19,14 @@ defmodule Leadfoot.ReadFile do
     GenServer.start_link(__MODULE__, state, opts)
   end
 
+  @impl true
   def init(_opts) do
     {:ok, %{}, {:continue, :open_file}}
   end
 
-  def get_pace(%{current_race_time: last_race_time}, %{current_race_time: next_race_time}) do
-    cond do
-      last_race_time == 0.0 -> @pace
-      next_race_time == 0.0 -> @pace
-      true -> round((next_race_time - last_race_time) * 1000)
-    end
-  end
-
+  @impl true
   def handle_continue(:open_file, state) do
-    {:ok, file} = File.open("session.forza", [:read])
+    file = File.open!("dyno-pulls/4rotor-dyno.forza", [:read])
 
     event =
       read_packet(file)
@@ -47,6 +43,7 @@ defmodule Leadfoot.ReadFile do
     }
   end
 
+  @impl true
   def handle_info(:read_and_publish, state) do
     event = read_packet(state.file)
 
@@ -62,6 +59,14 @@ defmodule Leadfoot.ReadFile do
       }
     else
       {:noreply, state}
+    end
+  end
+
+  def get_pace(%{current_race_time: last_race_time}, %{current_race_time: next_race_time}) do
+    cond do
+      last_race_time == 0.0 -> @pace
+      next_race_time == 0.0 -> @pace
+      true -> round((next_race_time - last_race_time) * 1000)
     end
   end
 
