@@ -1,0 +1,44 @@
+<div class="bg-slate-300 text-black p-3">
+  <div class="mx-auto w-1/2">
+    <p>
+      How to capture a torque curve:
+      <ol class="list-decimal">
+        <li>Get your car to a long straight with no obstacles.</li>
+        <li>Start recording.</li>
+        <li>Get your car rolling with 50% throttle.</li>
+        <li>
+          Shift into 2nd gear and keep accelerating with 50% throttle until your engine is at 2000-3000 RPM.
+        </li>
+        <li>Full throttle.</li>
+        <li>Full throttle all the way until you hit the rev limiter.</li>
+      </ol>
+    </p>
+  </div>
+  <div class="xl:w-1/2 w-1/1 mx-auto">
+    <%= @torque_plot %>
+  </div>
+  <div class="w-1/2 mx-auto">
+    <%= if @recording do %>
+      <button
+        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+        phx-click="stop"
+      >
+        Stop Recording
+      </button>
+    <% else %>
+      <button
+        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+        phx-click="start"
+      >
+        Start Recording
+      </button>
+    <% end %>
+
+    <button
+      class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+      phx-click="clear"
+    >
+      Clear
+    </button>
+  </div>
+</div>

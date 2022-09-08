@@ -19,6 +19,7 @@ defmodule LeadfootWeb.Router do
 
     get "/", PageController, :index
 
+    live "/dyno", DynometerLive.View, :view
     live "/gear-ratios", GearRatiosLive.View, :view
     live "/dashboard", DashboardLive.View, :view
   end
