@@ -9,23 +9,27 @@
       phx-submit="save_tires"
     >
       <div class="grid-auto-fit">
-        <div>
-          <%= label(f, :width) %>
-          <%= text_input(f, :width, inputmode: "numeric") %>
-          <%= error_tag(f, :width) %>
+        <div class="sm-grid-auto-fit">
+          <div class="inline-block">
+            <%= label(f, :width, class: "block") %>
+            <%= text_input(f, :width, inputmode: "numeric", class: "w-full") %>
+          </div>
+
+          <div class="inline-block">
+            <%= label(f, :ratio, class: "block") %>
+            <%= text_input(f, :ratio, inputmode: "numeric", class: "w-full") %>
+          </div>
+
+          <div class="inline-block">
+            <%= label(f, :size, class: "block") %>
+            <%= text_input(f, :size, inputmode: "numeric", class: "w-full") %>
+          </div>
         </div>
 
-        <div>
-          <%= label(f, :ratio) %>
-          <%= text_input(f, :ratio, inputmode: "numeric") %>
-          <%= error_tag(f, :ratio) %>
-        </div>
+        <%= error_tag(f, :width) %>
+        <%= error_tag(f, :ratio) %>
+        <%= error_tag(f, :size) %>
 
-        <div>
-          <%= label(f, :size) %>
-          <%= text_input(f, :size, inputmode: "numeric") %>
-          <%= error_tag(f, :size) %>
-        </div>
         <.btn type="submit">Save Tires</.btn>
       </div>
     </.form>
