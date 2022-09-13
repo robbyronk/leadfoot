@@ -101,43 +101,27 @@ defmodule Leadfoot.Translation do
     end
   end
 
-  # todo use Time module?
-
-  @one_minute 60
-  @one_hour 3600
-
-  def to_hh_mm_ss(seconds) when seconds >= @one_hour do
-    h = div(seconds, @one_hour)
-
-    m =
-      seconds
-      |> rem(@one_hour)
-      |> div(@one_minute)
-      |> pad_int()
-
-    s =
-      seconds
-      |> rem(@one_hour)
-      |> rem(@one_minute)
-      |> pad_int()
-
-    "#{h}:#{m}:#{s}"
-  end
-
   def to_hh_mm_ss(seconds) do
-    m = div(seconds, @one_minute)
+    time = Time.from_seconds_after_midnight(round(seconds))
 
-    s =
-      seconds
-      |> rem(@one_minute)
-      |> pad_int()
-
-    "#{m}:#{s}"
+    [time.hour, time.minute, time.second]
+    |> Enum.drop_while(fn x -> x == 0 end)
+    |> Enum.map(&Integer.to_string/1)
+    |> Enum.map(&String.pad_leading(&1, 2, "0"))
+    |> Enum.join(":")
   end
 
-  defp pad_int(int, padding \\ 2) do
-    int
-    |> Integer.to_string()
-    |> String.pad_leading(padding, "0")
+  def to_mm_ss_ms(seconds) do
+    time = Time.add(~T[00:00:00], round(seconds * 1000), :millisecond)
+
+    {ms, _precision} = time.microsecond
+
+    mm_ss = [time.hour * 60 + time.minute, time.second]
+    |> Enum.drop_while(fn x -> x == 0 end)
+    |> Enum.map(&Integer.to_string/1)
+    |> Enum.map(&String.pad_leading(&1, 2, "0"))
+    |> Enum.join(":")
+
+    "#{mm_ss}.#{div(ms, 1000)}"
   end
 end
