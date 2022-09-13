@@ -29,7 +29,7 @@ defmodule LeadfootWeb.DynometerLive.View do
   end
 
   @impl true
-  def handle_event("stop", params, socket) do
+  def handle_event("stop", _params, socket) do
     Leadfoot.GearRatios.stop_recording()
     {:noreply, socket |> assign(recording: false)}
   end

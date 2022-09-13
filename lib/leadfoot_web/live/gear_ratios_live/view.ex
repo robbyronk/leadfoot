@@ -1,13 +1,9 @@
 defmodule LeadfootWeb.GearRatiosLive.View do
   @moduledoc false
   use LeadfootWeb, :live_view
-  alias Phoenix.PubSub
   alias Leadfoot.GearRatios
-  alias Leadfoot.ReadFile
   alias Leadfoot.CarSettings.Tires
   alias Leadfoot.CarSettings.Gearbox
-  import Leadfoot.SampleEvent
-  import Leadfoot.Translation
   import LeadfootWeb.UI.Buttons
 
   @initial_assigns %{
@@ -17,7 +13,6 @@ defmodule LeadfootWeb.GearRatiosLive.View do
     force_plot: "",
     rpm_plot: "",
     loss_plot: "",
-    torques: [],
     gearbox: %Gearbox{},
     gearbox_changeset: nil,
     tires: %Tires{},
@@ -27,7 +22,7 @@ defmodule LeadfootWeb.GearRatiosLive.View do
   }
 
   @impl true
-  def mount(_params, session, socket) do
+  def mount(_params, _session, socket) do
     tires = GearRatios.get_tires()
     gearbox = GearRatios.get_gearbox()
 
@@ -187,7 +182,7 @@ defmodule LeadfootWeb.GearRatiosLive.View do
     transmission_losses =
       Leadfoot.Gearbox.calculate_losses(socket.assigns.optimal_forces)
       |> Enum.drop_while(fn {_, _, _, _, loss} -> loss > 5 end)
-      |> Enum.take_while(fn {_, _, speed, _, _} -> speed < 250 end)
+      |> Enum.take_while(fn {_, _, speed, _, _} -> speed < 350 end)
 
     data =
       for {_, _, speed, _, loss} <- transmission_losses do
