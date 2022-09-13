@@ -22,6 +22,7 @@ defmodule LeadfootWeb.Router do
     live "/dyno", DynometerLive.View, :view
     live "/gear-ratios", GearRatiosLive.View, :view
     live "/dashboard", DashboardLive.View, :view
+    live "/lap-times", LapTimesLive.View, :view
   end
 
   # Other scopes may use custom stacks.
