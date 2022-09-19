@@ -33,8 +33,11 @@ defmodule Leadfoot.LapTimes do
   def handle_info({:event, %{lap: 0}}, state), do: {:noreply, state}
 
   @impl true
+  def handle_info({:event, %{last_lap_time: 0.0}}, state), do: {:noreply, state}
+
+  @impl true
   def handle_info({:event, event}, state) do
-    {:noreply, capture_lap_time(event, state)}
+    {:noreply, capture_lap_time(%{lap: event.lap, time: event.last_lap_time}, state)}
   end
 
   @impl true
