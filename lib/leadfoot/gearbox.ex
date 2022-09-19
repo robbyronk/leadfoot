@@ -54,6 +54,8 @@ defmodule Leadfoot.Gearbox do
 
   Put another way, filter for the optimal gear at a given speed.
   """
+  def get_optimal_forces([]), do: []
+
   def get_optimal_forces(forces) do
     forces
     |> Enum.group_by(&gear_elem/1)
@@ -136,6 +138,8 @@ defmodule Leadfoot.Gearbox do
   def calculate_loss({gear, rpm, speed, force}, max_power) do
     {gear, rpm, speed, force, max_power / speed - force}
   end
+
+  def calculate_losses([]), do: []
 
   def calculate_losses(optimal_forces) do
     max_power = get_max_power(optimal_forces)
