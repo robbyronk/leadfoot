@@ -3,7 +3,6 @@ defmodule LeadfootWeb.LapTimesLive.View do
 
   use LeadfootWeb, :live_view
 
-
   @initial_assigns %{
     lap_times: []
   }
@@ -27,10 +26,10 @@ defmodule LeadfootWeb.LapTimesLive.View do
   @impl true
   def render(assigns) do
     ~H"""
-<h1>lap times</h1>
-<%= for l <- @lap_times do %>
-  <div><%= l.lap %>: <%= Leadfoot.Translation.to_mm_ss_ms(l.time) %></div>
-<% end %>
-"""
+    <h1>lap times</h1>
+    <%= for l <- @lap_times do %>
+      <div><%= l.lap %>: <%= Leadfoot.Translation.to_mm_ss_ms(l.time) %></div>
+    <% end %>
+    """
   end
 end
