@@ -16,6 +16,7 @@ defmodule Leadfoot.Application do
       {Phoenix.PubSub, name: Leadfoot.PubSub},
       {Leadfoot.GearRatios, []},
       {Leadfoot.ReadUdp, []},
+      {Leadfoot.LapTimes, []},
       # Start the Endpoint (http/https)
       LeadfootWeb.Endpoint
       # Start a worker by calling: Leadfoot.Worker.start_link(arg)
