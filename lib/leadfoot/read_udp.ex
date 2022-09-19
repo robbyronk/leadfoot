@@ -5,27 +5,30 @@ defmodule Leadfoot.ReadUdp do
   alias Leadfoot.ParsePacket
   alias Phoenix.PubSub
 
+  @server Leadfoot.ReadUdp
+
+  @initial_port 21_337
+
   @initial_state %{
     file: nil,
     filename: nil,
-    port: 21_337
+    port: nil,
+    socket: nil,
+    status: :off,
+    error_reason: nil
   }
 
   def start_link(state \\ %{}, _opts \\ []) do
-    GenServer.start_link(__MODULE__, state, name: Leadfoot.ReadUdp)
+    GenServer.start_link(__MODULE__, state, name: @server)
   end
 
-  def start(filename) do
-    GenServer.cast(Leadfoot.ReadUdp, {:start, filename})
-  end
+  def start(filename), do: GenServer.cast(@server, {:start, filename})
 
-  def stop() do
-    GenServer.cast(Leadfoot.ReadUdp, :stop)
-  end
+  def stop(), do: GenServer.cast(@server, :stop)
 
-  def status() do
-    GenServer.call(Leadfoot.ReadUdp, :status)
-  end
+  def status(), do: GenServer.call(@server, :status)
+
+  def change_port(port), do: GenServer.call(@server, {:change_port, port})
 
   @impl true
   def init(_opts) do
@@ -34,9 +37,7 @@ defmodule Leadfoot.ReadUdp do
 
   @impl true
   def handle_continue(:open_port, state) do
-    # todo allow for port selection at run time
-    {:ok, _socket} = :gen_udp.open(state.port, mode: :binary)
-    {:noreply, state}
+    {:noreply, state |> open_udp(@initial_port)}
   end
 
   @impl true
@@ -68,5 +69,20 @@ defmodule Leadfoot.ReadUdp do
   @impl true
   def handle_call(:status, _from, state) do
     {:reply, %{port: state.port}, state}
+  end
+
+  @impl
+  def handle_call({:change_port, port}, from, state) do
+    handle_call(:status, from, state |> open_udp(port))
+  end
+
+  def open_udp(state, port) do
+    case :gen_udp.open(port, mode: :binary) do
+      {:ok, socket} ->
+        state |> Map.merge(%{port: port, socket: socket, status: :on, error_reason: nil})
+
+      {:error, reason} ->
+        state |> Map.merge(%{error_reason: reason, status: :error, port: nil, socket: nil})
+    end
   end
 end
