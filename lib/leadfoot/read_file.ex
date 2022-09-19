@@ -108,11 +108,12 @@ defmodule Leadfoot.ReadFile do
     end
   end
 
-  def get_pace(%{current_race_time: last_race_time}, %{current_race_time: next_race_time}, pace) do
-    cond do
-      last_race_time == 0.0 -> pace
-      next_race_time == 0.0 -> pace
-      true -> round((next_race_time - last_race_time) * 1000)
+  def get_pace(last_event, event, pace) do
+    case {last_event, event} do
+      {nil, _} -> pace
+      {%{current_race_time: 0.0}, _} -> pace
+      {_, %{current_race_time: 0.0}} -> pace
+      {%{current_race_time: last}, %{current_race_time: next}} -> round((next - last) * 1000)
     end
   end
 
@@ -120,20 +121,20 @@ defmodule Leadfoot.ReadFile do
     PubSub.broadcast(Leadfoot.PubSub, "session", {:event, event})
   end
 
-  def publish(%{publish_to: :udp, udp: socket, udp_address: address, udp_port: port}, _event, packet) do
+  def publish(
+        %{publish_to: :udp, udp: socket, udp_address: address, udp_port: port},
+        _event,
+        packet
+      ) do
     :gen_udp.send(socket, address, port, packet)
   end
 
-  def next(%{use_pacing: true, last_event: nil, pace: pace}, _event) do
-    Process.send_after(self(), :read_and_publish, pace)
-  end
-
-  def next(%{use_pacing: true, last_event: last_event, pace: pace}, event) do
-    Process.send_after(self(), :read_and_publish, get_pace(last_event, event, pace))
-  end
-
-  def next(%{use_pacing: false}, _event) do
-    send(self(), :read_and_publish)
+  def next(%{use_pacing: pacing, last_event: last_event, pace: pace}, event) do
+    if pacing do
+      Process.send_after(self(), :read_and_publish, get_pace(last_event, event, pace))
+    else
+      send(self(), :read_and_publish)
+    end
   end
 
   def read_packet(file) do
