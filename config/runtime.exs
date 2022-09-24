@@ -13,6 +13,8 @@ if System.get_env("PHX_SERVER") && System.get_env("RELEASE_NAME") do
 end
 
 if config_env() == :prod do
+  config :leadfoot, :udp_ip, "fly-global-services"
+
   database_path =
     System.get_env("DATABASE_PATH") ||
       raise """

@@ -1,5 +1,7 @@
 import Config
 
+config :leadfoot, :udp_ip, {0, 0, 0, 0}
+
 # Configure your database
 config :leadfoot, Leadfoot.Repo,
   database: Path.expand("../leadfoot_dev.db", Path.dirname(__ENV__.file)),

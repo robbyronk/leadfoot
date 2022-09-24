@@ -71,13 +71,24 @@ defmodule Leadfoot.ReadUdp do
     {:reply, %{port: state.port}, state}
   end
 
-  @impl
+  @impl true
   def handle_call({:change_port, port}, from, state) do
     handle_call(:status, from, state |> open_udp(port))
   end
 
+  def get_udp_ip() do
+    udp_ip = Application.fetch_env!(:leadfoot, :udp_ip)
+
+    if is_binary(udp_ip) do
+      {:ok, u} = :inet.getaddr(to_charlist(udp_ip), :inet)
+      u
+    else
+      udp_ip
+    end
+  end
+
   def open_udp(state, port) do
-    case :gen_udp.open(port, mode: :binary) do
+    case :gen_udp.open(port, mode: :binary, ip: get_udp_ip()) do
       {:ok, socket} ->
         state |> Map.merge(%{port: port, socket: socket, status: :on, error_reason: nil})
 
