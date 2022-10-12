@@ -1,0 +1,62 @@
+<div class="grid grid-cols-4 gap-2 text-black">
+  <div class="bg-slate-300 p-2">
+    <.form let={f} for={@changeset} id="form" phx-change="validate" phx-submit="save">
+      <div class="grid-auto-fit">
+        <%= label(f, :mass, class: "block") %>
+        <%= text_input(f, :mass, inputmode: "numeric", class: "w-full") %>
+        <%= error_tag(f, :mass) %>
+
+        <%= label(f, :front_distribution, class: "block") %>
+        <%= text_input(f, :front_distribution, inputmode: "numeric", class: "w-full") %>
+        <%= error_tag(f, :front_distribution) %>
+
+        <div class="sm-grid-auto-fit">
+          <div class="inline-block">
+            <%= label(f, :front_spring_rate, class: "block") %>
+            <%= text_input(f, :front_spring_rate, inputmode: "numeric", class: "w-full") %>
+          </div>
+
+          <div class="inline-block">
+            <%= label(f, :rear_spring_rate, class: "block") %>
+            <%= text_input(f, :rear_spring_rate, inputmode: "numeric", class: "w-full") %>
+          </div>
+        </div>
+        <%= error_tag(f, :front_spring_rate) %>
+        <%= error_tag(f, :rear_spring_rate) %>
+
+        <div class="sm-grid-auto-fit">
+          <div class="inline-block">
+            <%= label(f, :front_downforce, class: "block") %>
+            <%= text_input(f, :front_downforce, inputmode: "numeric", class: "w-full") %>
+          </div>
+
+          <div class="inline-block">
+            <%= label(f, :rear_downforce, class: "block") %>
+            <%= text_input(f, :rear_downforce, inputmode: "numeric", class: "w-full") %>
+          </div>
+        </div>
+        <%= error_tag(f, :front_downforce) %>
+        <%= error_tag(f, :rear_downforce) %>
+
+        <.btn type="submit">Calculate</.btn>
+      </div>
+    </.form>
+
+    <div>front: <%= Float.round(@front_frequency, 2) %> Hz</div>
+    <div>rear: <%= Float.round(@rear_frequency, 2) %> Hz</div>
+    <div>ratio: <%= Float.round(@ratio, 2) %></div>
+
+    <div class="mt-3">with downforce</div>
+
+    <div>front: <%= Float.round(@front_with_downforce, 2) %> Hz</div>
+    <div>rear: <%= Float.round(@rear_with_downforce, 2) %> Hz</div>
+    <div>ratio: <%= Float.round(@ratio_with_downforce, 2) %></div>
+  </div>
+  <div class="bg-slate-300 p-2">
+    <p>All units are metric.</p>
+    <p>Suspension frequencies are a good starting point but the best spring rate will not come from a calculator.</p>
+    <p>A faster spring frequency means the car will be more responsive.</p>
+    <p>Usually, the front frequency should be the same or lower than the rear frequency.</p>
+    <p>To start, try 3.0 Hz in front and 3.3 Hz in rear.</p>
+  </div>
+</div>
