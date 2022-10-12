@@ -1,5 +1,7 @@
 import Config
 
+config :leadfoot, :udp_ip, {127, 0, 0, 1}
+
 # Configure your database
 #
 # The MIX_TEST_PARTITION environment variable can be used
