@@ -28,9 +28,9 @@ defmodule Leadfoot.Suspension.CalculatorTest do
       rear_with_downforce
     } = Calculator.get_frequencies(calc)
 
-    assert Float.round(front, 2) == 3.15
-    assert Float.round(rear, 2) == 3.15
-    assert Float.round(front_with_downforce, 2) == 2.88
-    assert Float.round(rear_with_downforce, 2) == 2.88
+    assert Float.round(front, 2) == 3.18
+    assert Float.round(rear, 2) == 3.18
+    assert Float.round(front_with_downforce, 2) == 2.91
+    assert Float.round(rear_with_downforce, 2) == 2.91
   end
 end
