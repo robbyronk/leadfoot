@@ -6,8 +6,8 @@ defmodule LeadfootWeb.SuspensionCalculatorLive.View do
 
   @initial_assigns %{
     values: %Calculator{
-    front_downforce: 0.0,
-    rear_downforce: 0.0,
+      front_downforce: 0.0,
+      rear_downforce: 0.0
     },
     front_frequency: 0.0,
     rear_frequency: 0.0,
