@@ -1,4 +1,4 @@
-<div class="grid grid-cols-4 gap-2 text-black">
+<div class="grid grid-cols-4 md:grid-cols-2 gap-2 text-black">
   <div class="bg-slate-300 p-2">
     <.form let={f} for={@changeset} id="form" phx-change="validate" phx-submit="save">
       <div class="grid-auto-fit">
@@ -54,9 +54,11 @@
   </div>
   <div class="bg-slate-300 p-2">
     <p>All units are metric.</p>
-    <p>Suspension frequencies are a good starting point but the best spring rate will not come from a calculator.</p>
+    <p>
+      Suspension frequencies are a good starting point but the best spring rate will not come from a calculator.
+    </p>
     <p>A faster spring frequency means the car will be more responsive.</p>
     <p>Usually, the front frequency should be the same or lower than the rear frequency.</p>
-    <p>To start, try 3.0 Hz in front and 3.3 Hz in rear.</p>
+    <p>To start, try 2.0 Hz in front and 2.2 Hz in rear.</p>
   </div>
 </div>
