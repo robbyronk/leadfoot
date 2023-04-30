@@ -11,7 +11,7 @@ defmodule LeadfootWeb.UI.Buttons do
       "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded #{assigns.class}"
 
     ~H"""
-    <button class={class} type={@type}>
+    <button class={@class} type={@type}>
       <%= render_slot(@inner_block) %>
     </button>
     """

@@ -2,7 +2,7 @@
   <div class="bg-slate-300 p-2">
     tires:
     <.form
-      let={f}
+      :let={f}
       for={@tires_changeset}
       id="tires-form"
       phx-change="validate_tires"
@@ -11,31 +11,42 @@
       <div class="grid-auto-fit">
         <div class="sm-grid-auto-fit">
           <div class="inline-block">
-            <%= label(f, :width, class: "block") %>
-            <%= text_input(f, :width, inputmode: "numeric", class: "w-full") %>
+            <.input
+              class="w-full"
+              field={{f, :width}}
+              type="text"
+              label="Width"
+              inputmode="numeric"
+            />
           </div>
 
           <div class="inline-block">
-            <%= label(f, :ratio, class: "block") %>
-            <%= text_input(f, :ratio, inputmode: "numeric", class: "w-full") %>
+            <.input
+              class="w-full"
+              field={{f, :ratio}}
+              type="text"
+              label="Ratio"
+              inputmode="numeric"
+            />
           </div>
 
           <div class="inline-block">
-            <%= label(f, :size, class: "block") %>
-            <%= text_input(f, :size, inputmode: "numeric", class: "w-full") %>
+            <.input
+              class="w-full"
+              field={{f, :size}}
+              type="text"
+              label="Size"
+              inputmode="numeric"
+            />
           </div>
         </div>
-
-        <%= error_tag(f, :width) %>
-        <%= error_tag(f, :ratio) %>
-        <%= error_tag(f, :size) %>
 
         <.btn type="submit">Save Tires</.btn>
       </div>
     </.form>
     gears:
     <.form
-      let={f}
+      :let={f}
       for={@gearbox_changeset}
       id="gearbox-form"
       phx-change="validate_gearbox"
@@ -56,9 +67,7 @@
     :gear10
     ] do %>
           <div>
-            <%= label(f, field) %>
-            <%= text_input(f, field, inputmode: "decimal") %>
-            <%= error_tag(f, field) %>
+            <.input class="w-full" field={{f, field}} type="text" inputmode="decimal" />
           </div>
         <% end %>
         <.btn type="submit">Save Gearbox</.btn>

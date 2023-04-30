@@ -2,7 +2,6 @@ defmodule LeadfootWeb.SuspensionCalculatorLive.View do
   @moduledoc false
   use LeadfootWeb, :live_view
   alias Leadfoot.Suspension.Calculator
-  import LeadfootWeb.UI.Buttons
 
   @initial_assigns %{
     values: %Calculator{
@@ -15,7 +14,8 @@ defmodule LeadfootWeb.SuspensionCalculatorLive.View do
     front_with_downforce: 0.0,
     rear_with_downforce: 0.0,
     ratio_with_downforce: 0.0,
-    changeset: nil
+    changeset: nil,
+  form: nil,
   }
 
   @impl true
@@ -29,8 +29,10 @@ defmodule LeadfootWeb.SuspensionCalculatorLive.View do
   end
 
   def assign_changeset(socket) do
+    changeset = Calculator.changeset(socket.assigns.values, %{})
     socket
-    |> assign(changeset: Calculator.changeset(socket.assigns.values, %{}))
+    |> assign(changeset: changeset)
+    |> assign(form: to_form(changeset))
   end
 
   @impl true
@@ -45,6 +47,7 @@ defmodule LeadfootWeb.SuspensionCalculatorLive.View do
 
   @impl true
   def handle_event("save", params, socket) do
+    IO.inspect(params)
     changeset =
       socket.assigns.values
       |> Calculator.changeset(params["calculator"])

@@ -6,7 +6,7 @@ defmodule LeadfootWeb.DashboardLive.View do
   import Leadfoot.Translation
 
   @impl true
-  def mount(_params, session, socket) do
+  def mount(_params, _session, socket) do
     PubSub.subscribe(Leadfoot.PubSub, "session")
     event = sample()
 
@@ -17,6 +17,7 @@ defmodule LeadfootWeb.DashboardLive.View do
     }
   end
 
+  @impl true
   def handle_info({:event, event}, socket) do
     {
       :noreply,
@@ -49,7 +50,7 @@ defmodule LeadfootWeb.DashboardLive.View do
     z_g = z / 9.8
     min = 0
     max = 190
-    min_g = -2
+    #    min_g = -2
     max_g = 2
     mid = (min + max) / 2
     z_g * mid / max_g + mid
@@ -60,7 +61,7 @@ defmodule LeadfootWeb.DashboardLive.View do
     x_g = x / 9.8
     min = 0
     max = 190
-    min_g = -2
+    #    min_g = -2
     max_g = 2
     mid = (min + max) / 2
     -x_g * mid / max_g + mid

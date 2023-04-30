@@ -19,21 +19,22 @@ defmodule LeadfootWeb.ConnCase do
 
   using do
     quote do
+      # The default endpoint for testing
+      @endpoint LeadfootWeb.Endpoint
+
+      use LeadfootWeb, :verified_routes
+
       # Import conveniences for testing with connections
       import Plug.Conn
       import Phoenix.ConnTest
       import LeadfootWeb.ConnCase
-
-      alias LeadfootWeb.Router.Helpers, as: Routes
-
-      # The default endpoint for testing
-      @endpoint LeadfootWeb.Endpoint
     end
   end
 
   setup tags do
     #    pid = Ecto.Adapters.SQL.Sandbox.start_owner!(Leadfoot.Repo, shared: not tags[:async])
     #    on_exit(fn -> Ecto.Adapters.SQL.Sandbox.stop_owner(pid) end)
+    Leadfoot.DataCase.setup_sandbox(tags)
     {:ok, conn: Phoenix.ConnTest.build_conn()}
   end
 end

@@ -1,7 +1,37 @@
 <component name="libraryTable">
   <library name="mint" type="mix">
-    <CLASSES />
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/mint/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/mint/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/mint/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/mint/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/mint/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/mint/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/mint/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/mint/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/mint/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/mint/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/mint/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/mint/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/mint/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/mint/ebin" />
+    </CLASSES>
     <JAVADOC />
-    <SOURCES />
+    <SOURCES>
+      <root url="file://$PROJECT_DIR$/deps/mint/lib" />
+      <root url="file://$PROJECT_DIR$/deps/mint/src" />
+      <root url="file://$PROJECT_DIR$/deps/mint/lib" />
+      <root url="file://$PROJECT_DIR$/deps/mint/src" />
+      <root url="file://$PROJECT_DIR$/deps/mint/lib" />
+      <root url="file://$PROJECT_DIR$/deps/mint/src" />
+      <root url="file://$PROJECT_DIR$/deps/mint/lib" />
+      <root url="file://$PROJECT_DIR$/deps/mint/src" />
+      <root url="file://$PROJECT_DIR$/deps/mint/lib" />
+      <root url="file://$PROJECT_DIR$/deps/mint/src" />
+      <root url="file://$PROJECT_DIR$/deps/mint/lib" />
+      <root url="file://$PROJECT_DIR$/deps/mint/src" />
+      <root url="file://$PROJECT_DIR$/deps/mint/lib" />
+      <root url="file://$PROJECT_DIR$/deps/mint/src" />
+    </SOURCES>
   </library>
 </component>

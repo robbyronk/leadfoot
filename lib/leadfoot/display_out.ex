@@ -57,10 +57,18 @@ defmodule Leadfoot.DisplayOut do
     end
   end
 
+  @impl true
   def handle_info({:event, event}, state) do
     led = get_accel_led(event)
     mag = get_accel_magnitude(event)
     Circuits.UART.write(state.uart_pid, led_command(led, get_accel_color(mag)))
+    {:noreply, state}
+  end
+
+  @impl true
+  def handle_info({:circuits_uart, "ttyACM0", data}, state) do
+    # this handles any incoming data that the Arduino sent
+    IO.inspect(data, label: "serial echo")
     {:noreply, state}
   end
 
@@ -72,12 +80,5 @@ defmodule Leadfoot.DisplayOut do
 
   def led_command(led, {red, green, blue} \\ {255, 255, 255}) do
     "L" <> <<led, red, green, blue>>
-  end
-
-  @impl true
-  def handle_info({:circuits_uart, "ttyACM0", data}, state) do
-    # this handles any incoming data that the Arduino sent
-    IO.inspect(data, label: "serial echo")
-    {:noreply, state}
   end
 end

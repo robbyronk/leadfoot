@@ -1,5 +1,7 @@
 defmodule Leadfoot.Suspension.Calculator do
-  @moduledoc false
+  @moduledoc """
+  Calculates the suspension natural frequency given valid inputs.
+  """
 
   alias Leadfoot.Suspension
 
@@ -36,7 +38,7 @@ defmodule Leadfoot.Suspension.Calculator do
   end
 
   def get_frequencies(%__MODULE__{} = values) do
-    # ignore unsprung weight for now
+    # ignoring unsprung weight for now
     front_mass = values.mass * (values.front_distribution / 100)
     rear_mass = values.mass - front_mass
 

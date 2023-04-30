@@ -7,7 +7,8 @@ defmodule LeadfootWeb.Endpoint do
   @session_options [
     store: :cookie,
     key: "_leadfoot_key",
-    signing_salt: "cjTO18mG"
+    signing_salt: "cjTO18mG",
+    same_site: "Lax"
   ]
 
   socket "/live", Phoenix.LiveView.Socket, websocket: [connect_info: [session: @session_options]]
@@ -20,7 +21,7 @@ defmodule LeadfootWeb.Endpoint do
     at: "/",
     from: :leadfoot,
     gzip: false,
-    only: ~w(assets fonts images favicon.ico robots.txt)
+    only: LeadfootWeb.static_paths()
 
   # Code reloading can be explicitly enabled under the
   # :code_reloader configuration of your endpoint.

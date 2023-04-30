@@ -1,46 +1,63 @@
 <div class="grid grid-cols-4 md:grid-cols-2 gap-2 text-black">
   <div class="bg-slate-300 p-2">
-    <.form let={f} for={@changeset} id="form" phx-change="validate" phx-submit="save">
+    <.simple_form for={@form} id="form" phx-change="validate" phx-submit="save">
       <div class="grid-auto-fit">
-        <%= label(f, :mass, class: "block") %>
-        <%= text_input(f, :mass, inputmode: "numeric", class: "w-full") %>
-        <%= error_tag(f, :mass) %>
-
-        <%= label(f, :front_distribution, class: "block") %>
-        <%= text_input(f, :front_distribution, inputmode: "numeric", class: "w-full") %>
-        <%= error_tag(f, :front_distribution) %>
-
-        <div class="sm-grid-auto-fit">
-          <div class="inline-block">
-            <%= label(f, :front_spring_rate, class: "block") %>
-            <%= text_input(f, :front_spring_rate, inputmode: "numeric", class: "w-full") %>
-          </div>
-
-          <div class="inline-block">
-            <%= label(f, :rear_spring_rate, class: "block") %>
-            <%= text_input(f, :rear_spring_rate, inputmode: "numeric", class: "w-full") %>
-          </div>
-        </div>
-        <%= error_tag(f, :front_spring_rate) %>
-        <%= error_tag(f, :rear_spring_rate) %>
+        <.input class="w-full" field={@form[:mass]} label="Mass" inputmode="numeric" />
+        <.input
+          class="w-full"
+          field={@form[:front_distribution]}
+          type="text"
+          label="Front Distribution"
+          inputmode="numeric"
+        />
 
         <div class="sm-grid-auto-fit">
           <div class="inline-block">
-            <%= label(f, :front_downforce, class: "block") %>
-            <%= text_input(f, :front_downforce, inputmode: "numeric", class: "w-full") %>
+            <.input
+              class="w-full"
+              field={@form[:front_spring_rate]}
+              type="text"
+              label="Front Spring Rate"
+              inputmode="numeric"
+            />
           </div>
 
           <div class="inline-block">
-            <%= label(f, :rear_downforce, class: "block") %>
-            <%= text_input(f, :rear_downforce, inputmode: "numeric", class: "w-full") %>
+            <.input
+              class="w-full"
+              field={@form[:rear_spring_rate]}
+              type="text"
+              label="Rear Spring Rate"
+              inputmode="numeric"
+            />
           </div>
         </div>
-        <%= error_tag(f, :front_downforce) %>
-        <%= error_tag(f, :rear_downforce) %>
 
-        <.btn type="submit">Calculate</.btn>
+        <div class="sm-grid-auto-fit">
+          <div class="inline-block">
+            <.input
+              class="w-full"
+              field={@form[:front_downforce]}
+              type="text"
+              label="Front Downforce"
+              inputmode="numeric"
+            />
+          </div>
+
+          <div class="inline-block">
+            <.input
+              class="w-full"
+              field={@form[:rear_downforce]}
+              type="text"
+              label="Rear Downforce"
+              inputmode="numeric"
+            />
+          </div>
+        </div>
+
+        <.button type="submit">Calculate</.button>
       </div>
-    </.form>
+    </.simple_form>
 
     <div>front: <%= Float.round(@front_frequency, 2) %> Hz</div>
     <div>rear: <%= Float.round(@rear_frequency, 2) %> Hz</div>

@@ -181,7 +181,7 @@ defmodule LeadfootWeb.GearRatiosLive.View do
   def assign_loss_plot(socket) do
     transmission_losses =
       Leadfoot.Gearbox.calculate_losses(socket.assigns.optimal_forces)
-      |> Enum.drop_while(fn {_, _, _, _, loss} -> loss > 5 end)
+      |> Enum.drop_while(fn {_, _, _, _, loss} -> loss < -5 end)
       |> Enum.take_while(fn {_, _, speed, _, _} -> speed < 350 end)
 
     data =

@@ -1,7 +1,30 @@
 <component name="libraryTable">
   <library name="finch" type="mix">
-    <CLASSES />
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/finch/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/finch/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/finch/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/finch/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/finch/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/finch/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/finch/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/finch/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/finch/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/finch/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/finch/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/finch/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/finch/ebin" />
+      <root url="file://$PROJECT_DIR$/_build/dev/lib/finch/ebin" />
+    </CLASSES>
     <JAVADOC />
-    <SOURCES />
+    <SOURCES>
+      <root url="file://$PROJECT_DIR$/deps/finch/lib" />
+      <root url="file://$PROJECT_DIR$/deps/finch/lib" />
+      <root url="file://$PROJECT_DIR$/deps/finch/lib" />
+      <root url="file://$PROJECT_DIR$/deps/finch/lib" />
+      <root url="file://$PROJECT_DIR$/deps/finch/lib" />
+      <root url="file://$PROJECT_DIR$/deps/finch/lib" />
+      <root url="file://$PROJECT_DIR$/deps/finch/lib" />
+    </SOURCES>
   </library>
 </component>

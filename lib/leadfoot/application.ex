@@ -8,15 +8,15 @@ defmodule Leadfoot.Application do
   @impl true
   def start(_type, _args) do
     children = [
-      # Start the Ecto repository
-      #      Leadfoot.Repo,
       # Start the Telemetry supervisor
       LeadfootWeb.Telemetry,
+      Leadfoot.Repo,
       # Start the PubSub system
       {Phoenix.PubSub, name: Leadfoot.PubSub},
       {Leadfoot.GearRatios, []},
       {Leadfoot.ReadUdp, []},
       {Leadfoot.LapTimes, []},
+      {Finch, name: Leadfoot.Finch},
       # Start the Endpoint (http/https)
       LeadfootWeb.Endpoint
       # Start a worker by calling: Leadfoot.Worker.start_link(arg)
