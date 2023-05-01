@@ -15,7 +15,7 @@ defmodule LeadfootWeb.SuspensionCalculatorLive.View do
     rear_with_downforce: 0.0,
     ratio_with_downforce: 0.0,
     changeset: nil,
-  form: nil,
+    form: nil
   }
 
   @impl true
@@ -30,6 +30,7 @@ defmodule LeadfootWeb.SuspensionCalculatorLive.View do
 
   def assign_changeset(socket) do
     changeset = Calculator.changeset(socket.assigns.values, %{})
+
     socket
     |> assign(changeset: changeset)
     |> assign(form: to_form(changeset))
@@ -48,6 +49,7 @@ defmodule LeadfootWeb.SuspensionCalculatorLive.View do
   @impl true
   def handle_event("save", params, socket) do
     IO.inspect(params)
+
     changeset =
       socket.assigns.values
       |> Calculator.changeset(params["calculator"])
