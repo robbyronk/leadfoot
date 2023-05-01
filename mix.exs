@@ -53,6 +53,7 @@ defmodule Leadfoot.MixProject do
       {:circuits_uart, "~> 1.4"},
       {:math, "~> 0.7.0"},
       {:contex, "~> 0.4.0"},
+      {:postgrex, "~> 0.17.1"},
       {:plug_cowboy, "~> 2.5"}
     ]
   end

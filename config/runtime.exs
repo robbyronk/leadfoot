@@ -23,15 +23,16 @@ end
 if config_env() == :prod do
   config :leadfoot, :udp_ip, "fly-global-services"
 
-  database_path =
-    System.get_env("DATABASE_PATH") ||
+  database_url =
+    System.get_env("DATABASE_URL") ||
       raise """
-      environment variable DATABASE_PATH is missing.
-      For example: /etc/leadfoot/leadfoot.db
+      environment variable DATABASE_URL is missing.
+      For example: ecto://user:pass@host:port/database
       """
 
   config :leadfoot, Leadfoot.Repo,
-    database: database_path,
+    url: database_url,
+    ssl: true,
     pool_size: String.to_integer(System.get_env("POOL_SIZE") || "5")
 
   # The secret key base is used to sign/encrypt cookies and other secrets.
