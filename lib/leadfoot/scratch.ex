@@ -1,6 +1,17 @@
 defmodule Leadfoot.Scratch do
   alias Leadfoot.Gearbox
 
+  @total_gears 7
+  @final 4.14
+  @first_gear_ratio 3.8
+  @top_gear_ratio 0.85
+  @top_speed 371
+  @tires %Leadfoot.CarSettings.Tires{
+    width: 355,
+    ratio: 25,
+    size: 20
+  }
+
   def write_chart_to_file(data, filename) do
     {:safe, svg} =
       data
@@ -12,22 +23,24 @@ defmodule Leadfoot.Scratch do
   end
 
   def get_torques() do
-    File.read!("test/fixtures/22b-torques")
-    |> :erlang.binary_to_term()
-    |> Map.get(:torques)
+    %{torques: torques} = Leadfoot.GearRatios.get_torques()
+    torques
   end
 
   def get_random_gearbox() do
     gearbox = %Leadfoot.CarSettings.Gearbox{
-      final: 3.85,
-      gear1: 4.14
+      final: @final,
+      gear1: @first_gear_ratio
     }
 
+    min_random_gear = @top_gear_ratio + 0.05
+    max_random_gear = @first_gear_ratio * 0.85
+
     random_gears =
-      for _ <- 1..5 do
-        Float.round(1.1 + :rand.uniform() * (4.1 - 1.1), 2)
+      for _ <- 1..(@total_gears - 2) do
+        Float.round(min_random_gear + :rand.uniform() * (max_random_gear - min_random_gear), 2)
       end
-      |> List.insert_at(0, 1.0)
+      |> List.insert_at(0, @top_gear_ratio)
       |> Enum.sort()
       |> Enum.reverse()
 
@@ -37,49 +50,37 @@ defmodule Leadfoot.Scratch do
   def try_random_gearbox(torques) do
     gearbox = get_random_gearbox()
 
-    tires = %Leadfoot.CarSettings.Tires{
-      width: 235,
-      ratio: 40,
-      size: 17
-    }
-
     drive_wheels = 4
 
-    forces = Gearbox.calculate_forces(gearbox, tires, torques, drive_wheels)
+    forces = Gearbox.calculate_forces(gearbox, @tires, torques, drive_wheels)
     optimal_forces = Gearbox.get_optimal_forces(forces)
     transmission_losses = Gearbox.calculate_losses(optimal_forces)
 
     total_loss =
       transmission_losses
       |> Enum.drop_while(fn {_, _, _, _, loss} -> loss > 5 end)
-      |> Enum.take_while(fn {_, _, speed, _, _} -> speed < 250 end)
+      |> Enum.take_while(fn {_, _, speed, _, _} -> speed < @top_speed end)
       |> Enum.map(fn {_, _, _, _, loss} -> loss end)
       |> Enum.sum()
 
     {gearbox, total_loss}
   end
 
-  def find_nice_gearbox(tries \\ 10000) do
+  def find_nice_gearbox(tries \\ 10_000) do
     torques = get_torques()
 
     {best_gearbox, best_loss} =
       1..tries
       |> Enum.map(fn _ -> Task.async(fn -> try_random_gearbox(torques) end) end)
       |> Enum.map(&Task.await/1)
-      |> Enum.min_by(fn {_, loss} -> loss end)
+      |> Enum.max_by(fn {_, loss} -> loss end)
 
     IO.inspect(best_gearbox)
     IO.inspect(best_loss)
 
-    tires = %Leadfoot.CarSettings.Tires{
-      width: 235,
-      ratio: 40,
-      size: 17
-    }
-
     drive_wheels = 4
 
-    forces = Gearbox.calculate_forces(best_gearbox, tires, torques, drive_wheels)
+    forces = Gearbox.calculate_forces(best_gearbox, @tires, torques, drive_wheels)
     optimal_forces = Gearbox.get_optimal_forces(forces)
     shift_points = Gearbox.get_shift_points(optimal_forces)
     IO.inspect(shift_points)
@@ -97,15 +98,15 @@ defmodule Leadfoot.Scratch do
     #      gear6: 0.91,
     #    }
     %Leadfoot.CarSettings.Gearbox{
-      final: 3.85,
-      gear1: 4.14,
+      final: 3.11,
+      gear1: 3.42,
       gear10: nil,
-      gear2: 3.5,
-      gear3: 2.92,
-      gear4: 2.28,
-      gear5: 1.69,
-      gear6: 1.24,
-      gear7: 0.95,
+      gear2: 2.7,
+      gear3: 2.17,
+      gear4: 1.7,
+      gear5: 1.32,
+      gear6: 1.07,
+      gear7: 0.85,
       gear8: nil,
       gear9: nil
     }
@@ -114,15 +115,9 @@ defmodule Leadfoot.Scratch do
   def chart_ideal_losses(torques) do
     gearbox = ideal_gearbox()
 
-    tires = %Leadfoot.CarSettings.Tires{
-      width: 235,
-      ratio: 40,
-      size: 17
-    }
-
     drive_wheels = 4
 
-    forces = Gearbox.calculate_forces(gearbox, tires, torques, drive_wheels)
+    forces = Gearbox.calculate_forces(gearbox, @tires, torques, drive_wheels)
     optimal_forces = Gearbox.get_optimal_forces(forces)
     transmission_losses = Gearbox.calculate_losses(optimal_forces)
 
@@ -135,15 +130,9 @@ defmodule Leadfoot.Scratch do
   def ideal_gearbox_shift_points(torques) do
     gearbox = ideal_gearbox()
 
-    tires = %Leadfoot.CarSettings.Tires{
-      width: 235,
-      ratio: 40,
-      size: 17
-    }
-
     drive_wheels = 4
 
-    forces = Gearbox.calculate_forces(gearbox, tires, torques, drive_wheels)
+    forces = Gearbox.calculate_forces(gearbox, @tires, torques, drive_wheels)
     optimal_forces = Gearbox.get_optimal_forces(forces)
     Gearbox.get_shift_points(optimal_forces)
   end
