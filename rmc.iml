@@ -100,6 +100,7 @@
       <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/nimble_pool" />
       <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/mint" />
       <excludeFolder url="file://$MODULE_DIR$/_build/dev/lib/finch" />
+      <excludeFolder url="file://$MODULE_DIR$/_build" />
     </content>
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="phoenix" level="project" />
