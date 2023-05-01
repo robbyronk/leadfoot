@@ -19,7 +19,7 @@ defmodule Leadfoot.MixProject do
   def application do
     [
       mod: {Leadfoot.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:logger, :runtime_tools, :ssl]
     ]
   end
 
