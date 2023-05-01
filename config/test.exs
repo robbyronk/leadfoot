@@ -1,5 +1,8 @@
 import Config
 
+# Only in tests, remove the complexity from the password hashing algorithm
+config :bcrypt_elixir, :log_rounds, 1
+
 config :leadfoot, :udp_ip, {127, 0, 0, 1}
 
 # Configure your database
