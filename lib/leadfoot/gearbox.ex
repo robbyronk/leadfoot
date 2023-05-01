@@ -136,7 +136,7 @@ defmodule Leadfoot.Gearbox do
   end
 
   def calculate_loss({gear, rpm, speed, force}, max_power) do
-    {gear, rpm, speed, force, max_power / speed - force}
+    {gear, rpm, speed, force, force - max_power / speed}
   end
 
   def calculate_losses([]), do: []
