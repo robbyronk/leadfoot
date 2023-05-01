@@ -2,13 +2,9 @@ defmodule Leadfoot.ReadFile do
   @moduledoc """
   Reads packets from a file, with optional pacing, and publishes them to PubSub or UDP.
 
-  Opens a file, maybe opens an UDP socket.
+  To publish to UDP start with:
 
-  Reads, parses a packet.
-
-  Publishes that packet.
-    
-  Maybe waits a few ms, then repeats the read then publish.
+  Leadfoot.ReadFile.start_link(%{publish_to: :udp})
   """
 
   # todo move dyno pulls to priv dir
@@ -17,7 +13,7 @@ defmodule Leadfoot.ReadFile do
   # File.read!(priv_dir <> "/dyno-pulls/xyz")
 
   # ms
-  @pace 6
+  #  @pace 6
 
   @server Leadfoot.ReadFile
 
