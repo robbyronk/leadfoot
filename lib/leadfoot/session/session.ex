@@ -3,7 +3,10 @@ defmodule Leadfoot.Session.Session do
   Process that collects data for racing, tuning and analysis.
   """
 
-  use GenServer
+  require Logger
+
+  use GenServer, restart: :transient
+  @timeout :timer.minutes(30)
 
   @registry Leadfoot.Session.Registry
   @supervisor Leadfoot.Session.Supervisor
@@ -49,7 +52,14 @@ defmodule Leadfoot.Session.Session do
       udp_port_status: :closed
     }
 
-    {:ok, state |> open_udp(state.udp_port)}
+    {:ok, state |> open_udp(state.udp_port), @timeout}
+  end
+
+  @impl true
+  def handle_info(:timeout, state) do
+    Logger.info("shutting down #{state.id}")
+
+    {:stop, :normal, state}
   end
 
   @impl true
@@ -57,18 +67,18 @@ defmodule Leadfoot.Session.Session do
     event = ParsePacket.parse_packet(data)
     PubSub.broadcast(Leadfoot.PubSub, "session:#{state.id}", {:event, event})
 
-    {:noreply, state}
+    {:noreply, state, @timeout}
   end
 
   @impl true
   def handle_call(:get_udp_status, _from, state) do
-    {:reply, state.udp_port_status, state}
+    {:reply, state.udp_port_status, state, @timeout}
   end
 
   @impl true
   def handle_call({:change_port, port}, from, state) do
     state = open_udp(state, port)
-    {:reply, state, state}
+    {:reply, state, state, @timeout}
   end
 
   defp get_udp_ip() do
