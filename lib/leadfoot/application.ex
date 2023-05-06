@@ -18,9 +18,9 @@ defmodule Leadfoot.Application do
       {Leadfoot.LapTimes, []},
       {Finch, name: Leadfoot.Finch},
       # Start the Endpoint (http/https)
-      LeadfootWeb.Endpoint
-      # Start a worker by calling: Leadfoot.Worker.start_link(arg)
-      # {Leadfoot.Worker, arg}
+      LeadfootWeb.Endpoint,
+      {Registry, keys: :unique, name: Leadfoot.Session.Registry},
+      {DynamicSupervisor, name: Leadfoot.Session.Supervisor, strategy: :one_for_one}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
