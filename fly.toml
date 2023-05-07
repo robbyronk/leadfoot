@@ -55,3 +55,14 @@ kill_timeout = "5s"
     type = "connections"
     hard_limit = 25
     soft_limit = 20
+
+[[services]]
+  protocol = "udp"
+  internal_port = 21338
+
+  [[services.ports]]
+    port = 21338
+  [services.concurrency]
+    type = "connections"
+    hard_limit = 25
+    soft_limit = 20
