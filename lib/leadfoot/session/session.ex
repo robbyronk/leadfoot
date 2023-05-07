@@ -102,8 +102,7 @@ defmodule Leadfoot.Session.Session do
   end
 
   defp random_port() do
-    #    Enum.random(10000..65000)
-    21338
+    Enum.random(10000..65000)
   end
 
   defp get_udp_ip() do
