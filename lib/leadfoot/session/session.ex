@@ -57,7 +57,7 @@ defmodule Leadfoot.Session.Session do
   def init(id: id) do
     state = %{
       id: id,
-      udp_port: Enum.random(10000..65000),
+      udp_port: random_port(),
       udp_port_status: :closed
     }
 
@@ -71,7 +71,7 @@ defmodule Leadfoot.Session.Session do
     if state.udp_port_status == :ok do
       {:noreply, state, @timeout}
     else
-      {:noreply, %{state | udp_port: Enum.random(10000..65000)}, {:continue, :open_port}}
+      {:noreply, %{state | udp_port: random_port()}, {:continue, :open_port}}
     end
   end
 
@@ -99,6 +99,11 @@ defmodule Leadfoot.Session.Session do
   def handle_call({:change_port, port}, _from, state) do
     state = open_udp(%{state | udp_port: port})
     {:reply, state, state, @timeout}
+  end
+
+  defp random_port() do
+    #    Enum.random(10000..65000)
+    21337
   end
 
   defp get_udp_ip() do
