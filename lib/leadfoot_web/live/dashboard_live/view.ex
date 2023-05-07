@@ -2,17 +2,21 @@ defmodule LeadfootWeb.DashboardLive.View do
   @moduledoc false
   use LeadfootWeb, :live_view
   alias Phoenix.PubSub
+  alias Leadfoot.Session.Session
   import Leadfoot.SampleEvent
   import Leadfoot.Translation
 
   @impl true
   def mount(_params, _session, socket) do
-    PubSub.subscribe(Leadfoot.PubSub, "session")
+    user_id = socket.assigns.current_user.id
+    PubSub.subscribe(Leadfoot.PubSub, "session:#{user_id}")
     event = sample()
+    %{udp_port: udp_port} = Session.get_state(user_id)
 
     {
       :ok,
       socket
+      |> assign(udp_port: udp_port)
       |> set_assigns(event)
     }
   end

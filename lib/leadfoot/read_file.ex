@@ -64,7 +64,7 @@ defmodule Leadfoot.ReadFile do
 
   @impl true
   def handle_continue(:open_udp, state) do
-    {:ok, socket} = :gen_udp.open(8680)
+    {:ok, socket} = :gen_udp.open(Enum.random(1000..2000))
 
     {
       :noreply,

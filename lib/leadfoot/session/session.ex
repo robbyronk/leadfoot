@@ -3,6 +3,9 @@ defmodule Leadfoot.Session.Session do
   Process that collects data for racing, tuning and analysis.
   """
 
+  alias Phoenix.PubSub
+  alias Leadfoot.ParsePacket
+
   require Logger
 
   use GenServer, restart: :transient
@@ -27,14 +30,20 @@ defmodule Leadfoot.Session.Session do
     end
   end
 
-  def get_udp_status(id) do
-    with {:ok, pid} <- lookup(id) do
-      GenServer.call(pid, :get_udp_status)
+  def join(id) do
+    with {:error, :not_found} <- lookup(id) do
+      start(id)
+    end
+  end
+
+  def get_state(id) do
+    with {:ok, pid} <- join(id) do
+      GenServer.call(pid, :get_state)
     end
   end
 
   def change_port(id, port) do
-    with {:ok, pid} <- lookup(id) do
+    with {:ok, pid} <- join(id) do
       GenServer.call(pid, {:change_port, port})
     end
   end
@@ -48,11 +57,22 @@ defmodule Leadfoot.Session.Session do
   def init(id: id) do
     state = %{
       id: id,
-      udp_port: 21337,
+      udp_port: Enum.random(10000..65000),
       udp_port_status: :closed
     }
 
-    {:ok, state |> open_udp(state.udp_port), @timeout}
+    {:ok, state, {:continue, :open_port}}
+  end
+
+  @impl true
+  def handle_continue(:open_port, state) do
+    state = open_udp(state)
+
+    if state.udp_port_status == :ok do
+      {:noreply, state, @timeout}
+    else
+      {:noreply, %{state | udp_port: Enum.random(10000..65000)}, {:continue, :open_port}}
+    end
   end
 
   @impl true
@@ -71,13 +91,13 @@ defmodule Leadfoot.Session.Session do
   end
 
   @impl true
-  def handle_call(:get_udp_status, _from, state) do
-    {:reply, state.udp_port_status, state, @timeout}
+  def handle_call(:get_state, _from, state) do
+    {:reply, state, state, @timeout}
   end
 
   @impl true
-  def handle_call({:change_port, port}, from, state) do
-    state = open_udp(state, port)
+  def handle_call({:change_port, port}, _from, state) do
+    state = open_udp(%{state | udp_port: port})
     {:reply, state, state, @timeout}
   end
 
@@ -92,20 +112,18 @@ defmodule Leadfoot.Session.Session do
     end
   end
 
-  defp open_udp(state, port) do
+  defp open_udp(state) do
     new_state =
-      case :gen_udp.open(port, mode: :binary, ip: get_udp_ip()) do
+      case :gen_udp.open(state.udp_port, mode: :binary, ip: get_udp_ip()) do
         {:ok, socket} ->
           %{
             socket: socket,
-            udp_port: port,
             udp_port_status: :ok
           }
 
         {:error, reason} ->
           %{
             socket: nil,
-            udp_port: port,
             udp_port_status: {:error, reason}
           }
       end

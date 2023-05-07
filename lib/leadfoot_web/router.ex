@@ -24,7 +24,6 @@ defmodule LeadfootWeb.Router do
 
     live "/dyno", DynometerLive.View, :view
     live "/gear-ratios", GearRatiosLive.View, :view
-    live "/dashboard", DashboardLive.View, :view
     live "/lap-times", LapTimesLive.View, :view
     live "/suspension", SuspensionCalculatorLive.View, :view
   end
@@ -72,6 +71,8 @@ defmodule LeadfootWeb.Router do
 
     live_session :require_authenticated_user,
       on_mount: [{LeadfootWeb.UserAuth, :ensure_authenticated}] do
+      live "/dashboard", DashboardLive.View, :view
+
       live "/users/settings", UserSettingsLive, :edit
       live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
     end
