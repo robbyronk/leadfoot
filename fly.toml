@@ -46,13 +46,11 @@ kill_timeout = "5s"
     restart_limit = 0
 
 [[services]]
+  http_checks = []
   protocol = "udp"
-  internal_port = 21337
+  internal_port = 10000
+  script_checks = []
 
   [[services.ports]]
-    start_port = 10000
-    end_port = 65000
-  [services.concurrency]
-    type = "connections"
-    hard_limit = 25
-    soft_limit = 20
+    handlers = []
+    port = 10000
