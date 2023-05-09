@@ -45,7 +45,7 @@ defmodule Leadfoot.ParsePacket do
         car_category::little-32,
         unknown1::bytes-4,
         unknown2::bytes-4,
-        position::bytes-12,
+        world_position::bytes-12,
         speed::little-float-32,
         power::little-float-32,
         torque::little-float-32,
@@ -85,7 +85,7 @@ defmodule Leadfoot.ParsePacket do
     tire_comb_slip = parse_corners(tire_comb_slip)
     # suspension travel is in meters
     suspension_travel = parse_corners(suspension_travel)
-    position = parse_triple(position)
+    world_position = parse_triple(world_position)
     tire_temp = parse_corners(tire_temp)
 
     # tire temp is in f
@@ -120,7 +120,7 @@ defmodule Leadfoot.ParsePacket do
       car_category: car_category,
       unknown1: unknown1,
       unknown2: unknown2,
-      position: position,
+      world_position: world_position,
       speed: speed,
       power: power,
       torque: torque,
