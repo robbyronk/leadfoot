@@ -26,6 +26,8 @@ defmodule Leadfoot.Tuning.Launch do
 
   use GenServer
 
+  alias Phoenix.PubSub
+
   @initial_state %{
     hold_brake_secs: 2,
     recording_secs: 5,
@@ -35,14 +37,30 @@ defmodule Leadfoot.Tuning.Launch do
     brake_released_at: nil,
     status: :stop,
     runs: [],
-    current_run: []
+    current_run: [],
+    user_id: nil
   }
+
+  def start_link(initial) do
+    GenServer.start_link(__MODULE__, initial)
+  end
 
   @impl true
   def init(%{user_id: user_id}) do
     PubSub.subscribe(Leadfoot.PubSub, "session:#{user_id}")
+    state = @initial_state |> Map.put(:user_id, user_id)
+    broadcast(state)
 
-    {:ok, @initial_state}
+    {:ok, state}
+  end
+
+  def get_state(pid) do
+    GenServer.call(pid, :get_state)
+  end
+
+  @impl true
+  def handle_call(:get_state, _from, state) do
+    {:reply, state, state}
   end
 
   @impl true
@@ -64,12 +82,26 @@ defmodule Leadfoot.Tuning.Launch do
     {:noreply, state}
   end
 
-  defp transition_to_stop(state) do
-    %{state | status: :stop, done_timer: nil}
+  defp broadcast(%{user_id: user_id, status: status, runs: runs} = state) do
+    PubSub.broadcast(
+      Leadfoot.PubSub,
+      "launch:#{user_id}",
+      {:update, %{status: status, runs: runs}}
+    )
+
+    state
+  end
+
+  defp is_moving?(event) do
+    event.speed > 0.1
+  end
+
+  defp transition_to_stop(state, event \\ nil) do
+    broadcast(%{state | status: :stop, done_timer: nil, current_run: []})
   end
 
   defp handle_stop(event, state) do
-    if event.speed == 0 do
+    if not is_moving?(event) do
       transition_to_hold_brake(state)
     else
       state
@@ -77,19 +109,23 @@ defmodule Leadfoot.Tuning.Launch do
   end
 
   defp transition_to_hold_brake(state) do
-    %{state | status: :hold_brake, brake_engaged_at: nil}
+    broadcast(%{state | status: :hold_brake, brake_engaged_at: nil})
+  end
+
+  defp brake_engaged(event, state) do
+    %{state | brake_engaged_at: event.current_race_time}
   end
 
   defp handle_hold_brake(event, state) do
     cond do
-      event.speed > 0 ->
-        transition_to_stop(state)
+      is_moving?(event) ->
+        transition_to_stop(state, event)
 
       event.brake == 0 and event.handbrake == 0 ->
         transition_to_hold_brake(state)
 
       is_nil(state.brake_engaged_at) ->
-        %{state | brake_engaged_at: event.current_race_time}
+        brake_engaged(event, state)
 
       event.current_race_time > state.brake_engaged_at + state.hold_brake_secs ->
         transition_to_ready_to_launch(state)
@@ -100,13 +136,13 @@ defmodule Leadfoot.Tuning.Launch do
   end
 
   defp transition_to_ready_to_launch(state) do
-    %{state | status: :ready_to_launch}
+    broadcast(%{state | status: :ready_to_launch})
   end
 
   defp handle_ready_to_launch(event, state) do
     cond do
-      event.speed > 0 ->
-        transition_to_stop(state)
+      is_moving?(event) ->
+        transition_to_stop(state, event)
 
       event.brake == 0 and event.handbrake == 0 ->
         transition_to_recording(event, state)
@@ -117,7 +153,7 @@ defmodule Leadfoot.Tuning.Launch do
   end
 
   defp transition_to_recording(event, state) do
-    %{state | status: :recording, brake_released_at: event.current_race_time}
+    broadcast(%{state | status: :recording, brake_released_at: event.current_race_time})
   end
 
   defp capture_event(event, state) do
@@ -129,8 +165,8 @@ defmodule Leadfoot.Tuning.Launch do
       event.current_race_time > state.brake_released_at + state.recording_secs ->
         transition_to_done(state)
 
-      event.current_race_time > state.brake_released_at + 1 and event.speed == 0 ->
-        transition_to_stop(state)
+      event.current_race_time > state.brake_released_at + 1 and not is_moving?(event) ->
+        transition_to_stop(state, event)
 
       true ->
         capture_event(event, state)
@@ -139,7 +175,8 @@ defmodule Leadfoot.Tuning.Launch do
 
   defp transition_to_done(state) do
     done_timer = Process.send_after(self(), :transition_to_stop, 1000 * state.done_secs)
-    runs = [%{events: state.current_run, hide: false} | state.runs]
-    %{state | done_timer: done_timer, runs: runs, current_run: [], status: :done}
+    peak_g = state.current_run |> Enum.map(fn e -> e.acceleration.z end) |> Enum.max()
+    runs = [%{peak_g: peak_g, hide: false} | state.runs]
+    broadcast(%{state | done_timer: done_timer, runs: runs, current_run: [], status: :done})
   end
 end
