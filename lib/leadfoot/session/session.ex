@@ -5,6 +5,7 @@ defmodule Leadfoot.Session.Session do
 
   alias Phoenix.PubSub
   alias Leadfoot.ParsePacket
+  alias Leadfoot.Tuning.Launch
 
   require Logger
 
@@ -66,6 +67,7 @@ defmodule Leadfoot.Session.Session do
 
   @impl true
   def handle_continue(:open_port, state) do
+    {:ok, _pid} = Launch.start_link(%{user_id: state.id})
     state = open_udp(state)
 
     if state.udp_port_status == :ok do
@@ -102,7 +104,8 @@ defmodule Leadfoot.Session.Session do
   end
 
   defp random_port() do
-    Enum.random(10000..65000)
+    49584
+    #    Enum.random(10000..65000)
   end
 
   defp get_udp_ip() do

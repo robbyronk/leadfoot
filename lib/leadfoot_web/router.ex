@@ -73,6 +73,8 @@ defmodule LeadfootWeb.Router do
       on_mount: [{LeadfootWeb.UserAuth, :ensure_authenticated}] do
       live "/dashboard", DashboardLive.View, :view
 
+      live "/tuning/launch", Tuning.LaunchLive, :view
+
       live "/users/settings", UserSettingsLive, :edit
       live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
     end
