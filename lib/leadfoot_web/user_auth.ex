@@ -5,6 +5,7 @@ defmodule LeadfootWeb.UserAuth do
   import Phoenix.Controller
 
   alias Leadfoot.Accounts
+  alias Accounts.User
 
   # Make the remember me cookie valid for 60 days.
   # If you want bump or reduce this value, also change
@@ -208,6 +209,20 @@ defmodule LeadfootWeb.UserAuth do
       |> maybe_store_return_to()
       |> redirect(to: ~p"/users/log_in")
       |> halt()
+    end
+  end
+
+  @doc """
+  Used for routes that require the user to be an admin.
+  """
+  def require_admin_user(conn, _opts) do
+    with %User{role: "admin"} <- conn.assigns[:current_user] do
+      conn
+    else
+      _ ->
+        conn
+        |> redirect(to: ~p"/")
+        |> halt()
     end
   end
 
