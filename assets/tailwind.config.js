@@ -13,6 +13,10 @@ module.exports = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        'racing-sans': ['Racing Sans One', 'sans-serif'],
+        'ibm-plex-mono': ['IBM Plex Mono', 'monospace'],
+      },
       colors: {
         brand: "#FD4F00",
       }
