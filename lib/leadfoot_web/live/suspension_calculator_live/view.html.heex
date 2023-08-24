@@ -1,7 +1,7 @@
-<h1 class="text-6xl font-racing-sans">LEADFOOT</h1>
-<h2 class="text-2xl font-ibm-plex-mono">Suspension Calculator</h2>
-<div class="mt-3 grid grid-cols-4 md:grid-cols-2 gap-2 text-black">
-  <div class="rounded-lg bg-slate-300 p-2">
+<h1 class="text-4xl md:text-6xl lg:text-6xl font-racing-sans">LEADFOOT</h1>
+<h2 class="text-1xl md:text-2xl lg:text-2xl font-ibm-plex-sans">Suspension Calculator</h2>
+<div class="mt-3 grid grid-cols-2 md:grid-cols-2 gap-2 text-black">
+  <div class="rounded-lg bg-slate-800/20 p-2">
     <.simple_form for={@form} id="form" phx-change="validate" phx-submit="save">
       <div class="grid-auto-fit">
         <.input class="w-full" field={@form[:mass]} label="Mass" inputmode="numeric"/>
@@ -60,22 +60,27 @@
         <.button type="submit">Calculate</.button>
       </div>
     </.simple_form>
-    <div class="mt-3">front: <%= Float.round(@front_frequency, 2) %> Hz</div>
-    <div>rear: <%= Float.round(@rear_frequency, 2) %> Hz</div>
-    <div>ratio: <%= Float.round(@ratio, 2) %></div>
-
-    <div class="mt-3">with downforce</div>
-
-    <div>front: <%= Float.round(@front_with_downforce, 2) %> Hz</div>
-    <div>rear: <%= Float.round(@rear_with_downforce, 2) %> Hz</div>
-    <div>ratio: <%= Float.round(@ratio_with_downforce, 2) %></div>
   </div>
-  <div class="rounded-lg bg-slate-300 p-2">
-    <p>All units are metric.</p>
-    <p class="mt-3">
+  <div class="rounded-lg bg-slate-800/20 p-2">
+    <p class="font-ibm-plex-sans">All units are metric.</p>
+    <p class="mt-3 font-ibm-plex-sans">
       Suspension frequencies are a good starting point but the best spring rate will not come from a calculator.
     </p>
-    <p class="mt-3">A faster spring frequency means the car will be more responsive. Usually, the front frequency should be the same or lower than the rear frequency.</p>
-    <p class="mt-3">To start, try 2.0 Hz in front and 2.2 Hz in rear.</p>
+    <p class="mt-3 font-ibm-plex-sans">A faster spring frequency means the car will be more responsive. Usually, the front frequency should be the same or lower than the rear frequency.</p>
+    <p class="mt-3 font-ibm-plex-sans">To start, try 2.0 Hz in front and 2.2 Hz in rear.</p>
+  </div>
+</div>
+<div class="mt-2 grid grid-rows-1 md:grid-rows-1 gap-2 text-black">
+ <div class="rounded-lg bg-slate-800/20 p-2">
+  <div><strong>Without Downforce</strong></div>
+  <div>Front: <%= Float.round(@front_frequency, 2) %> Hz</div>
+    <div>Rear: <%= Float.round(@rear_frequency, 2) %> Hz</div>
+    <div>Ratio: <%= Float.round(@ratio, 2) %></div>
+
+    <div class="mt-3"><strong>With Downforce</strong></div>
+
+    <div>Front: <%= Float.round(@front_with_downforce, 2) %> Hz</div>
+    <div>Rear: <%= Float.round(@rear_with_downforce, 2) %> Hz</div>
+    <div>Ratio: <%= Float.round(@ratio_with_downforce, 2) %></div>
   </div>
 </div>
