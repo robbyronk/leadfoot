@@ -1,7 +1,7 @@
 // See the Tailwind configuration guide for advanced usage
 // https://tailwindcss.com/docs/configuration
 
-const plugin = require("tailwindcss/plugin")
+const plugin = require("tailwindcss/plugin")iex -S mix phx.server
 const fs = require("fs")
 const path = require("path")
 
@@ -14,11 +14,11 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        'racing-sans': ['Racing Sans One', 'sans-serif'],
-        'ibm-plex-mono': ['IBM Plex Mono', 'monospace'],
+        'racing-sans-one': ['Racing Sans One', 'sans-serif'],
+        'ibm-plex-sans': ['IBM Plex Sans', 'sans-serif'],
       },
       colors: {
-        brand: "#FD4F00",
+        brand: "#000000",
       }
     },
   },
