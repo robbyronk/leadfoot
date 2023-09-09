@@ -5,37 +5,28 @@
       Suspension Calculator
     </h2>
   </div>
-  <div class="relative rounded-lg bg-transparent p-2">
-    <button
-      class="absolute right-0 bottom-3 bg-transparent hover:bg-zinc-600 text-sm text-slate-700 font-semibold hover:text-white py-1 px-3 border border-slate-700 hover:border-transparent rounded"
-      onclick="my_modal_1.showModal()"
-    >
-      Help
-    </button>
-    <dialog
-      id="my_modal_1"
-      class="modal absolute m-auto left-4 right-4 rounded-xl bg-white max-w-2xl"
-    >
-      <form method="dialog" class="modal-box">
-        <button class="btn btn-sm btn-square btn-ghost absolute right-4 top-3">✕</button>
-        <h3 class="font-bold text-lg">Help</h3>
-        <p class="mt-4">All units are metric.</p>
-        <p class="mt-2">
-          Suspension frequencies are a good starting point but the best spring rate will not come from a calculator.
-        </p>
-        <p class="mt-2">
-          A faster spring frequency means the car will be more responsive. Usually, the front frequency should be the same or lower than the rear frequency.
-        </p>
-        <p class="mt-2">To start, try 2.0 Hz in front and 2.2 Hz in rear.</p>
-        <div class="modal-action flex justify-center">
-          <button class="mt-6 rounded-lg bg-zinc-900 hover:bg-zinc-700 py-2 px-3 text-sm font-semibold leading-6 text-white active:text-white/80">
-            Close
-          </button>
-        </div>
-      </form>
-    </dialog>
-  </div>
 </div>
+<div class="relative rounded-lg bg-transparent p-2">
+  <LeadfootWeb.CoreComponents.modal id="create_modal">
+    <h3 class="font-bold text-lg">Help</h3>
+    <p class="mt-4">All units are metric.</p>
+    <p class="mt-2">
+      Suspension frequencies are a good starting point but the best spring rate will not come from a calculator.
+    </p>
+    <p class="mt-2">
+      A faster spring frequency means the car will be more responsive. Usually, the front frequency should be the same or lower than the rear frequency.
+    </p>
+    <p class="mt-2">To start, try 2.0 Hz in front and 2.2 Hz in rear.</p>
+  </LeadfootWeb.CoreComponents.modal>
+
+  <button
+    class="absolute right-0 bottom-3 bg-transparent hover:bg-zinc-600 text-sm text-slate-700 font-semibold hover:text-white py-1 px-3 border border-slate-700 hover:border-transparent rounded"
+    phx-click={LeadfootWeb.CoreComponents.show_modal("create_modal")}
+  >
+    Help
+  </button>
+</div>
+
 <div class="mt-2 grid grid-cols-1 gap-2 text-black">
   <div class="rounded-lg bg-slate-800/10 p-2">
     <.simple_form for={@form} id="form" phx-change="validate" phx-submit="save">
