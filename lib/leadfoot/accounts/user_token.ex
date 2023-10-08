@@ -1,6 +1,9 @@
 defmodule Leadfoot.Accounts.UserToken do
+  @moduledoc false
   use Ecto.Schema
+
   import Ecto.Query
+
   alias Leadfoot.Accounts.UserToken
 
   @hash_algorithm :sha256

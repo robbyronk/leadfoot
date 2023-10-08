@@ -18,12 +18,12 @@ defmodule Leadfoot.DataCase do
 
   using do
     quote do
-      alias Leadfoot.Repo
-
       import Ecto
       import Ecto.Changeset
       import Ecto.Query
       import Leadfoot.DataCase
+
+      alias Leadfoot.Repo
     end
   end
 

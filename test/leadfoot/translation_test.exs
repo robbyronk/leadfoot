@@ -12,7 +12,7 @@ defmodule Leadfoot.TranslationTest do
   end
 
   test "format time to hh mm ss" do
-    assert Leadfoot.Translation.to_hh_mm_ss(12000.12) == "03:20:00"
+    assert Leadfoot.Translation.to_hh_mm_ss(12_000.12) == "03:20:00"
     assert Leadfoot.Translation.to_hh_mm_ss(1200.12) == "20:00"
     assert Leadfoot.Translation.to_hh_mm_ss(1212.12) == "20:12"
   end

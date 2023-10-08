@@ -51,6 +51,7 @@ defmodule Leadfoot.MixProject do
       {:phoenix_live_view, "~> 0.18.18"},
       {:plug_cowboy, "~> 2.5"},
       {:postgrex, "~> 0.17.1"},
+      {:styler, "~> 0.9", only: [:dev, :test], runtime: false},
       {:swoosh, "~> 1.3"},
       {:tailwind, "~> 0.2.0", runtime: Mix.env() == :dev},
       {:telemetry_metrics, "~> 0.6"},

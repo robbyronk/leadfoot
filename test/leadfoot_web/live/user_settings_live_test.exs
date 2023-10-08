@@ -1,9 +1,10 @@
 defmodule LeadfootWeb.UserSettingsLiveTest do
   use LeadfootWeb.ConnCase
 
-  alias Leadfoot.Accounts
-  import Phoenix.LiveViewTest
   import Leadfoot.AccountsFixtures
+  import Phoenix.LiveViewTest
+
+  alias Leadfoot.Accounts
 
   describe "Settings page" do
     test "renders settings page", %{conn: conn} do

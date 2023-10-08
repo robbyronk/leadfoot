@@ -1,6 +1,7 @@
 defmodule LeadfootWeb.SuspensionCalculatorLive.View do
   @moduledoc false
   use LeadfootWeb, :live_view
+
   alias Leadfoot.Suspension.Calculator
 
   @initial_assigns %{
@@ -50,15 +51,12 @@ defmodule LeadfootWeb.SuspensionCalculatorLive.View do
   def handle_event("save", params, socket) do
     IO.inspect(params)
 
-    changeset =
-      socket.assigns.values
-      |> Calculator.changeset(params["calculator"])
+    changeset = Calculator.changeset(socket.assigns.values, params["calculator"])
 
     if changeset.valid? do
       {:ok, new_values} = Ecto.Changeset.apply_action(changeset, :update)
 
-      {front, rear, front_with_downforce, rear_with_downforce} =
-        Calculator.get_frequencies(new_values)
+      {front, rear, front_with_downforce, rear_with_downforce} = Calculator.get_frequencies(new_values)
 
       ratio = rear / front
       ratio_with_downforce = rear_with_downforce / front_with_downforce

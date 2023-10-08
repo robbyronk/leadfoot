@@ -12,10 +12,9 @@ defmodule Leadfoot.GearboxTest do
   end
 
   test "calculate everything for 22b" do
-    priv_dir = :code.priv_dir(:leadfoot) |> to_string()
+    priv_dir = :leadfoot |> :code.priv_dir() |> to_string()
 
-    %{torques: torques} =
-      File.read!(priv_dir <> "/torques/22b-torques") |> :erlang.binary_to_term()
+    %{torques: torques} = (priv_dir <> "/torques/22b-torques") |> File.read!() |> :erlang.binary_to_term()
 
     gearbox = %Leadfoot.CarSettings.Gearbox{
       final: 3.85,
@@ -63,8 +62,7 @@ defmodule Leadfoot.GearboxTest do
       {2, 1000, 30, 10}
     ]
 
-    {optimal_second_gear, optimal_first_gear} =
-      Gearbox.rev_acc_optimal_forces(second_gear, first_gear)
+    {optimal_second_gear, optimal_first_gear} = Gearbox.rev_acc_optimal_forces(second_gear, first_gear)
 
     assert optimal_first_gear == first_gear
 
@@ -93,8 +91,7 @@ defmodule Leadfoot.GearboxTest do
       {2, 1000, 30, 100}
     ]
 
-    {optimal_second_gear, optimal_first_gear} =
-      Gearbox.rev_acc_optimal_forces(second_gear, first_gear)
+    {optimal_second_gear, optimal_first_gear} = Gearbox.rev_acc_optimal_forces(second_gear, first_gear)
 
     expected_first_gear = [
       {1, 4000, 41, 120},

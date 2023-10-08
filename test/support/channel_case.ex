@@ -19,9 +19,9 @@ defmodule LeadfootWeb.ChannelCase do
 
   using do
     quote do
+      import LeadfootWeb.ChannelCase
       # Import conveniences for testing with channels
       import Phoenix.ChannelTest
-      import LeadfootWeb.ChannelCase
 
       # The default endpoint for testing
       @endpoint LeadfootWeb.Endpoint

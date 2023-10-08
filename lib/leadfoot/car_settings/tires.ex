@@ -1,10 +1,10 @@
 defmodule Leadfoot.CarSettings.Tires do
   @moduledoc false
 
+  import Ecto.Changeset
+
   defstruct [:width, :ratio, :size]
   @types %{width: :integer, ratio: :integer, size: :integer}
-
-  import Ecto.Changeset
 
   def changeset(%__MODULE__{} = tires, attrs) do
     {tires, @types}

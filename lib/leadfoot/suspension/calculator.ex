@@ -3,6 +3,8 @@ defmodule Leadfoot.Suspension.Calculator do
   Calculates the suspension natural frequency given valid inputs.
   """
 
+  import Ecto.Changeset
+
   alias Leadfoot.Suspension
 
   defstruct [
@@ -22,8 +24,6 @@ defmodule Leadfoot.Suspension.Calculator do
     mass: :integer,
     front_distribution: :integer
   }
-
-  import Ecto.Changeset
 
   def changeset(%__MODULE__{} = suspension, attrs) do
     {suspension, @types}

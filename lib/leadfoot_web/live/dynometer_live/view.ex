@@ -25,19 +25,19 @@ defmodule LeadfootWeb.DynometerLive.View do
   @impl true
   def handle_event("start", _params, socket) do
     Leadfoot.GearRatios.start_recording()
-    {:noreply, socket |> assign(recording: true)}
+    {:noreply, assign(socket, recording: true)}
   end
 
   @impl true
   def handle_event("stop", _params, socket) do
     Leadfoot.GearRatios.stop_recording()
-    {:noreply, socket |> assign(recording: false)}
+    {:noreply, assign(socket, recording: false)}
   end
 
   @impl true
   def handle_event("clear", _params, socket) do
     Leadfoot.GearRatios.clear_recording()
-    {:noreply, socket |> assign(@initial_assigns)}
+    {:noreply, assign(socket, @initial_assigns)}
   end
 
   @impl true
@@ -45,8 +45,7 @@ defmodule LeadfootWeb.DynometerLive.View do
     Process.send_after(self(), :update_torques, 100)
     %{torques: torques, recording: recording} = Leadfoot.GearRatios.get_torques()
 
-    {:noreply,
-     socket |> assign(torques: torques, recording: recording, torque_plot: plot(torques))}
+    {:noreply, assign(socket, torques: torques, recording: recording, torque_plot: plot(torques))}
   end
 
   def plot([]), do: ""

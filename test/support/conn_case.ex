@@ -20,14 +20,14 @@ defmodule LeadfootWeb.ConnCase do
   using do
     quote do
       # The default endpoint for testing
-      @endpoint LeadfootWeb.Endpoint
-
       use LeadfootWeb, :verified_routes
 
       # Import conveniences for testing with connections
-      import Plug.Conn
-      import Phoenix.ConnTest
       import LeadfootWeb.ConnCase
+      import Phoenix.ConnTest
+      import Plug.Conn
+
+      @endpoint LeadfootWeb.Endpoint
     end
   end
 

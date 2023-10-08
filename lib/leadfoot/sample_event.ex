@@ -1,7 +1,7 @@
 defmodule Leadfoot.SampleEvent do
   @moduledoc false
 
-  def sample() do
+  def sample do
     %{
       acceleration: %{
         x: 5.429727554321289,
@@ -26,7 +26,7 @@ defmodule Leadfoot.SampleEvent do
       current_lap_time: 57.39279556274414,
       current_race_time: 123.87380981445312,
       current_rpm: 6184.84716796875,
-      distance: 11166.416015625,
+      distance: 11_166.416015625,
       drivetrain: 1,
       driving_line: 127,
       fuel: 0.9402942061424255,

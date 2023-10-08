@@ -11,16 +11,12 @@ defmodule LeadfootWeb.LapTimesLive.View do
   def mount(_params, _session, socket) do
     Phoenix.PubSub.subscribe(Leadfoot.PubSub, "session:lap_times")
 
-    {:ok,
-     socket
-     |> assign(@initial_assigns)}
+    {:ok, assign(socket, @initial_assigns)}
   end
 
   @impl true
   def handle_info(lap_time, socket) do
-    {:noreply,
-     socket
-     |> assign(lap_times: [lap_time | socket.assigns.lap_times])}
+    {:noreply, assign(socket, lap_times: [lap_time | socket.assigns.lap_times])}
   end
 
   @impl true

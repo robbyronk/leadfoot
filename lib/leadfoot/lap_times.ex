@@ -18,9 +18,9 @@ defmodule Leadfoot.LapTimes do
     GenServer.start_link(__MODULE__, state, name: @server)
   end
 
-  def get_lap_times(), do: GenServer.call(@server, :get_lap_times)
+  def get_lap_times, do: GenServer.call(@server, :get_lap_times)
 
-  def reset(), do: GenServer.cast(@server, :reset)
+  def reset, do: GenServer.cast(@server, :reset)
 
   @impl true
   def init(_opts) do

@@ -1,11 +1,12 @@
 defmodule LeadfootWeb.UserAuth do
+  @moduledoc false
   use LeadfootWeb, :verified_routes
 
-  import Plug.Conn
   import Phoenix.Controller
+  import Plug.Conn
 
-  alias Leadfoot.Accounts
   alias Accounts.User
+  alias Leadfoot.Accounts
 
   # Make the remember me cookie valid for 60 days.
   # If you want bump or reduce this value, also change
@@ -216,9 +217,10 @@ defmodule LeadfootWeb.UserAuth do
   Used for routes that require the user to be an admin.
   """
   def require_admin_user(conn, _opts) do
-    with %User{role: "admin"} <- conn.assigns[:current_user] do
-      conn
-    else
+    case conn.assigns[:current_user] do
+      %User{role: "admin"} ->
+        conn
+
       _ ->
         conn
         |> redirect(to: ~p"/")

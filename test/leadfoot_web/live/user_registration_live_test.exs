@@ -1,8 +1,8 @@
 defmodule LeadfootWeb.UserRegistrationLiveTest do
   use LeadfootWeb.ConnCase
 
-  import Phoenix.LiveViewTest
   import Leadfoot.AccountsFixtures
+  import Phoenix.LiveViewTest
 
   describe "Registration page" do
     test "renders registration page", %{conn: conn} do

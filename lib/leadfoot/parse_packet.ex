@@ -1,74 +1,28 @@
 defmodule Leadfoot.ParsePacket do
   @moduledoc false
 
-  def parse_triple(<<
-        x::little-float-32,
-        y::little-float-32,
-        z::little-float-32
-      >>) do
+  def parse_triple(<<x::little-float-32, y::little-float-32, z::little-float-32>>) do
     %{x: x, y: y, z: z}
   end
 
-  def parse_corners(<<
-        fl::little-float-32,
-        fr::little-float-32,
-        rl::little-float-32,
-        rr::little-float-32
-      >>) do
+  def parse_corners(<<fl::little-float-32, fr::little-float-32, rl::little-float-32, rr::little-float-32>>) do
     %{front: %{left: fl, right: fr}, rear: %{left: rl, right: rr}}
   end
 
-  def parse_packet(<<
-        racing::little-32,
-        timestamp::little-32,
-        max_rpm::little-float-32,
-        idle_rpm::little-float-32,
-        current_rpm::little-float-32,
-        acceleration::bytes-12,
-        velocity::bytes-12,
-        angular_velocity::bytes-12,
-        yaw_pitch_roll::bytes-12,
-        norm_suspension::bytes-16,
-        tire_slip_ratio::bytes-16,
-        wheel_rotation::bytes-16,
-        on_rumble::bytes-16,
-        in_puddle::bytes-16,
-        surface_rumble::bytes-16,
-        tire_slip_angle::bytes-16,
-        tire_comb_slip::bytes-16,
-        suspension_travel::bytes-16,
-        car_id::little-32,
-        car_class::little-32,
-        car_performance::little-32,
-        drivetrain::little-32,
-        num_cylinders::little-32,
-        car_category::little-32,
-        unknown1::bytes-4,
-        unknown2::bytes-4,
-        world_position::bytes-12,
-        speed::little-float-32,
-        power::little-float-32,
-        torque::little-float-32,
-        tire_temp::bytes-16,
-        boost::little-float-32,
-        fuel::little-float-32,
-        distance::little-float-32,
-        best_lap_time::little-float-32,
-        last_lap_time::little-float-32,
-        current_lap_time::little-float-32,
-        current_race_time::little-float-32,
-        lap::little-16,
-        race_position::little-8,
-        accelerator::little-8,
-        brake::little-8,
-        clutch::little-8,
-        handbrake::little-8,
-        gear::little-8,
-        steer::little-signed-8,
-        driving_line::little-8,
-        ai_brake::little-8,
-        rest::bytes
-      >>) do
+  def parse_packet(
+        <<racing::little-32, timestamp::little-32, max_rpm::little-float-32, idle_rpm::little-float-32,
+          current_rpm::little-float-32, acceleration::bytes-12, velocity::bytes-12, angular_velocity::bytes-12,
+          yaw_pitch_roll::bytes-12, norm_suspension::bytes-16, tire_slip_ratio::bytes-16, wheel_rotation::bytes-16,
+          on_rumble::bytes-16, in_puddle::bytes-16, surface_rumble::bytes-16, tire_slip_angle::bytes-16,
+          tire_comb_slip::bytes-16, suspension_travel::bytes-16, car_id::little-32, car_class::little-32,
+          car_performance::little-32, drivetrain::little-32, num_cylinders::little-32, car_category::little-32,
+          unknown1::bytes-4, unknown2::bytes-4, world_position::bytes-12, speed::little-float-32, power::little-float-32,
+          torque::little-float-32, tire_temp::bytes-16, boost::little-float-32, fuel::little-float-32,
+          distance::little-float-32, best_lap_time::little-float-32, last_lap_time::little-float-32,
+          current_lap_time::little-float-32, current_race_time::little-float-32, lap::little-16, race_position::little-8,
+          accelerator::little-8, brake::little-8, clutch::little-8, handbrake::little-8, gear::little-8,
+          steer::little-signed-8, driving_line::little-8, ai_brake::little-8, rest::bytes>>
+      ) do
     # acceleration is in m/s^2
     acceleration = parse_triple(acceleration)
     velocity = parse_triple(velocity)

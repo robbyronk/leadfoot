@@ -1,10 +1,12 @@
 defmodule LeadfootWeb.GearRatiosLive.View do
   @moduledoc false
   use LeadfootWeb, :live_view
-  alias Leadfoot.GearRatios
-  alias Leadfoot.CarSettings.Tires
-  alias Leadfoot.CarSettings.Gearbox
+
   import LeadfootWeb.UI.Buttons
+
+  alias Leadfoot.CarSettings.Gearbox
+  alias Leadfoot.CarSettings.Tires
+  alias Leadfoot.GearRatios
 
   @initial_assigns %{
     event: nil,
@@ -75,11 +77,7 @@ defmodule LeadfootWeb.GearRatiosLive.View do
   end
 
   @impl true
-  def handle_event(
-        "validate_gearbox",
-        %{"gearbox" => params},
-        %{assigns: %{gearbox: gearbox}} = socket
-      ) do
+  def handle_event("validate_gearbox", %{"gearbox" => params}, %{assigns: %{gearbox: gearbox}} = socket) do
     changeset =
       gearbox
       |> Gearbox.changeset(params)
@@ -89,14 +87,8 @@ defmodule LeadfootWeb.GearRatiosLive.View do
   end
 
   @impl true
-  def handle_event(
-        "save_gearbox",
-        %{"gearbox" => params},
-        %{assigns: %{gearbox: gearbox}} = socket
-      ) do
-    changeset =
-      gearbox
-      |> Gearbox.changeset(params)
+  def handle_event("save_gearbox", %{"gearbox" => params}, %{assigns: %{gearbox: gearbox}} = socket) do
+    changeset = Gearbox.changeset(gearbox, params)
 
     if changeset.valid? do
       {:ok, gearbox} = Ecto.Changeset.apply_action(changeset, :update)
@@ -110,16 +102,12 @@ defmodule LeadfootWeb.GearRatiosLive.View do
         |> assign_updated_outputs()
       }
     else
-      {:noreply, socket |> assign(gearbox_changeset: changeset)}
+      {:noreply, assign(socket, gearbox_changeset: changeset)}
     end
   end
 
   @impl true
-  def handle_event(
-        "validate_tires",
-        %{"tires" => tires_params},
-        %{assigns: %{tires: tires}} = socket
-      ) do
+  def handle_event("validate_tires", %{"tires" => tires_params}, %{assigns: %{tires: tires}} = socket) do
     changeset =
       tires
       |> Tires.changeset(tires_params)
@@ -129,14 +117,8 @@ defmodule LeadfootWeb.GearRatiosLive.View do
   end
 
   @impl true
-  def handle_event(
-        "save_tires",
-        %{"tires" => tires_params},
-        %{assigns: %{tires: tires}} = socket
-      ) do
-    changeset =
-      tires
-      |> Tires.changeset(tires_params)
+  def handle_event("save_tires", %{"tires" => tires_params}, %{assigns: %{tires: tires}} = socket) do
+    changeset = Tires.changeset(tires, tires_params)
 
     if changeset.valid? do
       {:ok, new_tires} = Ecto.Changeset.apply_action(changeset, :update)
@@ -152,8 +134,7 @@ defmodule LeadfootWeb.GearRatiosLive.View do
     else
       {
         :noreply,
-        socket
-        |> assign(tires_changeset: changeset)
+        assign(socket, tires_changeset: changeset)
       }
     end
   end
@@ -180,7 +161,8 @@ defmodule LeadfootWeb.GearRatiosLive.View do
 
   def assign_loss_plot(socket) do
     transmission_losses =
-      Leadfoot.Gearbox.calculate_losses(socket.assigns.optimal_forces)
+      socket.assigns.optimal_forces
+      |> Leadfoot.Gearbox.calculate_losses()
       |> Enum.drop_while(fn {_, _, _, _, loss} -> loss < -5 end)
       |> Enum.take_while(fn {_, _, speed, _, _} -> speed < 350 end)
 

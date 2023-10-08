@@ -14,27 +14,29 @@ defmodule Leadfoot.ReadFile do
 
   # ms
   #  @pace 6
+  #  Leadfoot.ReadFile.start_link(%{publish_to: :udp, udp_port: 49584})
+
+  # ms
+  # pid of open file
+  # used for pacing
+  use GenServer
+
+  alias Leadfoot.ParsePacket
+  alias Phoenix.PubSub
 
   @server Leadfoot.ReadFile
 
   @initial_state %{
     use_pacing: true,
-    # ms
     pace: 6,
     publish_to: :pubsub,
     filename: "session.forza",
-    # pid of open file
     file: nil,
-    # used for pacing
     last_event: nil,
     udp: nil,
     udp_address: {127, 0, 0, 1},
     udp_port: 21_337
   }
-
-  use GenServer
-  alias Leadfoot.ParsePacket
-  alias Phoenix.PubSub
 
   def start_link(state \\ %{}) do
     GenServer.start_link(__MODULE__, state, name: @server)
@@ -77,6 +79,8 @@ defmodule Leadfoot.ReadFile do
   def handle_continue(:first_read, state) do
     packet = read_packet(state.file)
     event = ParsePacket.parse_packet(packet)
+    IO.inspect(event.current_race_time, label: "read_file.ex:81 current_race_time")
+    IO.inspect(event.timestamp, label: "read_file.ex:81 timestamp")
     publish(state, event, packet)
     next(state, event)
 
@@ -92,6 +96,12 @@ defmodule Leadfoot.ReadFile do
 
     if packet != :eof do
       event = ParsePacket.parse_packet(packet)
+
+      if event.current_race_time > 0.0 and event.current_race_time < 0.1 do
+        IO.inspect(event.current_race_time, label: "read_file.ex:81 current_race_time")
+        IO.inspect(event.timestamp, label: "read_file.ex:81 timestamp")
+      end
+
       publish(state, event, packet)
       next(state, event)
 
@@ -117,11 +127,7 @@ defmodule Leadfoot.ReadFile do
     PubSub.broadcast(Leadfoot.PubSub, "session", {:event, event})
   end
 
-  def publish(
-        %{publish_to: :udp, udp: socket, udp_address: address, udp_port: port},
-        _event,
-        packet
-      ) do
+  def publish(%{publish_to: :udp, udp: socket, udp_address: address, udp_port: port}, _event, packet) do
     :gen_udp.send(socket, address, port, packet)
   end
 

@@ -1,4 +1,5 @@
 defmodule LeadfootWeb.UserResetPasswordLive do
+  @moduledoc false
   use LeadfootWeb, :live_view
 
   alias Leadfoot.Accounts

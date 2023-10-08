@@ -3,8 +3,8 @@ defmodule Leadfoot.Gearbox do
   This module has functions to tune the gearbox.
   """
 
-  alias Leadfoot.CarSettings.Tires
   alias Leadfoot.CarSettings.Gearbox
+  alias Leadfoot.CarSettings.Tires
 
   @doc """
   Calculates the speed of the car in kph
@@ -37,7 +37,7 @@ defmodule Leadfoot.Gearbox do
   def calculate_forces(gearbox, tires, torques, drive_wheels) do
     wheel_diameter = Tires.get_tire_height(tires)
 
-    gears = Gearbox.get_gears(gearbox) |> Enum.with_index()
+    gears = gearbox |> Gearbox.get_gears() |> Enum.with_index()
 
     for {rpm, torque} <- torques, {gear_ratio, gear_index} <- gears do
       {
@@ -59,10 +59,7 @@ defmodule Leadfoot.Gearbox do
   def get_optimal_forces(forces) do
     forces
     |> Enum.group_by(&gear_elem/1)
-    |> Enum.map(fn {gear, forces} ->
-      {gear, Enum.sort_by(forces, &speed_elem/1) |> Enum.reverse()}
-    end)
-    |> Enum.into(%{})
+    |> Map.new(fn {gear, forces} -> {gear, forces |> Enum.sort_by(&speed_elem/1) |> Enum.reverse()} end)
     |> optimal_forces_by_gear()
     |> Enum.sort_by(&speed_elem/1)
   end
