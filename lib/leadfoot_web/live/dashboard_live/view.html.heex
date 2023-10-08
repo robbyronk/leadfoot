@@ -9,7 +9,9 @@
 <div class="relative rounded-lg bg-transparent">
   <.modal id="create_modal">
     <h3 class="font-bold text-lg">Help</h3>
-    <p class="mt-4">Tire temperature is crucial for optimal performance on the virtual racetrack. Maintaining the right tire temperature ensures that the tires grip the road effectively, allowing players to achieve better control, faster lap times, and a competitive edge against opponents. Overheated or too cold tires can lead to reduced traction and compromised handling.</p>
+    <p class="mt-4">
+      Tire temperature is crucial for optimal performance on the virtual racetrack. Maintaining the right tire temperature ensures that the tires grip the road effectively, allowing players to achieve better control, faster lap times, and a competitive edge against opponents. Overheated or too cold tires can lead to reduced traction and compromised handling.
+    </p>
     <p class="mt-2">
       Monitoring lap times is essential for assessing a player's racing performance and refining their driving skills. Keeping a close eye on lap times allows players to track their progress, identify areas for improvement, and compete against their personal best or other players' records.
     </p>
@@ -25,17 +27,17 @@
 <div class="grid grid-cols-3 gap-0 text-black">
   <div class="relative rounded-l-lg bg-slate-800/10 p-2">
     <div class="relative flex items-center justify-center rounded-lg bg-zinc-100 border border-slate-700 w-40 h-40">
-    <div class="speed text-7xl font-racing-sans-one">
-      <%= speed(@event[:speed]) %>
+      <div class="speed text-7xl font-racing-sans-one">
+        <%= speed(@event[:speed]) %>
+      </div>
+      <p class="absolute bottom-0 text-center text-xs md:text-sm">Speedometer</p>
     </div>
-    <p class="absolute bottom-0 text-center text-xs md:text-sm">Speedometer</p>
+    <div class="relative flex items-center justify-center rounded-lg bg-zinc-100 border border-slate-700 w-40 h-40 mt-2">
+      <div class="gear text-7xl font-racing-sans-one">
+        <%= gear(@event[:gear]) %>
+      </div>
+      <p class="absolute bottom-0 text-center text-xs md:text-sm">Gear</p>
     </div>
-        <div class="relative flex items-center justify-center rounded-lg bg-zinc-100 border border-slate-700 w-40 h-40 mt-2">
-    <div class="gear text-7xl font-racing-sans-one">
-      <%= gear(@event[:gear]) %>
-    </div>
-               <p class="absolute bottom-0 text-center text-xs md:text-sm">Gear</p>
-        </div>
   </div>
   <div class="relative bg-slate-800/10 p-2">
     <div class="top-display display">
@@ -61,10 +63,10 @@
   </div>
   <div class="relative rounded-r-lg bg-slate-800/10 p-2">
     <div class="absolute top-2 right-2 flex items-center justify-center rounded-lg bg-zinc-100 border border-slate-700 w-40 h-40">
-    <div class="tach text-7xl font-racing-sans-one">
-      <span style={"width: #{@tach_pct}%;"}>&nbsp;</span>
-    </div>
-       <p class="absolute bottom-0 text-center text-xs md:text-sm">Tachometer</p>
+      <div class="tach text-7xl font-racing-sans-one">
+        <span style={"width: #{@tach_pct}%;"}>&nbsp;</span>
+      </div>
+      <p class="absolute bottom-0 text-center text-xs md:text-sm">Tachometer</p>
     </div>
   </div>
 </div>
@@ -72,22 +74,22 @@
   <div class="rounded-lg bg-slate-800/10 p-2">
     <div class="bottom-display display">
       <div class="relative flex items-center justify-center rounded-lg bg-zinc-100 border border-slate-700 w-60 h-20 mx-auto">
-      <div>
-        <p class="font-bold text-lg">Current lap time:</p>
-        <%= Float.round(@event[:current_lap_time], 3) %>
-      </div>
+        <div>
+          <p class="font-bold text-lg">Current lap time:</p>
+          <%= Float.round(@event[:current_lap_time], 3) %>
+        </div>
       </div>
       <div class="relative flex items-center justify-center rounded-lg bg-zinc-100 border border-slate-700 w-60 h-20 mx-auto">
-      <div>
-        <p class="font-bold text-lg">Last lap time:</p>
-        <%= Float.round(@event[:last_lap_time], 3) %>
-      </div>
+        <div>
+          <p class="font-bold text-lg">Last lap time:</p>
+          <%= Float.round(@event[:last_lap_time], 3) %>
+        </div>
       </div>
     </div>
   </div>
   <div class="rounded-lg bg-slate-800/10 p-2">
     <div class="relative flex items-center justify-center rounded-lg bg-zinc-100 border border-slate-700 w-60 h-20 mx-auto">
-          <div>
+      <div>
         <p class="font-bold text-lg">Current race time:</p>
         <%= Float.round(@event[:current_race_time], 3) %>
       </div>
@@ -108,7 +110,7 @@
     <div class="accelerometer">
       <div class="ball" style={"top: #{@accel_top}px; left: #{@accel_left}px;"}></div>
     </div>
-<p class="font-bold text-lg">Timestamp:</p>
+    <p class="font-bold text-lg">Timestamp:</p>
     <div><%= @event[:timestamp] %></div>
   </div>
 </div>
