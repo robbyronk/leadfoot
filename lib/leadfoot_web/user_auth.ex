@@ -5,8 +5,8 @@ defmodule LeadfootWeb.UserAuth do
   import Phoenix.Controller
   import Plug.Conn
 
-  alias Accounts.User
   alias Leadfoot.Accounts
+  alias Leadfoot.Accounts.User
 
   # Make the remember me cookie valid for 60 days.
   # If you want bump or reduce this value, also change
