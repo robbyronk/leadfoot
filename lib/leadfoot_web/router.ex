@@ -27,6 +27,8 @@ defmodule LeadfootWeb.Router do
     live "/gear-ratios", GearRatiosLive.View, :view
     live "/lap-times", LapTimesLive.View, :view
     live "/suspension", SuspensionCalculatorLive.View, :view
+
+    live "/lap_times", LapTimeLive.Index, :index
   end
 
   # Other scopes may use custom stacks.
@@ -78,6 +80,9 @@ defmodule LeadfootWeb.Router do
 
       live "/users/settings", UserSettingsLive, :edit
       live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
+
+      live "/lap_times/new", LapTimeLive.Index, :new
+      live "/lap_times/:id/edit", LapTimeLive.Index, :edit
     end
   end
 

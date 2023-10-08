@@ -1,0 +1,51 @@
+<.header>
+  Listing Lap times
+  <:actions>
+    <.link patch={~p"/lap_times/new"}>
+      <.button>New Lap time</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table id="lap_times" rows={@streams.lap_times}>
+  <:col :let={{_id, lap_time}} label="Lap time millis"><%= lap_time.lap_time_millis %></:col>
+  <:col :let={{_id, lap_time}} label="Car"><%= lap_time.car %></:col>
+  <:col :let={{_id, lap_time}} label="Track"><%= lap_time.track %></:col>
+  <:col :let={{_id, lap_time}} label="Tune"><%= lap_time.tune %></:col>
+  <:col :let={{_id, lap_time}} label="Input method"><%= lap_time.input_method %></:col>
+  <:col :let={{_id, lap_time}} label="Video url"><%= lap_time.video_url %></:col>
+  <:col :let={{_id, lap_time}} label="Notes"><%= lap_time.notes %></:col>
+  <:action :let={{_id, lap_time}}>
+    <div :if={lap_time.user_id == @current_user.id} class="sr-only">
+      <.link navigate={~p"/lap_times/#{lap_time}"}>Show</.link>
+    </div>
+    <.link :if={lap_time.user_id == @current_user.id} patch={~p"/lap_times/#{lap_time}/edit"}>
+      Edit
+    </.link>
+  </:action>
+  <:action :let={{id, lap_time}}>
+    <.link
+      :if={lap_time.user_id == @current_user.id}
+      phx-click={JS.push("delete", value: %{id: lap_time.id}) |> hide("##{id}")}
+      data-confirm="Are you sure?"
+    >
+      Delete
+    </.link>
+  </:action>
+</.table>
+
+<.modal
+  :if={@live_action in [:new, :edit]}
+  id="lap_time-modal"
+  show
+  on_cancel={JS.patch(~p"/lap_times")}
+>
+  <.live_component
+    module={LeadfootWeb.LapTimeLive.FormComponent}
+    id={@lap_time.id || :new}
+    title={@page_title}
+    action={@live_action}
+    lap_time={@lap_time}
+    patch={~p"/lap_times"}
+  />
+</.modal>
