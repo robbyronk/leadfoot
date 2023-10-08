@@ -1,8 +1,9 @@
 defmodule LeadfootWeb.Tuning.LaunchLive do
+  @moduledoc false
   use LeadfootWeb, :live_view
 
-  alias Phoenix.PubSub
   alias Leadfoot.Session.Session
+  alias Phoenix.PubSub
 
   @initial_state %{
     status: :stop,
@@ -24,8 +25,7 @@ defmodule LeadfootWeb.Tuning.LaunchLive do
 
     {
       :ok,
-      socket
-      |> assign(@initial_state)
+      assign(socket, @initial_state)
     }
   end
 

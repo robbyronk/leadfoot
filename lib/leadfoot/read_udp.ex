@@ -2,6 +2,7 @@ defmodule Leadfoot.ReadUdp do
   @moduledoc false
 
   use GenServer
+
   alias Leadfoot.ParsePacket
   alias Phoenix.PubSub
 
@@ -24,9 +25,9 @@ defmodule Leadfoot.ReadUdp do
 
   def start(filename), do: GenServer.cast(@server, {:start, filename})
 
-  def stop(), do: GenServer.cast(@server, :stop)
+  def stop, do: GenServer.cast(@server, :stop)
 
-  def status(), do: GenServer.call(@server, :status)
+  def status, do: GenServer.call(@server, :status)
 
   def change_port(port), do: GenServer.call(@server, {:change_port, port})
 
@@ -37,7 +38,7 @@ defmodule Leadfoot.ReadUdp do
 
   @impl true
   def handle_continue(:open_port, state) do
-    {:noreply, state |> open_udp(@initial_port)}
+    {:noreply, open_udp(state, @initial_port)}
   end
 
   @impl true
@@ -73,10 +74,10 @@ defmodule Leadfoot.ReadUdp do
 
   @impl true
   def handle_call({:change_port, port}, from, state) do
-    handle_call(:status, from, state |> open_udp(port))
+    handle_call(:status, from, open_udp(state, port))
   end
 
-  def get_udp_ip() do
+  def get_udp_ip do
     udp_ip = Application.fetch_env!(:leadfoot, :udp_ip)
 
     if is_binary(udp_ip) do
@@ -90,10 +91,10 @@ defmodule Leadfoot.ReadUdp do
   def open_udp(state, port) do
     case :gen_udp.open(port, mode: :binary, ip: get_udp_ip()) do
       {:ok, socket} ->
-        state |> Map.merge(%{port: port, socket: socket, status: :on, error_reason: nil})
+        Map.merge(state, %{port: port, socket: socket, status: :on, error_reason: nil})
 
       {:error, reason} ->
-        state |> Map.merge(%{error_reason: reason, status: :error, port: nil, socket: nil})
+        Map.merge(state, %{error_reason: reason, status: :error, port: nil, socket: nil})
     end
   end
 end

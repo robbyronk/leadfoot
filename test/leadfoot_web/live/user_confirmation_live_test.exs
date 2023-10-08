@@ -1,8 +1,8 @@
 defmodule LeadfootWeb.UserConfirmationLiveTest do
   use LeadfootWeb.ConnCase
 
-  import Phoenix.LiveViewTest
   import Leadfoot.AccountsFixtures
+  import Phoenix.LiveViewTest
 
   alias Leadfoot.Accounts
   alias Leadfoot.Repo

@@ -1,6 +1,8 @@
 defmodule Leadfoot.CarSettings.Gearbox do
   @moduledoc false
 
+  import Ecto.Changeset
+
   defstruct [
     :final,
     :gear1,
@@ -29,8 +31,6 @@ defmodule Leadfoot.CarSettings.Gearbox do
     gear10: :float
   }
 
-  import Ecto.Changeset
-
   def changeset(%__MODULE__{} = gearbox, attrs) do
     {gearbox, @types}
     |> cast(attrs, Map.keys(@types))
@@ -51,7 +51,8 @@ defmodule Leadfoot.CarSettings.Gearbox do
       :gear10
     ]
 
-    Enum.reduce_while(gears, [], fn gear, acc ->
+    gears
+    |> Enum.reduce_while([], fn gear, acc ->
       case Map.fetch!(gearbox, gear) do
         nil -> {:halt, acc}
         ratio -> {:cont, [ratio | acc]}

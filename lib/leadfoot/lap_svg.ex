@@ -20,8 +20,8 @@ defmodule Leadfoot.LapSvg do
     y = 2
     xs = Enum.map(events, fn e -> -elem(e.position, x) end)
     ys = Enum.map(events, fn e -> elem(e.position, y) end)
-    min_x = xs |> Enum.min()
-    min_y = ys |> Enum.min()
+    min_x = Enum.min(xs)
+    min_y = Enum.min(ys)
     max_x = Enum.max(xs)
     max_y = Enum.max(ys)
     # todo set width and height to maintain aspect ratio

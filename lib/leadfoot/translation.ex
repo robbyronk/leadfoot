@@ -107,8 +107,7 @@ defmodule Leadfoot.Translation do
     [time.hour, time.minute, time.second]
     |> Enum.drop_while(fn x -> x == 0 end)
     |> Enum.map(&Integer.to_string/1)
-    |> Enum.map(&String.pad_leading(&1, 2, "0"))
-    |> Enum.join(":")
+    |> Enum.map_join(":", &String.pad_leading(&1, 2, "0"))
   end
 
   def to_mm_ss_ms(seconds) do
@@ -120,8 +119,7 @@ defmodule Leadfoot.Translation do
       [time.hour * 60 + time.minute, time.second]
       |> Enum.drop_while(fn x -> x == 0 end)
       |> Enum.map(&Integer.to_string/1)
-      |> Enum.map(&String.pad_leading(&1, 2, "0"))
-      |> Enum.join(":")
+      |> Enum.map_join(":", &String.pad_leading(&1, 2, "0"))
 
     "#{mm_ss}.#{div(ms, 1000)}"
   end

@@ -39,10 +39,13 @@ defmodule Leadfoot.GearRatios do
   225/40R18 295/30R18
   """
 
-  alias Phoenix.PubSub
-  alias Leadfoot.CarSettings.Tires
-  alias Leadfoot.CarSettings.Gearbox
+  use GenServer
+
   import Leadfoot.Gearbox
+
+  alias Leadfoot.CarSettings.Gearbox
+  alias Leadfoot.CarSettings.Tires
+  alias Phoenix.PubSub
 
   # rx7 stock tires: 225/50R16
   # 22b stock tires: 235/40R17
@@ -69,8 +72,6 @@ defmodule Leadfoot.GearRatios do
 
   @server Leadfoot.GearRatios
 
-  use GenServer
-
   def start_link(_opts) do
     GenServer.start_link(__MODULE__, %{}, name: @server)
   end
@@ -86,31 +87,39 @@ defmodule Leadfoot.GearRatios do
     {:ok, @initial_state}
   end
 
-  def get_tires(), do: GenServer.call(@server, :get_tires)
+  def get_tires, do: GenServer.call(@server, :get_tires)
 
   def set_tire_size(%Tires{} = tires), do: GenServer.cast(@server, {:tire_size, tires})
 
-  def get_gearbox(), do: GenServer.call(@server, :get_gearbox)
+  def get_gearbox, do: GenServer.call(@server, :get_gearbox)
 
   def set_gearbox(%Gearbox{} = gearbox), do: GenServer.cast(@server, {:gearbox, gearbox})
 
-  def get_torques(), do: GenServer.call(@server, :get_torques)
+  def get_torques, do: GenServer.call(@server, :get_torques)
 
-  def get_wheel_forces(), do: GenServer.call(@server, :get_wheel_forces)
+  def get_wheel_forces, do: GenServer.call(@server, :get_wheel_forces)
 
-  def get_shift_points(), do: GenServer.call(@server, :get_shift_points)
+  def get_shift_points, do: GenServer.call(@server, :get_shift_points)
 
-  def start_recording(), do: GenServer.cast(@server, :start_recording)
+  def start_recording, do: GenServer.cast(@server, :start_recording)
 
-  def stop_recording(), do: GenServer.cast(@server, :stop_recording)
+  def stop_recording, do: GenServer.cast(@server, :stop_recording)
 
-  def clear_recording(), do: GenServer.cast(@server, :clear_recording)
+  def clear_recording, do: GenServer.cast(@server, :clear_recording)
 
   @impl true
   def handle_info({:event, event}, state) do
-    case state.recording do
-      false -> {:noreply, state}
-      true -> {:noreply, capture_torque(event, state)}
+    if state.recording do
+      {:noreply, capture_torque(event, state)}
+
+      # todo accumulate force and max power curve in one loop
+
+      # todo use precalculated forces
+
+      # find last current gear tuple c where c.force < n2.force,
+      # where n1.speed < c.speed <= n2.speed
+    else
+      {:noreply, state}
     end
   end
 
@@ -140,7 +149,6 @@ defmodule Leadfoot.GearRatios do
   def handle_call(:get_wheel_forces, _from, state) do
     state = calculate_forces(state)
 
-    # todo accumulate force and max power curve in one loop
     forces =
       for {_gear, _rpm, speed, force} <- state.forces do
         {speed, force}
@@ -149,7 +157,7 @@ defmodule Leadfoot.GearRatios do
     power = state.peak_power * state.power_multiple
 
     power_curve =
-      for {_gear, _rpm, speed, _force} <- state.forces, power / speed < 30000 do
+      for {_gear, _rpm, speed, _force} <- state.forces, power / speed < 30_000 do
         {speed, power / speed}
       end
 
@@ -194,9 +202,7 @@ defmodule Leadfoot.GearRatios do
     wheel_diameter = Tires.get_tire_height(state.tires)
     wheel_radius = wheel_diameter / 2
 
-    # todo use precalculated forces
-
-    gears = Gearbox.get_gears(state.gearbox) |> Enum.with_index()
+    gears = state.gearbox |> Gearbox.get_gears() |> Enum.with_index()
     final = state.gearbox.final
 
     a =
@@ -228,8 +234,6 @@ defmodule Leadfoot.GearRatios do
   def find_next_shift_point([], []), do: {nil, []}
 
   def find_next_shift_point([c | current_gear_forces], [n1, n2 | next_gear_forces]) do
-    # find last current gear tuple c where c.force < n2.force,
-    # where n1.speed < c.speed <= n2.speed
     {_c_gear, _c_rpm, c_v, c_f} = c
     {_n1_gear, _n1_rpm, n1_v, _n1_f} = n1
     {_n2_gear, _n2_rpm, n2_v, n2_f} = n2
@@ -259,7 +263,7 @@ defmodule Leadfoot.GearRatios do
     wheel_diameter = Tires.get_tire_height(state.tires)
     wheel_radius = wheel_diameter / 2
 
-    gears = Gearbox.get_gears(state.gearbox) |> Enum.with_index()
+    gears = state.gearbox |> Gearbox.get_gears() |> Enum.with_index()
     final = state.gearbox.final
 
     forces =

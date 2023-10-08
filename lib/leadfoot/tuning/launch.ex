@@ -1,4 +1,9 @@
 defmodule Leadfoot.Tuning.Launch do
+  @moduledoc false
+  use GenServer
+
+  alias Phoenix.PubSub
+
   @doc """
   GenServer to collect and hold data for tuning the launch of the car.
 
@@ -24,10 +29,6 @@ defmodule Leadfoot.Tuning.Launch do
   When in Done, transition to Stop after 5 seconds.
   """
 
-  use GenServer
-
-  alias Phoenix.PubSub
-
   @initial_state %{
     hold_brake_secs: 2,
     recording_secs: 5,
@@ -48,7 +49,7 @@ defmodule Leadfoot.Tuning.Launch do
   @impl true
   def init(%{user_id: user_id}) do
     PubSub.subscribe(Leadfoot.PubSub, "session:#{user_id}")
-    state = @initial_state |> Map.put(:user_id, user_id)
+    state = Map.put(@initial_state, :user_id, user_id)
     broadcast(state)
 
     {:ok, state}
@@ -101,10 +102,10 @@ defmodule Leadfoot.Tuning.Launch do
   end
 
   defp handle_stop(event, state) do
-    if not is_moving?(event) do
-      transition_to_hold_brake(state)
-    else
+    if is_moving?(event) do
       state
+    else
+      transition_to_hold_brake(state)
     end
   end
 

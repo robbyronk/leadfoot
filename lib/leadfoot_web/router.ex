@@ -1,8 +1,8 @@
 defmodule LeadfootWeb.Router do
   use LeadfootWeb, :router
 
-  import Phoenix.LiveDashboard.Router
   import LeadfootWeb.UserAuth
+  import Phoenix.LiveDashboard.Router
 
   pipeline :browser do
     plug :accepts, ["html"]
@@ -46,7 +46,7 @@ defmodule LeadfootWeb.Router do
     scope "/dev" do
       pipe_through :browser
 
-#      live_dashboard "/server-dashboard", metrics: LeadfootWeb.Telemetry
+      #      live_dashboard "/server-dashboard", metrics: LeadfootWeb.Telemetry
       forward "/mailbox", Plug.Swoosh.MailboxPreview
     end
   end
@@ -84,7 +84,6 @@ defmodule LeadfootWeb.Router do
   scope "/", LeadfootWeb do
     pipe_through [:browser, :require_admin_user]
     live_dashboard "/server-dashboard", metrics: LeadfootWeb.Telemetry
-
 
     live_session :require_admin_user,
       on_mount: [{LeadfootWeb.UserAuth, :ensure_authenticated}] do

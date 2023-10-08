@@ -1,10 +1,12 @@
 defmodule LeadfootWeb.DashboardLive.View do
   @moduledoc false
   use LeadfootWeb, :live_view
-  alias Phoenix.PubSub
-  alias Leadfoot.Session.Session
+
   import Leadfoot.SampleEvent
   import Leadfoot.Translation
+
+  alias Leadfoot.Session.Session
+  alias Phoenix.PubSub
 
   @impl true
   def mount(_params, _session, socket) do
@@ -25,8 +27,7 @@ defmodule LeadfootWeb.DashboardLive.View do
   def handle_info({:event, event}, socket) do
     {
       :noreply,
-      socket
-      |> set_assigns(event)
+      set_assigns(socket, event)
     }
   end
 

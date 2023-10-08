@@ -4,6 +4,7 @@ defmodule Leadfoot.DisplayOut do
   """
 
   use GenServer
+
   alias Phoenix.PubSub
 
   @leds 16

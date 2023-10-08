@@ -1,4 +1,5 @@
 defmodule Leadfoot.Scratch do
+  @moduledoc false
   alias Leadfoot.Gearbox
 
   @total_gears 7
@@ -19,15 +20,15 @@ defmodule Leadfoot.Scratch do
       |> Contex.Plot.new(Contex.PointPlot, 600, 400)
       |> Contex.Plot.to_svg()
 
-    File.write(filename, List.flatten(svg) |> Enum.join())
+    File.write(filename, svg |> List.flatten() |> Enum.join())
   end
 
-  def get_torques() do
+  def get_torques do
     %{torques: torques} = Leadfoot.GearRatios.get_torques()
     torques
   end
 
-  def get_random_gearbox() do
+  def get_random_gearbox do
     gearbox = %Leadfoot.CarSettings.Gearbox{
       final: @final,
       gear1: @first_gear_ratio
@@ -36,10 +37,13 @@ defmodule Leadfoot.Scratch do
     min_random_gear = @top_gear_ratio + 0.05
     max_random_gear = @first_gear_ratio * 0.85
 
-    random_gears =
+    for_result =
       for _ <- 1..(@total_gears - 2) do
         Float.round(min_random_gear + :rand.uniform() * (max_random_gear - min_random_gear), 2)
       end
+
+    random_gears =
+      for_result
       |> List.insert_at(0, @top_gear_ratio)
       |> Enum.sort()
       |> Enum.reverse()
@@ -87,7 +91,7 @@ defmodule Leadfoot.Scratch do
     :ok
   end
 
-  def ideal_gearbox() do
+  def ideal_gearbox do
     #    %Leadfoot.CarSettings.Gearbox{
     #      final: 3.85,
     #      gear1: 4.14,

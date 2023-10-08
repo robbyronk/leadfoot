@@ -1,4 +1,5 @@
 defmodule LeadfootWeb.UserLoginLive do
+  @moduledoc false
   use LeadfootWeb, :live_view
 
   def render(assigns) do

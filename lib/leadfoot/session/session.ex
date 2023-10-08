@@ -3,13 +3,14 @@ defmodule Leadfoot.Session.Session do
   Process that collects data for racing, tuning and analysis.
   """
 
-  alias Phoenix.PubSub
+  use GenServer, restart: :transient
+
   alias Leadfoot.ParsePacket
   alias Leadfoot.Tuning.Launch
+  alias Phoenix.PubSub
 
   require Logger
 
-  use GenServer, restart: :transient
   @timeout :timer.minutes(30)
 
   @registry Leadfoot.Session.Registry
@@ -103,12 +104,12 @@ defmodule Leadfoot.Session.Session do
     {:reply, state, state, @timeout}
   end
 
-  defp random_port() do
-    49584
+  defp random_port do
+    49_584
     #    Enum.random(10000..65000)
   end
 
-  defp get_udp_ip() do
+  defp get_udp_ip do
     udp_ip = Application.fetch_env!(:leadfoot, :udp_ip)
 
     if is_binary(udp_ip) do
