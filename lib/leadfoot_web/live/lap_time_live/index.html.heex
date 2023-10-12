@@ -1,7 +1,7 @@
 <.header>
   Listing Lap times
   <:actions>
-    <.link patch={~p"/lap_times/new"}>
+    <.link :if={!is_nil(@current_user_id)} patch={~p"/lap_times/new"}>
       <.button>New Lap time</.button>
     </.link>
   </:actions>
@@ -16,16 +16,16 @@
   <:col :let={{_id, lap_time}} label="Video url"><%= lap_time.video_url %></:col>
   <:col :let={{_id, lap_time}} label="Notes"><%= lap_time.notes %></:col>
   <:action :let={{_id, lap_time}}>
-    <div :if={lap_time.user_id == @current_user.id} class="sr-only">
+    <div :if={lap_time.user_id == @current_user_id} class="sr-only">
       <.link navigate={~p"/lap_times/#{lap_time}"}>Show</.link>
     </div>
-    <.link :if={lap_time.user_id == @current_user.id} patch={~p"/lap_times/#{lap_time}/edit"}>
+    <.link :if={lap_time.user_id == @current_user_id} patch={~p"/lap_times/#{lap_time}/edit"}>
       Edit
     </.link>
   </:action>
   <:action :let={{id, lap_time}}>
     <.link
-      :if={lap_time.user_id == @current_user.id}
+      :if={lap_time.user_id == @current_user_id}
       phx-click={JS.push("delete", value: %{id: lap_time.id}) |> hide("##{id}")}
       data-confirm="Are you sure?"
     >

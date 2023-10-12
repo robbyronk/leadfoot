@@ -8,11 +8,16 @@ defmodule LeadfootWeb.LapTimeLive.Index do
 
   @impl true
   def mount(_params, session, socket) do
-    user = Accounts.get_user_by_session_token(session["user_token"])
+    user =
+      case session["user_token"] do
+        nil -> nil
+        token -> Accounts.get_user_by_session_token(token)
+      end
 
     {:ok,
      socket
      |> assign(current_user: user)
+     |> assign(current_user_id: if(user, do: user.id))
      |> stream(:lap_times, Leaderboard.list_lap_times())}
   end
 
