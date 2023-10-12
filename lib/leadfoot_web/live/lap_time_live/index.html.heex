@@ -16,7 +16,13 @@
   <:col :let={{_id, lap_time}} label="Video url"><%= lap_time.video_url %></:col>
   <:col :let={{_id, lap_time}} label="Notes"><%= lap_time.notes %></:col>
   <:action :let={{_id, lap_time}}>
-    <div :if={lap_time.user_id == @current_user_id} class="sr-only">
+    <div
+      :if={
+        lap_time.user_id ==
+          @current_user_id
+      }
+      class="sr-only"
+    >
       <.link navigate={~p"/lap_times/#{lap_time}"}>Show</.link>
     </div>
     <.link :if={lap_time.user_id == @current_user_id} patch={~p"/lap_times/#{lap_time}/edit"}>
@@ -46,6 +52,7 @@
     title={@page_title}
     action={@live_action}
     lap_time={@lap_time}
+    current_user={@current_user}
     patch={~p"/lap_times"}
   />
 </.modal>

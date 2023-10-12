@@ -4,13 +4,16 @@ defmodule Leadfoot.LeaderboardFixtures do
   entities via the `Leadfoot.Leaderboard` context.
   """
 
+  alias Leadfoot.AccountsFixtures
+
   @doc """
   Generate a lap_time.
   """
   def lap_time_fixture(attrs \\ %{}) do
-    {:ok, lap_time} =
-      attrs
-      |> Enum.into(%{
+    user = AccountsFixtures.user_fixture()
+
+    attrs =
+      Enum.into(attrs, %{
         car: "some car",
         input_method: "some input_method",
         lap_time_millis: 42,
@@ -19,7 +22,8 @@ defmodule Leadfoot.LeaderboardFixtures do
         tune: "some tune",
         video_url: "some video_url"
       })
-      |> Leadfoot.Leaderboard.create_lap_time()
+
+    {:ok, lap_time} = Leadfoot.Leaderboard.create_lap_time(user, attrs)
 
     lap_time
   end

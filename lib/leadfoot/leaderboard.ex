@@ -5,6 +5,7 @@ defmodule Leadfoot.Leaderboard do
 
   import Ecto.Query, warn: false
 
+  alias Leadfoot.Accounts.User
   alias Leadfoot.Leaderboard.LapTime
   alias Leadfoot.Repo
 
@@ -49,8 +50,9 @@ defmodule Leadfoot.Leaderboard do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_lap_time(attrs \\ %{}) do
-    %LapTime{}
+  def create_lap_time(%User{} = user, attrs \\ %{}) do
+    user
+    |> Ecto.build_assoc(:lap_times)
     |> LapTime.changeset(attrs)
     |> Repo.insert()
   end

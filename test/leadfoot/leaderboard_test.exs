@@ -1,6 +1,7 @@
 defmodule Leadfoot.LeaderboardTest do
   use Leadfoot.DataCase
 
+  alias Leadfoot.AccountsFixtures
   alias Leadfoot.Leaderboard
 
   describe "lap_times" do
@@ -21,6 +22,8 @@ defmodule Leadfoot.LeaderboardTest do
     end
 
     test "create_lap_time/1 with valid data creates a lap_time" do
+      user = AccountsFixtures.user_fixture()
+
       valid_attrs = %{
         car: "some car",
         input_method: "some input_method",
@@ -31,7 +34,7 @@ defmodule Leadfoot.LeaderboardTest do
         video_url: "some video_url"
       }
 
-      assert {:ok, %LapTime{} = lap_time} = Leaderboard.create_lap_time(valid_attrs)
+      assert {:ok, %LapTime{} = lap_time} = Leaderboard.create_lap_time(user, valid_attrs)
       assert lap_time.car == "some car"
       assert lap_time.input_method == "some input_method"
       assert lap_time.lap_time_millis == 42
@@ -42,7 +45,9 @@ defmodule Leadfoot.LeaderboardTest do
     end
 
     test "create_lap_time/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = Leaderboard.create_lap_time(@invalid_attrs)
+      user = AccountsFixtures.user_fixture()
+
+      assert {:error, %Ecto.Changeset{}} = Leaderboard.create_lap_time(user, @invalid_attrs)
     end
 
     test "update_lap_time/2 with valid data updates the lap_time" do

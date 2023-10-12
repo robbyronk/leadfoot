@@ -13,6 +13,8 @@ defmodule Leadfoot.Accounts.User do
     field :confirmed_at, :naive_datetime
     field :role, :string
 
+    has_many :lap_times, Leadfoot.Leaderboard.LapTime
+
     timestamps()
   end
 

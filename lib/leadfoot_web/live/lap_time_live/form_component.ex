@@ -75,7 +75,7 @@ defmodule LeadfootWeb.LapTimeLive.FormComponent do
   end
 
   defp save_lap_time(socket, :new, lap_time_params) do
-    case Leaderboard.create_lap_time(lap_time_params) do
+    case Leaderboard.create_lap_time(socket.assigns.current_user, lap_time_params) do
       {:ok, lap_time} ->
         notify_parent({:saved, lap_time})
 
