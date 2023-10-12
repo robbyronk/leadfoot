@@ -1,5 +1,56 @@
 defmodule Leadfoot.ParsePacket do
-  @moduledoc false
+  @moduledoc """
+
+
+  racing: 0 if not racing
+  timestamp: number that never decreases. seems to increase at 60hz
+  max_rpm: could be red line, fuel cut off or something else
+  idle_rpm: rpm when the engine is idling
+  current_rpm: current engine rpm
+  acceleration: acceleration is in m/s^2
+  velocity: velocity is in m/s
+  angular_velocity: angular_velocity,
+  yaw_pitch_roll: yaw_pitch_roll,
+  norm_suspension: normalized suspension travel, from 0 to 1
+  tire_slip_ratio: tire_slip_ratio,
+  wheel_rotation: wheel rotation is in rad/sec
+  on_rumble: on_rumble,
+  in_puddle: in_puddle,
+  surface_rumble: surface_rumble,
+  tire_slip_angle: tire_slip_angle,
+  tire_comb_slip: tire_comb_slip,
+  suspension_travel: suspension travel is in meters
+  car_id: unique id for car
+  car_class: 0 for D up to 6 for X
+  car_performance: PI points
+  drivetrain: 0 for FWD, 1 for RWD, 2 for AWD
+  num_cylinders: num_cylinders,
+  car_category: car_category,
+  unknown1: 4 unknown bytes. seems to change when crashing
+  unknown2: 4 unknown bytes. seems to change when crashing
+  world_position: world_position,
+  speed: speed is in m/s
+  power: power is in watts
+  torque: torque is in n/m
+  tire_temp: tire temp is in f. Note: not metric.
+  boost: boost,
+  fuel: fuel,
+  distance: distance,
+  best_lap_time: best_lap_time,
+  last_lap_time: last_lap_time,
+  current_lap_time: current_lap_time,
+  current_race_time: current_race_time,
+  lap: lap,
+  race_position: race_position,
+  accelerator: accelerator,
+  brake: brake,
+  clutch: clutch,
+  handbrake: handbrake,
+  gear: 11 for neutral, 0 for reverse
+  steer: steer,
+  driving_line: driving_line,
+  ai_brake: ai_brake
+  """
 
   def parse_triple(<<x::little-float-32, y::little-float-32, z::little-float-32>>) do
     %{x: x, y: y, z: z}
@@ -23,29 +74,21 @@ defmodule Leadfoot.ParsePacket do
           accelerator::little-8, brake::little-8, clutch::little-8, handbrake::little-8, gear::little-8,
           steer::little-signed-8, driving_line::little-8, ai_brake::little-8, rest::bytes>>
       ) do
-    # acceleration is in m/s^2
     acceleration = parse_triple(acceleration)
     velocity = parse_triple(velocity)
     angular_velocity = parse_triple(angular_velocity)
     yaw_pitch_roll = parse_triple(yaw_pitch_roll)
     norm_suspension = parse_corners(norm_suspension)
     tire_slip_ratio = parse_corners(tire_slip_ratio)
-    # wheel rotation is in rad/sec
     wheel_rotation = parse_corners(wheel_rotation)
     on_rumble = parse_corners(on_rumble)
     in_puddle = parse_corners(in_puddle)
     surface_rumble = parse_corners(surface_rumble)
     tire_slip_angle = parse_corners(tire_slip_angle)
     tire_comb_slip = parse_corners(tire_comb_slip)
-    # suspension travel is in meters
     suspension_travel = parse_corners(suspension_travel)
     world_position = parse_triple(world_position)
     tire_temp = parse_corners(tire_temp)
-
-    # tire temp is in f
-    # speed is in m/s
-    # power is in watts
-    # torque is in n/m
 
     %{
       racing: racing,
